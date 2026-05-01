@@ -3,7 +3,7 @@
 
   <%= render_component "head" %>
 
-  <body>
+  <body class="mango-app-shell">
     <!-- Mobile top bar (small screens only) -->
     <div class="uk-position-top uk-hidden@m">
       <div class="uk-navbar-container mango-navbar" uk-navbar>
@@ -58,12 +58,6 @@
           <li><a href="<%= base_url %>admin/subscriptions" title="订阅管理器"><i class="fas fa-rss"></i><span>订阅管理器</span></a></li>
         <% end %>
       </ul>
-      <div class="sidebar-search">
-        <div class="sidebar-search-wrapper">
-          <i class="fas fa-search sidebar-search-icon"></i>
-          <input class="sidebar-search-input" type="search" placeholder="查找漫画..." aria-label="查找漫画">
-        </div>
-      </div>
       <div class="sidebar-toggle">
         <button onclick="toggleSidebar()" title="收起/展开侧栏">
           <i class="fas fa-chevron-left"></i>
@@ -77,6 +71,27 @@
 
     <!-- Main content (single render, responsive) -->
     <div class="app-content">
+      <header class="app-topbar uk-visible@m">
+        <div class="topbar-title">
+          <i class="fas fa-search"></i>
+          <span><%= page == "home" ? "Library" : page.split("-").map(&.capitalize).join(" ") %></span>
+        </div>
+        <div class="topbar-actions">
+          <button class="topbar-icon-btn" title="切换主题" onclick="toggleTheme()">
+            <i class="fas fa-adjust"></i>
+          </button>
+          <button class="topbar-icon-btn" title="视图">
+            <i class="fas fa-th-list"></i>
+          </button>
+          <button class="topbar-filter-btn" title="筛选">
+            <i class="fas fa-filter"></i>
+            <span>Filter</span>
+          </button>
+          <a class="topbar-avatar" href="<%= base_url %>logout" title="登出">
+            <img src="<%= base_url %>img/icons/icon.png" alt="">
+          </a>
+        </div>
+      </header>
       <div id="alert"></div>
       <%= content %>
       <div id="totop-wrapper" x-data="{}" x-show="$('body').height() > 1.5 * $(window).height()">

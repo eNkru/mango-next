@@ -655,17 +655,28 @@ class Title
   #   or when all entries are completed
   def get_last_read_entry(username) : Entry?
     progress = {} of String => Int32
+    last_read = {} of String => Time
     TitleInfo.new @dir do |info|
-      progress = info.progress[username]?
+      progress = info.progress[username]? || progress
+      last_read = info.last_read[username]? || last_read
     end
-    return if progress.nil?
+    return if progress.empty?
 
     last_read_entry = nil
+    last_read_time = nil
 
     sorted_entries(username).reverse_each do |e|
-      if progress.has_key?(e.title) && progress[e.title] > 0
+      next unless progress.has_key?(e.title) && progress[e.title] > 0
+
+      entry_last_read = last_read[e.title]?
+      if entry_last_read
+        if last_read_time.nil? || entry_last_read > last_read_time.not_nil!
+          last_read_entry = e
+          last_read_time = entry_last_read
+        end
+      elsif last_read_time.nil? && last_read_entry.nil?
+        # Backward compatibility for progress saved before last_read existed.
         last_read_entry = e
-        break
       end
     end
 

@@ -3024,6 +3024,712 @@
   }
 }
 
+// ============================================
+// Manga Shelf UI Refresh
+// Dark, compact library surface inspired by media apps.
+// ============================================
+@shelf-bg: #101116;
+@shelf-panel: rgba(24, 25, 34, 0.78);
+@shelf-panel-solid: #181922;
+@shelf-panel-strong: #20212b;
+@shelf-border: rgba(255, 255, 255, 0.08);
+@shelf-text: #ECEAF2;
+@shelf-muted: #A5A1B2;
+@shelf-dim: #777386;
+@shelf-accent: #F28B45;
+@shelf-accent-2: #69A7FF;
+@shelf-sidebar: #11131A;
+
+html {
+  background: #101116;
+}
+
+body.mango-app-shell {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #101116;
+}
+
+body.uk-light.mango-app-shell {
+  background:
+    radial-gradient(circle at 76% 8%, rgba(242, 139, 69, 0.12), transparent 30rem),
+    linear-gradient(135deg, #101116 0%, #15161D 58%, #191820 100%) !important;
+  background-attachment: fixed;
+  color: @shelf-text;
+}
+
+body.uk-light.mango-app-shell::before {
+  display: none;
+}
+
+body.mango-app-shell .app-sidebar,
+body.mango-app-shell .app-content,
+body.mango-app-shell .mango-navbar,
+body.mango-app-shell #mobile-nav .uk-offcanvas-bar {
+  position: relative;
+  z-index: 1;
+}
+
+body.mango-app-shell .app-sidebar {
+  position: fixed;
+  width: 92px;
+  background: rgba(15, 16, 23, 0.92);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 12px 0 32px rgba(0,0,0,0.22);
+  backdrop-filter: blur(14px);
+}
+
+body.mango-app-shell .app-sidebar.sidebar-collapsed {
+  width: 64px;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-logo {
+  padding: 26px 0 34px;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-logo img,
+body.mango-app-shell .topbar-avatar img {
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.32);
+}
+
+body.mango-app-shell .app-sidebar .sidebar-logo img {
+  width: 46px;
+  height: 46px;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-nav {
+  padding: 0 10px;
+  flex: 1;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-nav li {
+  margin-bottom: 8px;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-nav a {
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-height: 58px;
+  padding: 7px 4px;
+  border-radius: 6px;
+  color: @shelf-muted;
+  font-size: 0.72rem;
+  line-height: 1.1;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-nav a i {
+  width: auto;
+  color: inherit;
+  font-size: 0.95rem;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-nav a:hover,
+body.mango-app-shell .app-sidebar .sidebar-nav a.active,
+body.mango-app-shell .app-sidebar .sidebar-nav a.uk-active {
+  color: @shelf-text;
+  background: rgba(242, 139, 69, 0.13);
+}
+
+body.mango-app-shell .app-sidebar .sidebar-nav a:hover i,
+body.mango-app-shell .app-sidebar .sidebar-nav a.active i,
+body.mango-app-shell .app-sidebar .sidebar-nav a.uk-active i {
+  color: @shelf-accent;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-toggle {
+  padding: 0 0 8px;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-toggle button,
+body.mango-app-shell .app-sidebar .sidebar-footer a,
+body.mango-app-shell .topbar-icon-btn,
+body.mango-app-shell .topbar-filter-btn {
+  background: rgba(255,255,255,0.045);
+  border: 1px solid @shelf-border;
+  color: @shelf-muted;
+  border-radius: 6px;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-toggle button:hover,
+body.mango-app-shell .app-sidebar .sidebar-footer a:hover,
+body.mango-app-shell .topbar-icon-btn:hover,
+body.mango-app-shell .topbar-filter-btn:hover {
+  background: rgba(242, 139, 69, 0.16);
+  color: @shelf-accent;
+}
+
+body.mango-app-shell .app-sidebar .sidebar-footer {
+  flex-direction: column;
+  padding-bottom: 22px;
+}
+
+body.mango-app-shell .app-content {
+  margin-left: 92px;
+  padding: 0 36px 56px;
+  min-height: 100vh;
+  color: @shelf-text;
+}
+
+body.sidebar-is-collapsed.mango-app-shell .app-content {
+  margin-left: 64px;
+}
+
+.app-topbar {
+  height: 78px;
+  margin: 0 -36px 20px;
+  padding: 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  background: rgba(16, 17, 22, 0.36);
+  backdrop-filter: blur(10px);
+}
+
+.topbar-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: @shelf-text;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.topbar-title i {
+  color: @shelf-muted;
+  font-size: 1.2rem;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-icon-btn,
+.topbar-filter-btn {
+  height: 38px;
+  min-width: 42px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.topbar-icon-btn {
+  width: 42px;
+  padding: 0;
+}
+
+.topbar-avatar {
+  display: inline-flex;
+  margin-left: 8px;
+}
+
+.topbar-avatar img {
+  width: 40px;
+  height: 40px;
+}
+
+body.mango-app-shell .section-heading,
+body.mango-app-shell .page-heading,
+body.mango-app-shell .title-heading {
+  color: @shelf-text;
+  font-size: 1.42rem;
+  letter-spacing: 0;
+  border-left: 0;
+  padding-left: 0;
+}
+
+body.mango-app-shell .section-heading::after {
+  display: none;
+}
+
+body.mango-app-shell .section-header {
+  margin-bottom: 16px;
+}
+
+body.mango-app-shell .section-count,
+body.mango-app-shell .page-heading-badge {
+  background: rgba(255,255,255,0.07);
+  color: @shelf-muted;
+  border: 1px solid @shelf-border;
+}
+
+body.mango-app-shell .section-link {
+  color: @shelf-accent;
+}
+
+body.mango-app-shell .home-page,
+body.mango-app-shell .library-page {
+  max-width: none;
+}
+
+body.mango-app-shell .continue-reading-section {
+  margin-bottom: 30px;
+}
+
+body.mango-app-shell .continue-reading-row {
+  height: 330px;
+  gap: 16px;
+}
+
+body.mango-app-shell .hero-banner {
+  flex: 0 0 36%;
+  border-radius: 7px;
+  border: 1px solid @shelf-border;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+  background-color: #101116;
+}
+
+body.mango-app-shell .hero-banner::before {
+  display: none !important;
+}
+
+body.mango-app-shell .hero-overlay {
+  display: none !important;
+}
+
+body.mango-app-shell .hero-content {
+  isolation: isolate;
+  padding: 22px;
+  border-radius: 7px;
+}
+
+body.mango-app-shell .hero-content::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  bottom: -18px;
+  width: min(430px, calc(100% + 54px));
+  height: 190px;
+  z-index: -1;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.34);
+  box-shadow: none;
+  filter: blur(30px);
+  transform: translateZ(0);
+}
+
+body.mango-app-shell .hero-badge {
+  background: @shelf-accent;
+  border-radius: 4px;
+  color: #fff;
+  letter-spacing: 0;
+}
+
+body.mango-app-shell .hero-title {
+  font-size: 1.85rem;
+  line-height: 1.12;
+  max-width: 11em;
+  overflow-wrap: anywhere;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.75);
+}
+
+body.mango-app-shell .hero-meta {
+  color: @shelf-muted;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.75);
+}
+
+body.mango-app-shell .hero-progress-bar,
+body.mango-app-shell .card-progress-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.14);
+}
+
+body.mango-app-shell .hero-progress-fill,
+body.mango-app-shell .card-progress-fill {
+  background: linear-gradient(90deg, @shelf-accent 0%, #F3B45B 100%);
+}
+
+body.mango-app-shell .continue-reading-cards,
+body.mango-app-shell .carousel-track {
+  gap: 16px;
+}
+
+body.mango-app-shell .continue-reading-cards > .item,
+body.mango-app-shell .carousel-track > .item {
+  flex-basis: 172px;
+}
+
+body.mango-app-shell .continue-reading-cards .item .uk-card.uk-card-default,
+body.mango-app-shell .carousel-track .item .uk-card.uk-card-default,
+body.mango-app-shell .library-page .item .uk-card.uk-card-default {
+  height: 100%;
+  background: @shelf-panel;
+  border: 1px solid @shelf-border;
+  border-radius: 7px;
+  overflow: hidden;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.22);
+  backdrop-filter: blur(10px);
+}
+
+body.mango-app-shell .continue-reading-cards .item .uk-card.uk-card-default:hover,
+body.mango-app-shell .carousel-track .item .uk-card.uk-card-default:hover,
+body.mango-app-shell .library-page .item .uk-card.uk-card-default:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 38px rgba(0,0,0,0.32);
+}
+
+body.mango-app-shell .continue-reading-cards .item .uk-card.uk-card-default .uk-card-media-top,
+body.mango-app-shell .carousel-track .item .uk-card.uk-card-default .uk-card-media-top,
+body.mango-app-shell .library-page .item .uk-card.uk-card-default .uk-card-media-top {
+  height: 214px;
+  border-radius: 0;
+}
+
+body.mango-app-shell .continue-reading-cards .item .uk-card.uk-card-default .uk-card-media-top img,
+body.mango-app-shell .carousel-track .item .uk-card.uk-card-default .uk-card-media-top img,
+body.mango-app-shell .library-page .item .uk-card.uk-card-default .uk-card-media-top img {
+  border-radius: 0;
+}
+
+body.mango-app-shell .continue-reading-cards .item .uk-card.uk-card-default .uk-card-media-top::after,
+body.mango-app-shell .carousel-track .item .uk-card.uk-card-default .uk-card-media-top::after,
+body.mango-app-shell .library-page .item .uk-card.uk-card-default .uk-card-media-top::after {
+  display: none !important;
+}
+
+body.mango-app-shell .continue-reading-cards .item .uk-card.uk-card-default .uk-card-body,
+body.mango-app-shell .carousel-track .item .uk-card.uk-card-default .uk-card-body,
+body.mango-app-shell .library-page .item .uk-card.uk-card-default .uk-card-body {
+  display: block;
+  min-height: 96px;
+  padding: 11px 12px 14px;
+  background: linear-gradient(180deg, rgba(20,21,29,0.96), rgba(15,16,23,0.98));
+}
+
+body.mango-app-shell .item .uk-card .uk-card-body .uk-card-title {
+  color: @shelf-text;
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 6px;
+  max-height: none;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+body.mango-app-shell .item .uk-card .uk-card-body .uk-text-meta {
+  color: @shelf-muted;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  margin-top: 0;
+  max-height: none;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+body.mango-app-shell .card-progress-bar {
+  bottom: 11px;
+  left: 12px;
+  right: 38px;
+  z-index: 3;
+}
+
+body.mango-app-shell .card-progress-percent {
+  position: absolute;
+  right: 10px;
+  bottom: 4px;
+  z-index: 3;
+  color: @shelf-muted;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+body.mango-app-shell .carousel-wrapper {
+  margin: 0 -36px;
+  padding: 0 36px;
+}
+
+body.mango-app-shell .carousel-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  background: rgba(18,19,26,0.78);
+  border: 1px solid @shelf-border;
+  backdrop-filter: blur(10px);
+}
+
+body.mango-app-shell .showcase-section {
+  margin: 28px 0 38px;
+}
+
+body.mango-app-shell .showcase-panel {
+  min-height: 216px;
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(360px, 1.15fr);
+  border: 1px solid @shelf-border;
+  border-radius: 7px;
+  background: @shelf-panel;
+  overflow: hidden;
+  box-shadow: 0 18px 44px rgba(0,0,0,0.24);
+}
+
+body.mango-app-shell .showcase-copy {
+  padding: 28px 30px;
+  align-self: center;
+  position: relative;
+  z-index: 1;
+}
+
+body.mango-app-shell .showcase-copy h2 {
+  color: @shelf-text;
+  font-size: 1.35rem;
+  margin: 10px 0 6px;
+}
+
+body.mango-app-shell .showcase-copy p {
+  color: @shelf-muted;
+  margin: 0 0 18px;
+}
+
+body.mango-app-shell .showcase-art {
+  min-height: 216px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+body.mango-app-shell .showcase-art::before {
+  display: none !important;
+}
+
+body.mango-app-shell .library-page .library-toolbar {
+  padding: 12px;
+  background: @shelf-panel;
+  border: 1px solid @shelf-border;
+  border-radius: 7px;
+}
+
+body.mango-app-shell .search-bar .search-input,
+body.mango-app-shell .sort-select,
+body.mango-app-shell .uk-select,
+body.mango-app-shell .uk-input {
+  background: rgba(14,15,21,0.72) !important;
+  color: @shelf-text !important;
+  border-color: @shelf-border !important;
+  border-radius: 6px !important;
+}
+
+body.mango-app-shell .search-bar .search-input::placeholder {
+  color: @shelf-dim;
+}
+
+body.mango-app-shell .search-bar .search-icon {
+  color: @shelf-muted;
+}
+
+body.mango-app-shell .mango-btn.mango-btn-primary {
+  background: linear-gradient(180deg, #F3924D, #E5642F) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 6px !important;
+}
+
+body.mango-app-shell .mango-btn.mango-btn-outline {
+  color: @shelf-accent !important;
+  border-color: rgba(242,139,69,0.45) !important;
+  border-radius: 6px !important;
+}
+
+body.mango-app-shell .empty-state,
+body.mango-app-shell .no-results {
+  color: @shelf-text;
+}
+
+body.mango-app-shell .empty-state h2,
+body.mango-app-shell .no-results h3 {
+  color: @shelf-text;
+}
+
+body.mango-app-shell .empty-state p,
+body.mango-app-shell .no-results p,
+body.mango-app-shell .page-subtitle {
+  color: @shelf-muted;
+}
+
+body.mango-app-shell:not(.uk-light) {
+  background:
+    radial-gradient(circle at 72% 8%, rgba(242, 139, 69, 0.12), transparent 28rem),
+    linear-gradient(135deg, #F7F5F2 0%, #EEEFF4 54%, #F4EDE8 100%) !important;
+  color: @text-primary;
+}
+
+body.mango-app-shell:not(.uk-light)::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.2;
+  background-image:
+    linear-gradient(rgba(40,40,50,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(40,40,50,0.035) 1px, transparent 1px);
+  background-size: 42px 42px, 42px 42px;
+}
+
+body.mango-app-shell:not(.uk-light) .app-sidebar {
+  background: rgba(255,255,255,0.88);
+  border-right-color: rgba(20,20,30,0.08);
+  box-shadow: 10px 0 28px rgba(30,30,40,0.08);
+}
+
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a,
+body.mango-app-shell:not(.uk-light) .topbar-title i,
+body.mango-app-shell:not(.uk-light) .topbar-icon-btn,
+body.mango-app-shell:not(.uk-light) .topbar-filter-btn,
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-toggle button,
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-footer a {
+  color: @text-secondary;
+}
+
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-toggle button,
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-footer a,
+body.mango-app-shell:not(.uk-light) .topbar-icon-btn,
+body.mango-app-shell:not(.uk-light) .topbar-filter-btn {
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(20,20,30,0.1);
+}
+
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a:hover,
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a.active,
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a.uk-active {
+  color: @accent;
+  background: @accent-light;
+}
+
+body.mango-app-shell:not(.uk-light) .app-topbar {
+  background: rgba(255,255,255,0.48);
+  border-bottom-color: rgba(20,20,30,0.08);
+}
+
+body.mango-app-shell:not(.uk-light) .topbar-title,
+body.mango-app-shell:not(.uk-light) .section-heading,
+body.mango-app-shell:not(.uk-light) .page-heading,
+body.mango-app-shell:not(.uk-light) .title-heading,
+body.mango-app-shell:not(.uk-light) .item .uk-card .uk-card-body .uk-card-title,
+body.mango-app-shell:not(.uk-light) .showcase-copy h2,
+body.mango-app-shell:not(.uk-light) .empty-state h2,
+body.mango-app-shell:not(.uk-light) .no-results h3 {
+  color: @text-primary;
+}
+
+body.mango-app-shell:not(.uk-light) .section-count,
+body.mango-app-shell:not(.uk-light) .page-heading-badge {
+  background: rgba(255,255,255,0.68);
+  color: @text-secondary;
+  border-color: rgba(20,20,30,0.08);
+}
+
+body.mango-app-shell:not(.uk-light) .continue-reading-cards .item .uk-card.uk-card-default,
+body.mango-app-shell:not(.uk-light) .carousel-track .item .uk-card.uk-card-default,
+body.mango-app-shell:not(.uk-light) .library-page .item .uk-card.uk-card-default,
+body.mango-app-shell:not(.uk-light) .showcase-panel,
+body.mango-app-shell:not(.uk-light) .library-page .library-toolbar {
+  background: rgba(255,255,255,0.76);
+  border-color: rgba(20,20,30,0.09);
+  box-shadow: 0 12px 28px rgba(30,30,40,0.1);
+}
+
+body.mango-app-shell:not(.uk-light) .continue-reading-cards .item .uk-card.uk-card-default .uk-card-body,
+body.mango-app-shell:not(.uk-light) .carousel-track .item .uk-card.uk-card-default .uk-card-body,
+body.mango-app-shell:not(.uk-light) .library-page .item .uk-card.uk-card-default .uk-card-body {
+  background: rgba(255,255,255,0.92);
+}
+
+body.mango-app-shell:not(.uk-light) .item .uk-card .uk-card-body .uk-text-meta,
+body.mango-app-shell:not(.uk-light) .showcase-copy p,
+body.mango-app-shell:not(.uk-light) .empty-state p,
+body.mango-app-shell:not(.uk-light) .no-results p,
+body.mango-app-shell:not(.uk-light) .page-subtitle {
+  color: @text-secondary;
+}
+
+body.mango-app-shell:not(.uk-light) .card-progress-bar {
+  background: rgba(20,20,30,0.14);
+}
+
+body.mango-app-shell:not(.uk-light) .card-progress-percent {
+  color: @text-muted;
+}
+
+body.mango-app-shell:not(.uk-light) .search-bar .search-input,
+body.mango-app-shell:not(.uk-light) .sort-select,
+body.mango-app-shell:not(.uk-light) .uk-select,
+body.mango-app-shell:not(.uk-light) .uk-input {
+  background: rgba(255,255,255,0.86) !important;
+  color: @text-primary !important;
+  border-color: rgba(20,20,30,0.1) !important;
+}
+
+body.mango-app-shell:not(.uk-light) .showcase-art::before {
+  background: linear-gradient(to right, rgba(255,255,255,0.96), rgba(255,255,255,0.25) 45%, rgba(255,255,255,0.02));
+}
+
+@media (min-width: 1280px) {
+  body.mango-app-shell .continue-reading-cards > .item,
+  body.mango-app-shell .carousel-track > .item {
+    flex-basis: 184px;
+  }
+}
+
+@media (max-width: 959px) {
+  body.mango-app-shell .app-content {
+    margin-left: 0;
+    padding: 72px 16px 36px;
+  }
+
+  body.mango-app-shell .mango-navbar {
+    background: rgba(15,16,23,0.94) !important;
+    border-bottom: 1px solid @shelf-border;
+  }
+
+  body.mango-app-shell .continue-reading-row {
+    height: auto;
+  }
+
+  body.mango-app-shell .hero-banner {
+    flex-basis: auto;
+    min-height: 260px;
+  }
+
+  body.mango-app-shell .showcase-panel {
+    grid-template-columns: 1fr;
+  }
+
+  body.mango-app-shell .showcase-art {
+    min-height: 190px;
+    order: -1;
+  }
+}
+
+@media (max-width: 599px) {
+  body.mango-app-shell .hero-title {
+    font-size: 1.55rem;
+  }
+
+  body.mango-app-shell .continue-reading-cards > .item,
+  body.mango-app-shell .carousel-track > .item {
+    flex-basis: 148px;
+  }
+
+  body.mango-app-shell .continue-reading-cards .item .uk-card.uk-card-default .uk-card-media-top,
+  body.mango-app-shell .carousel-track .item .uk-card.uk-card-default .uk-card-media-top,
+  body.mango-app-shell .library-page .item .uk-card.uk-card-default .uk-card-media-top {
+    height: 190px;
+  }
+}
+
 // --- Table action icons ---
 .table-action {
   display: inline-flex;

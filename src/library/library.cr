@@ -315,7 +315,7 @@ class Library
       .reject { |t| t.hidden? || t.parents.any?(&.hidden?) }
       .map(&.get_last_read_entry username)
       # Select elements with type `Entry` from the array and ignore all `Nil`s
-      .select(Entry)[0...ENTRIES_IN_HOME_SECTIONS]
+      .select(Entry)
       .reject { |e| e.book.hidden? || e.book.parents.any?(&.hidden?) }
       .map { |e|
         # Get the last read time of the entry. If it hasn't been started, get
@@ -338,7 +338,7 @@ class Library
       next 1 if a[:last_read].nil?
       next -1 if b[:last_read].nil?
       b[:last_read].not_nil! <=> a[:last_read].not_nil!
-    }
+    }[0...ENTRIES_IN_HOME_SECTIONS]
   end
 
   alias RA = NamedTuple(

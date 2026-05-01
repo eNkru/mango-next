@@ -53,6 +53,7 @@
           <div class="card-progress-bar">
             <div class="card-progress-fill" style="width: <%= (progress * 100).round(1) %>%"></div>
           </div>
+          <span class="card-progress-percent"><%= (progress * 100).round(0).to_i %>%</span>
         <% end %>
         <div class="uk-overlay-primary uk-position-cover" x-show="!disabled && (selected || hover)">
           <div class="uk-height-1-1 uk-width-1-1" x-show="selecting" @click.stop="selected = !selected; $dispatch(selected ? 'add' : 'remove')"></div>
@@ -95,7 +96,7 @@
             <p class="uk-text-meta uk-margin-remove-bottom">Error <span uk-icon="info"></span></p>
             <div uk-dropdown><%= item.err_msg %></div>
           <% else %>
-            <p class="uk-text-meta"><%= item.pages %> 页</p>
+            <p class="uk-text-meta">Last read page: <%= item.load_progress(username) %>/<%= item.pages %></p>
           <% end %>
         <% end %>
         <% if item.is_a? Title %>
