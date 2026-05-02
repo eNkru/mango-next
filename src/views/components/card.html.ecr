@@ -45,7 +45,7 @@
         x-init="disabled = false"
       <% end %>>
       <div class="uk-card-media-top uk-inline" @mouseenter="hover = true" @mouseleave="hover = false">
-        <img data-src="<%= item.cover_url %>" width="100%" height="100%" alt="" uk-img
+        <img data-src="<%= item.cover_url %>" alt="" uk-img
         <% if item.is_a? Entry && item.err_msg %>
           class="grayscale"
         <% end %>>

@@ -130,25 +130,6 @@
   <%- end -%>
 
   <%- unless recently_added.empty? -%>
-    <div class="showcase-section">
-      <% showcase = recently_added.first %>
-      <% showcase_item = showcase.is_a?(NamedTuple(entry: Entry, percentage: Float64, grouped_count: Int32)) ? showcase[:entry] : showcase %>
-      <% showcase_progress = showcase.is_a?(NamedTuple(entry: Entry, percentage: Float64, grouped_count: Int32)) ? showcase[:percentage] : 0.0 %>
-      <div class="showcase-panel">
-        <div class="showcase-copy">
-          <span class="hero-badge">热门</span>
-          <h2><%= HTML.escape(showcase_item.display_name) %></h2>
-          <p><%= showcase_item.is_a?(Entry) ? "#{showcase_item.pages} 页" : showcase_item.content_label %> · <%= (showcase_progress * 100).round(1) %>% 已读</p>
-          <a href="<%= showcase_item.is_a?(Entry) ? "#{base_url}reader/#{showcase_item.book.id}/#{showcase_item.id}" : "#{base_url}book/#{showcase_item.id}" %>" class="mango-btn mango-btn-primary">
-            <i class="fas fa-play"></i> Continue
-          </a>
-        </div>
-        <div class="showcase-art" style="background-image: url('<%= showcase_item.cover_url %>');"></div>
-      </div>
-    </div>
-  <%- end -%>
-
-  <%- unless recently_added.empty? -%>
     <div class="carousel-section">
       <div class="section-header">
         <h2 class="section-heading">最近添加</h2>

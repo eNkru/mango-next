@@ -50,7 +50,9 @@
 .item .uk-card {
     cursor: pointer;
 	.uk-card-media-top {
+		position: relative;
 		width: 100%;
+		overflow: hidden;
 		height: 280px;
 		@media (min-width: 600px) {
 			height: 310px;
@@ -854,11 +856,13 @@
   overflow-x: auto;
   flex-shrink: 0;
   align-items: stretch;
+  padding-top: 8px;
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 
   > .item {
     flex: 0 0 200px;
+    min-width: 0;
     height: 100%;
 
     @media (min-width: 600px) {
@@ -877,6 +881,11 @@
     background: transparent;
     height: 100%;
 
+    &:hover {
+      box-shadow: none;
+      transform: translateY(-6px) scale(1.03);
+    }
+
     .uk-card-media-top {
       position: relative;
       height: 100%;
@@ -891,6 +900,7 @@
         height: 100%;
         object-fit: cover;
         border-radius: 12px;
+        transition: transform 0.3s ease;
       }
 
       // Gradient overlay
@@ -906,6 +916,10 @@
         pointer-events: none;
         z-index: 1;
       }
+    }
+
+    &:hover .uk-card-media-top img {
+      transform: scale(1.04);
     }
 
     .uk-card-body {
@@ -1060,6 +1074,7 @@
 
   > .item {
     flex: 0 0 200px;
+    min-width: 0;
     scroll-snap-align: start;
 
     @media (min-width: 600px) {
@@ -3447,14 +3462,14 @@ body.mango-app-shell .library-page .library-toolbar {
   border-radius: 7px;
 }
 
-body.mango-app-shell .library-card-grid {
+.library-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 22px;
   align-items: start;
 }
 
-body.mango-app-shell .library-card-grid > .item {
+.library-card-grid > .item {
   min-width: 0;
 }
 
