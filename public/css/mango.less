@@ -145,7 +145,7 @@
 }
 
 // ============================================
-// Login page — flat, clean
+// Login page — manga-themed
 // ============================================
 @login-bg: #E8DDD3;
 
@@ -160,13 +160,48 @@
   }
 }
 
+@keyframes login-bg-pan {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-30px, 20px); }
+  100% { transform: translate(0, 0); }
+}
+
 .login-page {
   background: @login-bg;
   position: relative;
   min-height: 100vh;
+  overflow: hidden;
 
   .uk-section {
     background: transparent;
+  }
+
+  // --- Background decoration ---
+  .login-bg-decoration {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .login-halftone {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: radial-gradient(circle, #000 1.5px, transparent 1.5px);
+    background-size: 16px 16px;
+  }
+
+  .login-burst {
+    position: absolute;
+    top: -10%;
+    right: -15%;
+    width: 60vw;
+    height: 60vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(217, 106, 75, 0.10) 0%, transparent 70%);
+    animation: login-bg-pan 12s ease-in-out infinite;
   }
 
   // --- Card ---
@@ -174,21 +209,38 @@
     border-radius: @radius-lg;
     border: 1px solid rgba(0,0,0,0.08);
     padding: 0;
-    box-shadow: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
     animation: login-card-entrance 0.4s ease both;
     animation-delay: 0.05s;
     position: relative;
     overflow: hidden;
+    z-index: 1;
   }
 
-  // --- Flat accent stripe at top of card ---
-  .login-stripe {
-    height: 3px;
-    background: @accent;
-    width: 100%;
+  // --- Manga banner at top of card ---
+  .login-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 18px 0;
+    background: transparent;
+
+    img {
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 90px;
+      object-fit: contain;
+      display: block;
+      border-radius: @radius-md;
+    }
+
+    .login-banner-fade {
+      display: none;
+    }
   }
 
-  // --- Card inner padding (below stripe) ---
+  // --- Card inner padding ---
   .login-card > .login-header,
   .login-card > .login-form {
     padding-left: 32px;
@@ -197,7 +249,7 @@
 
   .login-header {
     margin-bottom: 8px;
-    padding-top: 32px;
+    padding-top: 24px;
   }
 
   .login-form {
@@ -206,18 +258,32 @@
 
   // --- Logo ---
   .login-logo {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 14px;
-    border-radius: @radius-lg;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
     background: @accent;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
+    box-shadow: 0 4px 14px rgba(217, 106, 75, 0.35);
+    position: relative;
+    overflow: hidden;
 
-    .uk-icon {
-      color: #fff;
+    img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      position: relative;
+      z-index: 1;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
     }
   }
 
@@ -363,10 +429,19 @@
   .login-card {
     background: @dark-bg-surface;
     border-color: @dark-border;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   }
 
-  .login-stripe {
-    background: @dark-accent;
+  .login-banner {
+    background: transparent;
+
+    img {
+      opacity: 1;
+    }
+
+    .login-banner-fade {
+      display: none;
+    }
   }
 
   .login-subtitle {
@@ -421,6 +496,8 @@
 
   .login-logo {
     background: @dark-accent;
+    box-shadow: 0 4px 14px rgba(232, 132, 95, 0.25);
+    border-radius: 50%;
   }
 
   // Footer dark
@@ -429,10 +506,22 @@
   }
 }
 
+// Mobile banner adjustment
+@media (max-width: 480px) {
+  .login-page .login-banner {
+    padding: 10px 12px 0;
+
+    img {
+      max-height: 64px;
+    }
+  }
+}
+
 // Reduced motion — disable login animations
 @media (prefers-reduced-motion: reduce) {
   .login-page {
     .login-card { animation: none !important; opacity: 1 !important; }
+    .login-burst { animation: none !important; }
   }
 }
 
