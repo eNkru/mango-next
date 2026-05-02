@@ -2,16 +2,16 @@
   <form class="mango-form" action="<%= base_url %>admin/user/edit" method="post" accept-charset="utf-8">
 
     <div class="uk-margin">
-      <label class="uk-form-label" for="username">用户名</label>
-      <input class="uk-input" type="text" name="username" id="username" <%- if username -%> value="<%= username %>" <%- end -%> placeholder="请输入用户名">
+      <label class="uk-form-label" for="username" data-i18n="username">用户名</label>
+      <input class="uk-input" type="text" name="username" id="username" <%- if username -%> value="<%= username %>" <%- end -%> placeholder="请输入用户名" data-i18n-placeholder="enter_username_placeholder">
     </div>
 
     <%- if new_user -%>
       <div class="uk-margin">
-        <label class="uk-form-label" for="password">密码</label>
+        <label class="uk-form-label" for="password" data-i18n="password">密码</label>
         <div class="form-password-toggle">
-          <input class="uk-input" type="password" name="password" id="password" placeholder="请输入密码">
-          <button type="button" class="pw-toggle" onclick="togglePw('password')" aria-label="切换密码可见性">
+          <input class="uk-input" type="password" name="password" id="password" placeholder="请输入密码" data-i18n-placeholder="enter_password_placeholder">
+          <button type="button" class="pw-toggle" onclick="togglePw('password')" aria-label="切换密码可见性" data-i18n-aria-label="toggle_password">
             <i class="fas fa-eye-slash" id="password-icon"></i>
           </button>
         </div>
@@ -20,7 +20,7 @@
 
     <div class="uk-margin">
       <label class="uk-form-label" for="admin">
-        管理员权限
+        <span data-i18n="admin_access">管理员权限</span>
         <input class="uk-checkbox uk-margin-small-left" type="checkbox" name="admin" id="admin" <%- if admin == true -%> checked <%- end -%>>
       </label>
     </div>
@@ -28,13 +28,13 @@
     <%- unless new_user -%>
       <div class="uk-margin">
         <button class="uk-button change-pw-btn" type="button" uk-toggle="target: #change-password">
-          <i class="fas fa-key uk-margin-small-right"></i> 更改密码
+          <i class="fas fa-key uk-margin-small-right"></i> <span data-i18n="change_password">更改密码</span>
         </button>
         <div id="change-password" class="uk-margin" hidden>
-          <label class="uk-form-label" for="new-password">新密码</label>
+          <label class="uk-form-label" for="new-password" data-i18n="new_password">新密码</label>
           <div class="form-password-toggle">
-            <input class="uk-input" type="password" name="password" id="new-password" placeholder="请输入新密码">
-            <button type="button" class="pw-toggle" onclick="togglePw('new-password')" aria-label="切换密码可见性">
+            <input class="uk-input" type="password" name="password" id="new-password" placeholder="请输入新密码" data-i18n-placeholder="enter_new_password">
+            <button type="button" class="pw-toggle" onclick="togglePw('new-password')" aria-label="切换密码可见性" data-i18n-aria-label="toggle_password">
               <i class="fas fa-eye-slash" id="new-password-icon"></i>
             </button>
           </div>
@@ -44,7 +44,7 @@
 
     <hr class="form-divider">
 
-    <input type="submit" value="保存" class="uk-button mango-btn mango-btn-primary">
+    <input type="submit" value="保存" class="uk-button mango-btn mango-btn-primary" data-i18n-value="save">
   </form>
 </div>
 

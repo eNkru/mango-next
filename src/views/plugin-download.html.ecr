@@ -3,14 +3,14 @@
     <div class="uk-container uk-text-center" x-show="plugins.length === 0" style="width:100%">
       <div class="sub-empty-state">
         <div class="sub-empty-icon"><i class="fas fa-puzzle-piece"></i></div>
-        <h3>未找到插件</h3>
-        <p>我们在以下目录中找不到任何插件 <code><%= Config.current.plugin_path %></code></p>
-        <p>您可以从以下网址下载官方插件 <a href="https://github.com/hkalexling/mango-plugins">Mango 插件库</a></p>
+        <h3 data-i18n="no_plugins_found">未找到插件</h3>
+        <p><span data-i18n="no_plugins_desc">我们在以下目录中找不到任何插件</span> <code><%= Config.current.plugin_path %></code></p>
+        <p><span data-i18n="download_official_plugins">您可以从以下网址下载官方插件</span> <a href="https://github.com/hkalexling/mango-plugins" data-i18n="mango_plugins_repo">Mango 插件库</a></p>
       </div>
     </div>
 
     <div x-show="plugins.length > 0" style="width:100%">
-      <h2 class="page-heading">使用插件下载
+      <h2 class="page-heading" data-i18n="download_with_plugin">使用插件下载
         <span x-show="searching" uk-spinner class="uk-margin-left"></span>
       </h2>
 
@@ -21,13 +21,13 @@
               <div class="uk-margin">
                 <div class="uk-form-controls">
                   <label class="uk-form-label">&nbsp;</label>
-                  <input class="uk-input chapter-search-input" type="text" :placeholder="info.placeholder" x-model="query" @keydown.enter="search()">
+                  <input class="uk-input chapter-search-input" type="text" :placeholder="info.placeholder" x-model="query" @keydown.enter="search()" data-i18n-placeholder="chapter_search">
                 </div>
               </div>
             </div>
             <div class="uk-width-expand">
               <div class="uk-margin">
-                <label class="uk-form-label">选择一个插件</label>
+                <label class="uk-form-label" data-i18n="choose_plugin">选择一个插件</label>
                 <div class="uk-form-controls">
                   <select class="uk-select plugin-select" x-model="pid" @change="pluginChanged()">
                     <template x-for="p in plugins" :key="p">
@@ -49,7 +49,7 @@
 
           <template x-for="entry, idx in Object.entries(info).filter(tp => !['id', 'settings'].includes(tp[0]))" :key="idx">
             <dl class="sub-detail-dl" id="toggle" hidden>
-              <dt x-text="entry[0] === 'version' ? '目标 API 版本' : entry[0].replace('_', ' ')"></dt>
+              <dt x-text="entry[0] === 'version' ? I18N.get('target_api_version', loadLanguageSetting()) : entry[0].replace('_', ' ')"></dt>
               <dd x-text="entry[1]"></dd>
             </dl>
           </template>
@@ -58,9 +58,9 @@
 
       <template x-if="manga">
         <div class="uk-margin">
-          <p x-show="manga.length === 0" style="color: #888;">没有找到匹配的漫画.</p>
-          <p x-show="manga.length > 0">
-          <span x-text="`${manga.length} 漫画已找到`" style="font-weight: 600;"></span>
+        <p x-show="manga.length === 0" style="color: #888;" data-i18n="no_matching_manga">没有找到匹配的漫画.</p>
+        <p x-show="manga.length > 0">
+        <span x-text="`${manga.length} ` + I18N.get('manga_found', loadLanguageSetting())" style="font-weight: 600;"></span>
           <span :uk-icon="listManga ? 'chevron-down' : 'chevron-right'" @click="listManga = !listManga" style="cursor: pointer;"></span>
           </p>
 
@@ -84,13 +84,13 @@
 
       <div class="uk-margin-large-top" x-show="chapters !== undefined">
         <h3 class="section-heading" x-text="mangaTitle"></h3>
-        <p x-text="`${chapters ? chapters.length : 0} 章节已找到`" style="color: #888; font-size: 0.9rem;"></p>
+        <p x-text="`${chapters ? chapters.length : 0} ` + I18N.get('chapters_found', loadLanguageSetting())" style="color: #888; font-size: 0.9rem;"></p>
 
         <div class="uk-margin action-bar">
           <div x-show="chapters && chapters.length > 0 && chapters.length <= chaptersLimit">
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="selectAll()"><i class="fas fa-check-double uk-margin-small-right"></i> 全选</button>
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="clearSelection()"><i class="fas fa-times uk-margin-small-right"></i> 清空</button>
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" @click="download()"><i class="fas fa-download uk-margin-small-right"></i> 下载已选</button>
+          <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="selectAll()"><i class="fas fa-check-double uk-margin-small-right"></i> <span data-i18n="select_all">全选</span></button>
+          <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="clearSelection()"><i class="fas fa-times uk-margin-small-right"></i> <span data-i18n="clear_selection">清空</span></button>
+          <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" @click="download()"><i class="fas fa-download uk-margin-small-right"></i> <span data-i18n="download_selected">下载已选</span></button>
             <span class="info-toggle" uk-icon="icon:settings" @click="showFilters = !showFilters" style="vertical-align: middle;"></span>
           </div>
           <div uk-spinner class="uk-margin-left" x-show="adding"></div>
@@ -102,7 +102,7 @@
               <label class="uk-form-label">
                 <span x-text="field.key"></span>
                 <template x-if="field.type === 'number'">
-                  <span class="uk-text-meta" x-text="`(在 ${Math.min(...field.values)} 和 ${Math.max(...field.values)}之间)`"></span>
+                  <span class="uk-text-meta" x-text="I18N.get('between', loadLanguageSetting()).replace('{min}', Math.min(...field.values)).replace('{max}', Math.max(...field.values))"></span>
                 </template>
               </label>
 
@@ -127,7 +127,7 @@
               <input x-show="field.type === 'string'" class="uk-input" placeholder="filter text" :data-filter-key="field.key" data-filter-type="string">
 
               <select class="uk-select" x-show="field.type === 'array'" :data-filter-key="field.key" data-filter-type="array">
-                <option value="all">全部</option>
+                <option value="all" data-i18n="all">全部</option>
                 <template x-for="v in field.values" :key="v">
                   <option x-text="v" :value="v"></option>
                 </template>
@@ -135,20 +135,20 @@
             </div>
           </template>
           <div class="action-bar" style="margin-bottom: 0;">
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" @click.prevent="applyFilters()">应用</button>
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click.prevent="clearFilters()">清除</button>
+            <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" @click.prevent="applyFilters()" data-i18n="apply">应用</button>
+            <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click.prevent="clearFilters()" data-i18n="clear">清除</button>
             <span x-show="subscribable">
               <span class="uk-divider-vertical uk-margin-left uk-margin-right" style="height: 24px; vertical-align: middle;"></span>
-              <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click.prevent="UIkit.modal($refs.modal).show()" :disabled="subscribing"><i class="fas fa-bell uk-margin-small-right"></i> 订阅</button>
+              <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click.prevent="UIkit.modal($refs.modal).show()" :disabled="subscribing"><i class="fas fa-bell uk-margin-small-right"></i> <span data-i18n="subscribe">订阅</span></button>
             </span>
           </div>
         </form>
 
-        <p class="uk-text-meta" x-show="chapters && chapters.length > chaptersLimit" x-text="`该漫画有 ${chapters ? chapters.length : 0} 章节, 但Mango最多只能列出 ${chaptersLimit}. 请使用过滤器缩小搜索范围.`"></p>
-        <p x-show="chapters && chapters.length === 0" class="uk-text-meta">没有找到章节.</p>
+        <p class="uk-text-meta" x-show="chapters && chapters.length > chaptersLimit" x-text="I18N.get('too_many_chapters', loadLanguageSetting()).replace('{count}', chapters ? chapters.length : 0).replace('{limit}', chaptersLimit)"></p>
+        <p x-show="chapters && chapters.length === 0" class="uk-text-meta" data-i18n="no_chapters_found">没有找到章节.</p>
 
         <div x-show="chapters && chapters.length > 0 && chapters.length <= chaptersLimit">
-          <p class="uk-text-meta" style="margin-bottom: 12px;">单击表格行以选择章节。 将鼠标拖到多行上以将它们全部选中。 按住 Ctrl 进行多个不相邻的选择.</p>
+          <p class="uk-text-meta" style="margin-bottom: 12px;" data-i18n="select_chapters_hint">单击表格行以选择章节。 将鼠标拖到多行上以将它们全部选中。 按住 Ctrl 进行多个不相邻的选择.</p>
           <div class="uk-overflow-auto">
             <table class="uk-table mango-table mango-table-striped">
               <thead>
@@ -184,16 +184,16 @@
   <div uk-modal="container:false" x-ref="modal" class="mango-modal">
     <div class="uk-modal-dialog">
       <div class="uk-modal-header">
-        <h2 class="uk-modal-title">订阅确认</h2>
+        <h2 class="uk-modal-title" data-i18n="subscription_confirm">订阅确认</h2>
       </div>
       <div class="uk-modal-body">
-        <p>将创建具有以下过滤器的订阅。 全部 <strong>未来</strong> 匹配过滤器的章节将被自动下载.</p>
+        <p data-i18n="subscription_create_desc">将创建具有以下过滤器的订阅。 全部 <strong>未来</strong> 匹配过滤器的章节将被自动下载.</p>
         <table class="uk-table mango-table mango-table-striped">
           <thead>
             <tr>
-              <th>关键词</th>
-              <th>种类</th>
-              <th>值</th>
+              <th data-i18n="keyword_th">关键词</th>
+              <th data-i18n="type_th">种类</th>
+              <th data-i18n="value_th">值</th>
             </tr>
           </thead>
           <tbody>
@@ -202,12 +202,12 @@
             </template>
           </tbody>
         </table>
-        <p>为订阅输入一个有意义的名称以继续:</p>
+        <p data-i18n="enter_subscription_name">为订阅输入一个有意义的名称以继续:</p>
         <input class="uk-input" type="text" x-model="subscriptionName" style="border-radius: 8px; border: 2px solid #e8e8e8; height: 44px; padding: 0 12px; transition: border-color 0.25s ease, box-shadow 0.25s ease;" x-effect="subscriptionName">
       </div>
       <div class="uk-modal-footer uk-text-right">
-        <button class="uk-button mango-btn mango-btn-sm mango-btn-outline uk-modal-close" type="button">取消</button>
-        <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" type="button" :disabled="subscriptionName.trim().length === 0" @click="subscribe($refs.modal)">确认</button>
+        <button class="uk-button mango-btn mango-btn-sm mango-btn-outline uk-modal-close" type="button" data-i18n="cancel">取消</button>
+        <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" type="button" :disabled="subscriptionName.trim().length === 0" @click="subscribe($refs.modal)" data-i18n="confirm">确认</button>
       </div>
     </div>
   </div>

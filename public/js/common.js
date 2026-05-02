@@ -27,6 +27,59 @@ const getProp = (key, selector = '#root') => {
 };
 
 /**
+ * --- Language / i18n related functions
+ */
+
+/**
+ * Load the language setting from localStorage, or use the default
+ *
+ * @function loadLanguageSetting
+ * @return {string} A language code ('zh-cn', 'zh-tw', or 'en')
+ */
+const loadLanguageSetting = () => {
+	let lang = localStorage.getItem('mango-language');
+	if (!lang || I18N.SUPPORTED_LANGS.indexOf(lang) < 0) {
+		lang = I18N.DEFAULT_LANG;
+	}
+	return lang;
+};
+
+/**
+ * Save a language setting
+ *
+ * @function saveLanguageSetting
+ * @param {string} lang - A language code
+ */
+const saveLanguageSetting = lang => {
+	if (I18N.SUPPORTED_LANGS.indexOf(lang) < 0) lang = I18N.DEFAULT_LANG;
+	localStorage.setItem('mango-language', lang);
+};
+
+/**
+ * Set the page language and apply translations
+ *
+ * @function setLanguage
+ * @param {string} lang - A language code
+ */
+const setLanguage = (lang) => {
+	saveLanguageSetting(lang);
+	I18N.translatePage(lang);
+};
+
+/**
+ * Cycle to the next language in the supported list
+ *
+ * @function cycleLanguage
+ */
+const cycleLanguage = () => {
+	const current = loadLanguageSetting();
+	const langs = I18N.SUPPORTED_LANGS;
+	const idx = langs.indexOf(current);
+	const next = langs[(idx + 1) % langs.length];
+	setLanguage(next);
+};
+
+/**
  * --- Theme related functions
  *  	Note: In the comments below we treat "theme" and "theme setting"
  *  		differently. A theme can have only two values, either "dark" or
@@ -128,7 +181,12 @@ const setTheme = (theme) => {
 // do it before document is ready to prevent the initial flash of white on
 // 	most pages
 setTheme();
+// Apply i18n translation on page load (non-default only to avoid flash)
 $(() => {
+	const lang = loadLanguageSetting();
+	if (lang !== I18N.DEFAULT_LANG) {
+		I18N.translatePage(lang);
+	}
 	// hack for the reader page
 	setTheme();
 

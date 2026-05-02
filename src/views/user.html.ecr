@@ -2,9 +2,9 @@
   <table class="uk-table mango-table uk-table-middle">
     <thead>
       <tr>
-        <th>用户名</th>
-        <th>管理员权限</th>
-        <th>操作</th>
+        <th data-i18n="username_th">用户名</th>
+        <th data-i18n="admin_access_th">管理员权限</th>
+        <th data-i18n="action_th">操作</th>
       </tr>
     </thead>
     <tbody>
@@ -13,15 +13,15 @@
           <td><strong><%= u[0] %></strong></td>
           <td>
             <% if u[1] %>
-              <span class="status-label status-success">是</span>
+              <span class="status-label status-success" data-i18n="yes">是</span>
             <% else %>
-              <span class="status-label status-pending">否</span>
+              <span class="status-label status-pending" data-i18n="no">否</span>
             <% end %>
           </td>
           <td>
-            <a href="<%= base_url %>admin/user/edit?username=<%= u[0] %>&admin=<%= u[1] %>" class="table-action" aria-label="编辑用户" uk-tooltip="编辑"><span uk-icon="file-edit"></span></a>
+            <a href="<%= base_url %>admin/user/edit?username=<%= u[0] %>&admin=<%= u[1] %>" class="table-action" aria-label="编辑用户" uk-tooltip="编辑" data-i18n-aria-label="edit_user" data-i18n-tooltip="edit_user"><span uk-icon="file-edit"></span></a>
             <%- if u[0] != username %>
-              <a href="#" onclick="remove('<%= u[0] %>');return false;" class="table-action table-action-danger" aria-label="删除用户" uk-tooltip="删除"><span uk-icon="trash"></span></a>
+              <a href="#" onclick="remove('<%= u[0] %>');return false;" class="table-action table-action-danger" aria-label="删除用户" uk-tooltip="删除" data-i18n-aria-label="delete_user" data-i18n-tooltip="delete_user"><span uk-icon="trash"></span></a>
             <%- end %>
           </td>
         </tr>
@@ -29,7 +29,7 @@
     </tbody>
   </table>
 
-  <a href="<%= base_url %>admin/user/edit" class="uk-button mango-btn mango-btn-primary mango-btn-sm"><i class="fas fa-plus uk-margin-small-right"></i> 新用户</a>
+  <a href="<%= base_url %>admin/user/edit" class="uk-button mango-btn mango-btn-primary mango-btn-sm"><i class="fas fa-plus uk-margin-small-right"></i> <span data-i18n="new_user">新用户</span></a>
 </div>
 
 <% content_for "script" do %>

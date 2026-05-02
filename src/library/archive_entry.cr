@@ -26,7 +26,7 @@ class ArchiveEntry < Entry
     @id = id
     @mtime = File.info(@zip_path).modification_time
 
-    unless File.readable? @zip_path
+    unless File::Info.readable? @zip_path
       @err_msg = "File #{@zip_path} is not readable."
       Logger.warn "#{@err_msg} Please make sure the " \
                   "file permission is configured correctly."

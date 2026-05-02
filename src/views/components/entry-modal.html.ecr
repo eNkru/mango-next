@@ -6,25 +6,25 @@
         <h3 class="uk-modal-title break-word uk-margin-remove-top" id="modal-entry-title"><span></span>
           <% unless page == "home" %>
             <% if is_admin %>
-              <a id="modal-edit-btn" class="uk-icon-button" uk-icon="icon:pencil" aria-label="编辑条目"></a>
+              <a id="modal-edit-btn" class="uk-icon-button" uk-icon="icon:pencil" aria-label="编辑条目" data-i18n-aria-label="edit_entry"></a>
             <% end %>
           <% end %>
-          <a id="modal-download-btn" class="uk-icon-button" uk-icon="icon:download" aria-label="下载条目"></a>
+          <a id="modal-download-btn" class="uk-icon-button" uk-icon="icon:download" aria-label="下载条目" data-i18n-aria-label="download_entry"></a>
         </h3>
       </div>
       <p class="uk-text-meta uk-margin-remove-bottom break-word" id="path-text"></p>
       <p class="uk-text-meta uk-margin-remove-top" id="pages-text"></p>
     </div>
     <div class="uk-modal-body">
-      <p class="modal-section-label">阅读</p>
+      <p class="modal-section-label" data-i18n="read_section">阅读</p>
       <div class="modal-actions">
-      <a id="beginning-btn" class="uk-button uk-button-default mango-btn mango-btn-outline mango-btn-sm">从头开始</a>
+      <a id="beginning-btn" class="uk-button uk-button-default mango-btn mango-btn-outline mango-btn-sm" data-i18n="beginning">从头开始</a>
       <a id="continue-btn" class="uk-button uk-button-primary mango-btn mango-btn-primary mango-btn-sm"></a>
       </div>
-      <p class="modal-section-label">进度</p>
+      <p class="modal-section-label" data-i18n="progress_section">进度</p>
       <div class="modal-actions">
-      <button id="read-btn" class="uk-button uk-button-default mango-btn mango-btn-outline mango-btn-sm">标记为已读 (100%)</button>
-      <button id="unread-btn" class="uk-button uk-button-default mango-btn mango-btn-outline mango-btn-sm">标记为未读 (0%)</button>
+      <button id="read-btn" class="uk-button uk-button-default mango-btn mango-btn-outline mango-btn-sm" data-i18n="mark_read_100">标记为已读 (100%)</button>
+      <button id="unread-btn" class="uk-button uk-button-default mango-btn mango-btn-outline mango-btn-sm" data-i18n="mark_unread_0">标记为未读 (0%)</button>
       </div>
     </div>
   </div>

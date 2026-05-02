@@ -1,20 +1,20 @@
-<h2 class="page-heading">管理员</h2>
-<p class="page-subtitle">系统设置与操作</p>
+<h2 class="page-heading" data-i18n="admin_heading">管理员</h2>
+<p class="page-subtitle" data-i18n="admin_subtitle">系统设置与操作</p>
 
 <div class="admin-panel" x-data="component()" x-init="init()">
   <a class="admin-card" href="<%= base_url %>admin/user">
     <div class="admin-card-icon"><i class="fas fa-users"></i></div>
     <div class="admin-card-content">
-      <p class="admin-card-title">用户管理</p>
-      <p class="admin-card-meta">添加、编辑或删除用户</p>
+      <p class="admin-card-title" data-i18n="user_management">用户管理</p>
+      <p class="admin-card-meta" data-i18n="user_management_desc">添加、编辑或删除用户</p>
     </div>
   </a>
 
   <a class="admin-card" href="<%= base_url %>admin/missing">
     <div class="admin-card-icon"><i class="fas fa-exclamation-triangle"></i></div>
     <div class="admin-card-content">
-      <p class="admin-card-title">缺少条目</p>
-      <p class="admin-card-meta">查看缺失的文件条目</p>
+      <p class="admin-card-title" data-i18n="missing_entries">缺少条目</p>
+      <p class="admin-card-meta" data-i18n="missing_entries_desc">查看缺失的文件条目</p>
     </div>
     <% if missing_count > 0 %>
       <span class="admin-card-badge"><%= missing_count %></span>
@@ -24,9 +24,9 @@
   <div class="admin-card" role="button" tabindex="0" @click="scan()" @keydown.enter="scan()">
     <div class="admin-card-icon"><i class="fas fa-sync-alt" :style="scanning ? 'animation: admin-spin 1s linear infinite' : ''"></i></div>
     <div class="admin-card-content">
-      <p class="admin-card-title" :style="scanning ? 'color: #999' : ''">扫描库文件</p>
-      <p class="admin-card-meta" x-show="!scanning && scanMs > 0" x-text="`扫描 ${scanTitles} 条目于 ${scanMs}ms`"></p>
-      <p class="admin-card-meta" x-show="scanning">正在扫描...</p>
+      <p class="admin-card-title" :style="scanning ? 'color: #999' : ''" data-i18n="scan_library">扫描库文件</p>
+      <p class="admin-card-meta" x-show="!scanning && scanMs > 0" x-text="I18N.get('scan_result', loadLanguageSetting(), {count: scanTitles, ms: scanMs})"></p>
+      <p class="admin-card-meta" x-show="scanning" data-i18n="scanning">正在扫描...</p>
     </div>
     <div class="admin-card-right">
       <div uk-spinner x-show="scanning"></div>
@@ -36,9 +36,9 @@
   <div class="admin-card" role="button" tabindex="0" @click="generateThumbnails()" @keydown.enter="generateThumbnails()">
     <div class="admin-card-icon"><i class="fas fa-image" :style="generating ? 'animation: admin-spin 1s linear infinite' : ''"></i></div>
     <div class="admin-card-content">
-      <p class="admin-card-title" :style="generating ? 'color: #999' : ''">生成缩略图</p>
+      <p class="admin-card-title" :style="generating ? 'color: #999' : ''" data-i18n="generate_thumbnails">生成缩略图</p>
       <p class="admin-card-meta" x-show="generating && progress > 0" x-text="`${(progress * 100).toFixed(2)}%`"></p>
-      <p class="admin-card-meta" x-show="!generating">为漫画生成封面缩略图</p>
+      <p class="admin-card-meta" x-show="!generating" data-i18n="generate_thumbnails_desc">为漫画生成封面缩略图</p>
     </div>
     <div class="admin-card-right">
       <div uk-spinner x-show="generating"></div>
@@ -49,8 +49,8 @@
     <div class="admin-card">
       <div class="admin-card-icon"><i class="fas fa-palette"></i></div>
       <div class="admin-card-content">
-        <p class="admin-card-title">主题</p>
-        <p class="admin-card-meta">选择界面主题</p>
+      <p class="admin-card-title" data-i18n="theme">主题</p>
+      <p class="admin-card-meta" data-i18n="theme_desc">选择界面主题</p>
       </div>
       <select id="theme-select" class="uk-select sort-select" :value="themeSetting" @change="themeChanged($event)">
         <option>Dark</option>
@@ -62,8 +62,8 @@
 </div>
 
 <div class="admin-footer">
-  <p class="admin-version">版本: v<%= MANGO_VERSION %> &middot; 汉化：<a href="https://yuanfangblog.xyz">昭君</a></p>
-  <a class="uk-button mango-btn mango-btn-danger" href="<%= base_url %>logout">登出</a>
+  <p class="admin-version"><span data-i18n="version_label">版本: v<%= MANGO_VERSION %> &middot; 汉化：</span><a href="https://yuanfangblog.xyz">昭君</a></p>
+  <a class="uk-button mango-btn mango-btn-danger" href="<%= base_url %>logout" data-i18n="logout_btn">登出</a>
 </div>
 
 <% content_for "script" do %>

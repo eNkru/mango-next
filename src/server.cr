@@ -37,14 +37,14 @@ class Server
     end
 
     Kemal.config.logging = false
-    add_handler LogHandler.new
-    add_handler AuthHandler.new
-    add_handler UploadHandler.new Config.current.upload_path
+    use LogHandler.new
+    use AuthHandler.new
+    use UploadHandler.new Config.current.upload_path
     {% if flag?(:release) %}
       # when building for relase, embed the static files in binary
       Logger.debug "We are in release mode. Using embedded static files."
       serve_static false
-      add_handler StaticHandler.new
+      use StaticHandler.new
     {% end %}
 
     Kemal::Session.config do |c|

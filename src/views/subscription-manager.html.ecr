@@ -1,21 +1,21 @@
 <div class="admin-sub-page">
-  <h2 class="page-heading">订阅管理器</h2>
-  <p class="page-subtitle">管理插件订阅</p>
+  <h2 class="page-heading" data-i18n="subscription_manager_heading">订阅管理器</h2>
+  <p class="page-subtitle" data-i18n="subscription_subtitle">管理插件订阅</p>
 
   <div x-data="component()" x-init="init()">
     <div class="uk-grid-small" uk-grid style="margin-bottom:40px;">
       <div class="uk-container uk-text-center" x-show="plugins.length === 0" style="width:100%">
         <div class="sub-empty-state">
           <div class="sub-empty-icon"><i class="fas fa-puzzle-piece"></i></div>
-          <h3>未找到插件</h3>
-          <p>我们在下列目录中找不到任何插件 <code><%= Config.current.plugin_path %></code></p>
-          <p>您可以从以下网址下载官方插件 <a href="https://github.com/hkalexling/mango-plugins">Mango 插件库</a></p>
+          <h3 data-i18n="no_plugins_found">未找到插件</h3>
+          <p><span data-i18n="no_plugins_desc">我们在下列目录中找不到任何插件</span> <code><%= Config.current.plugin_path %></code></p>
+          <p><span data-i18n="download_official_plugins">您可以从以下网址下载官方插件</span> <a href="https://github.com/hkalexling/mango-plugins" data-i18n="mango_plugins_repo">Mango 插件库</a></p>
         </div>
       </div>
 
       <div x-show="plugins.length > 0" style="width:100%">
         <div class="uk-margin">
-          <label class="uk-form-label">选择一个插件</label>
+          <label class="uk-form-label" data-i18n="choose_plugin">选择一个插件</label>
           <div class="uk-form-controls">
             <select class="uk-select plugin-select" x-model="pid" @change="pluginChanged()">
               <template x-for="p in plugins" :key="p">
@@ -25,18 +25,18 @@
           </div>
         </div>
 
-        <p x-show="subscriptions.length === 0" class="uk-text-meta" style="color: #999;">未找到订阅.</p>
+        <p x-show="subscriptions.length === 0" class="uk-text-meta" style="color: #999;" data-i18n="no_subscriptions">未找到订阅.</p>
 
         <div class="uk-overflow-auto" x-show="subscriptions.length > 0">
           <table class="uk-table mango-table mango-table-striped">
             <thead>
               <tr>
-                <th>名称</th>
-                <th>插件 ID</th>
-                <th>漫画标题</th>
-                <th>创建时间</th>
-                <th>上次检查</th>
-                <th>操作</th>
+                <th data-i18n="name_th">名称</th>
+                <th data-i18n="plugin_id_th">插件 ID</th>
+                <th data-i18n="manga_title_th">漫画标题</th>
+                <th data-i18n="created_at_th">创建时间</th>
+                <th data-i18n="last_checked_th">上次检查</th>
+                <th data-i18n="action_th">操作</th>
               </tr>
             </thead>
             <tbody>
@@ -48,8 +48,8 @@
                   <td x-html="renderDateCell(sub.created_at)"></td>
                   <td x-html="renderDateCell(sub.last_checked)"></td>
                   <td>
-                    <a @click.prevent.stop="actionHandler($event, 'delete')" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除"><span uk-icon="trash"></span></a>
-                    <a @click.prevent.stop="actionHandler($event, 'update')" class="table-action table-action-success" aria-label="检查更新" uk-tooltip="检查更新" :disabled="loading"><span uk-icon="refresh"></span></a>
+                    <a @click.prevent.stop="actionHandler($event, 'delete')" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><span uk-icon="trash"></span></a>
+                    <a @click.prevent.stop="actionHandler($event, 'update')" class="table-action table-action-success" aria-label="检查更新" uk-tooltip="检查更新" data-i18n-aria-label="check_updates" data-i18n-tooltip="check_updates" :disabled="loading"><span uk-icon="refresh"></span></a>
                   </td>
                 </tr>
               </template>
@@ -62,28 +62,28 @@
     <div uk-modal="container:false" x-ref="modal" class="uk-flex-top mango-modal">
       <div class="uk-modal-dialog uk-margin-auto-vertical uk-overflow-auto">
         <div class="uk-modal-header">
-          <h2 class="uk-modal-title">订阅详情</h2>
+          <h2 class="uk-modal-title" data-i18n="subscription_details">订阅详情</h2>
         </div>
         <div class="uk-modal-body">
           <dl class="sub-detail-dl">
             <dt>Name</dt>
             <dd x-html="subscription && subscription.name"></dd>
-            <dt>订阅 ID</dt>
+            <dt data-i18n="subscription_id">订阅 ID</dt>
             <dd x-html="subscription && subscription.id"></dd>
-            <dt>插件 ID</dt>
+            <dt data-i18n="plugin_id_th">插件 ID</dt>
             <dd x-html="subscription && subscription.plugin_id"></dd>
-            <dt>漫画标题</dt>
+            <dt data-i18n="manga_title_th">漫画标题</dt>
             <dd x-html="subscription && subscription.manga_title"></dd>
-            <dt>漫画 ID</dt>
+            <dt data-i18n="manga_id">漫画 ID</dt>
             <dd x-html="subscription && subscription.manga_id"></dd>
-            <dt>过滤器</dt>
+            <dt data-i18n="filter">过滤器</dt>
           </dl>
           <table class="uk-table mango-table mango-table-striped" style="margin-top: 16px;">
             <thead>
               <tr>
-                <th>关键词</th>
-                <th>种类</th>
-                <th>值</th>
+                <th data-i18n="keyword_th">关键词</th>
+                <th data-i18n="type_th">种类</th>
+                <th data-i18n="value_th">值</th>
               </tr>
             </thead>
             <tbody>
@@ -93,7 +93,7 @@
             </tbody>
           </table>
           <p class="uk-text-right">
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-outline uk-modal-close" type="button">确认</button>
+            <button class="uk-button mango-btn mango-btn-sm mango-btn-outline uk-modal-close" type="button" data-i18n="confirm">确认</button>
           </p>
         </div>
       </div>

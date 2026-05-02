@@ -1,10 +1,10 @@
 <div class="library-page">
-  <h2 class="page-heading">标签: <%= tag %> <span class="page-heading-badge"><%= titles.size %> 标记</span></h2>
+  <h2 class="page-heading"><span data-i18n="tag_heading_prefix">标签:</span> <%= tag %> <span class="page-heading-badge"><%= titles.size %> <span data-i18n="items_count">标记</span></span></h2>
 
   <div class="library-toolbar">
     <form class="search-bar" role="search">
       <span class="search-icon" uk-search-icon></span>
-      <input class="uk-search-input search-input" type="search" placeholder="查找漫画..." aria-label="查找漫画">
+      <input class="uk-search-input search-input" type="search" placeholder="查找漫画..." data-i18n-placeholder="search_manga" aria-label="查找漫画">
     </form>
     <div class="sort-form-wrapper">
       <% hash = {
@@ -15,17 +15,17 @@
       <%= render_component "sort-form" %>
     </div>
     <% if is_admin %>
-      <a href="#" onclick="toggleShowHidden(<%= show_hidden ? 0 : 1 %>); return false;" class="mango-btn mango-btn-sm <%= show_hidden ? "mango-btn-active-toggle" : "mango-btn-outline" %> hide-toggle-btn" title="<%= show_hidden ? "隐藏已隐藏" : "显示隐藏" %>">
+      <a href="#" onclick="toggleShowHidden(<%= show_hidden ? 0 : 1 %>); return false;" class="mango-btn mango-btn-sm <%= show_hidden ? "mango-btn-active-toggle" : "mango-btn-outline" %> hide-toggle-btn" title="<%= show_hidden ? "隐藏已隐藏" : "显示隐藏" %>" data-i18n-title="<%= show_hidden ? "hide_hidden" : "show_hidden" %>">
         <i class="fas <%= show_hidden ? "fa-eye" : "fa-eye-slash" %>"></i>
-        <span><%= show_hidden ? "隐藏已隐藏" : "显示隐藏" %></span>
+        <span data-i18n="<%= show_hidden ? "hide_hidden" : "show_hidden" %>"><%= show_hidden ? "隐藏已隐藏" : "显示隐藏" %></span>
       </a>
     <% end %>
   </div>
 
   <div class="no-results" id="no-results">
     <div class="no-results-icon"><i class="fas fa-search"></i></div>
-    <h3>未找到结果</h3>
-    <p>尝试使用不同的关键词搜索</p>
+    <h3 data-i18n="no_results">未找到结果</h3>
+    <p data-i18n="try_different_keywords">尝试使用不同的关键词搜索</p>
   </div>
 
   <div class="uk-child-width-1-4@m uk-child-width-1-2" uk-grid>
