@@ -92,12 +92,20 @@
 
         <!-- Remaining items beside hero -->
         <% if continue_reading.size > 1 %>
-          <div class="continue-reading-cards">
-            <%- continue_reading[1..].each do |cr| -%>
-              <% item = cr[:entry] %>
-              <% progress = cr[:percentage] %>
-              <%= render_component "card" %>
-            <%- end -%>
+          <div class="carousel-wrapper continue-reading-carousel-wrapper">
+            <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this, -1)" aria-label="向左滚动">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="continue-reading-cards carousel-track">
+              <%- continue_reading[1..].each do |cr| -%>
+                <% item = cr[:entry] %>
+                <% progress = cr[:percentage] %>
+                <%= render_component "card" %>
+              <%- end -%>
+            </div>
+            <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this, 1)" aria-label="向右滚动">
+              <i class="fas fa-chevron-right"></i>
+            </button>
           </div>
         <% end %>
       </div>
@@ -176,15 +184,67 @@
     document.querySelectorAll('.carousel-track').forEach(function(track) {
       function updateArrows() {
         var wrapper = track.closest('.carousel-wrapper');
+        if (!wrapper) return;
         var leftArrow = wrapper.querySelector('.carousel-arrow-left');
         var rightArrow = wrapper.querySelector('.carousel-arrow-right');
-        leftArrow.style.opacity = track.scrollLeft > 10 ? '1' : '0';
-        leftArrow.style.pointerEvents = track.scrollLeft > 10 ? 'auto' : 'none';
-        rightArrow.style.opacity = track.scrollLeft < track.scrollWidth - track.clientWidth - 10 ? '1' : '0';
-        rightArrow.style.pointerEvents = track.scrollLeft < track.scrollWidth - track.clientWidth - 10 ? 'auto' : 'none';
+        if (!leftArrow || !rightArrow) return;
+        var canScrollLeft = track.scrollLeft > 10;
+        var canScrollRight = track.scrollLeft < track.scrollWidth - track.clientWidth - 10;
+        leftArrow.style.opacity = canScrollLeft ? '1' : '0';
+        leftArrow.style.pointerEvents = canScrollLeft ? 'auto' : 'none';
+        rightArrow.style.opacity = canScrollRight ? '1' : '0';
+        rightArrow.style.pointerEvents = canScrollRight ? 'auto' : 'none';
       }
       track.addEventListener('scroll', updateArrows);
+      window.addEventListener('resize', updateArrows);
       updateArrows();
+    });
+
+    // Drag-to-scroll for carousel tracks
+    document.querySelectorAll('.carousel-track').forEach(function(track) {
+      var isDown = false;
+      var startX;
+      var scrollLeft;
+      var dragDistance = 0;
+
+      track.addEventListener('mousedown', function(e) {
+        isDown = true;
+        dragDistance = 0;
+        track.style.cursor = 'grabbing';
+        startX = e.clientX;
+        scrollLeft = track.scrollLeft;
+      });
+
+      track.addEventListener('mouseleave', function() {
+        isDown = false;
+        track.style.cursor = 'grab';
+      });
+
+      track.addEventListener('mouseup', function() {
+        isDown = false;
+        track.style.cursor = 'grab';
+      });
+
+      track.addEventListener('mousemove', function(e) {
+        if (!isDown) return;
+        e.preventDefault();
+        var x = e.clientX;
+        var walk = (x - startX) * 1.5;
+        dragDistance = Math.abs(walk);
+        track.scrollLeft = scrollLeft - walk;
+      });
+
+      // Prevent card clicks when dragging
+      track.addEventListener('click', function(e) {
+        if (dragDistance > 5) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+
+      track.style.cursor = 'grab';
+      track.style.userSelect = 'none';
+      track.style.webkitUserSelect = 'none';
     });
   </script>
 <% end %>
