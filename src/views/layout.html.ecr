@@ -71,38 +71,6 @@
 
     <!-- Main content (single render, responsive) -->
     <div class="app-content">
-      <header class="app-topbar uk-visible@m">
-        <div class="topbar-title">
-          <span>
-            <% if page == "home" %>
-              主页
-            <% elsif page == "library" %>
-              资料库
-            <% else %>
-              <%= page.split("-").map(&.capitalize).join(" ") %>
-            <% end %>
-          </span>
-        </div>
-        <form class="topbar-search" role="search">
-          <i class="fas fa-search"></i>
-          <input class="topbar-search-input" type="search" placeholder="查找漫画..." aria-label="查找漫画">
-        </form>
-        <div class="topbar-actions">
-          <button class="topbar-icon-btn" title="切换主题" onclick="toggleTheme()">
-            <i class="fas fa-adjust"></i>
-          </button>
-          <button class="topbar-icon-btn" title="视图">
-            <i class="fas fa-th-list"></i>
-          </button>
-          <button class="topbar-filter-btn" title="筛选">
-            <i class="fas fa-filter"></i>
-            <span>Filter</span>
-          </button>
-          <a class="topbar-avatar" href="<%= base_url %>logout" title="登出">
-            <img src="<%= base_url %>img/icons/icon.png" alt="">
-          </a>
-        </div>
-      </header>
       <div id="alert"></div>
       <%= content %>
       <div id="totop-wrapper" x-data="{}" x-show="$('body').height() > 1.5 * $(window).height()">
@@ -163,16 +131,8 @@
       }
 
       $(function(){
-        $('.topbar-search-input').on('input', function(){
-          var value = $(this).val();
-          $('.uk-search-input.search-input').val(value);
-          filterPageItems(value);
-        });
-
         $('.uk-search-input.search-input').on('input', function(){
-          var value = $(this).val();
-          $('.topbar-search-input').val(value);
-          filterPageItems(value);
+          filterPageItems($(this).val());
         });
       });
     </script>

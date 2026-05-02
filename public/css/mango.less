@@ -3087,8 +3087,7 @@ body.mango-app-shell .app-sidebar .sidebar-logo {
   padding: 26px 0 34px;
 }
 
-body.mango-app-shell .app-sidebar .sidebar-logo img,
-body.mango-app-shell .topbar-avatar img {
+body.mango-app-shell .app-sidebar .sidebar-logo img {
   border-radius: 50%;
   border: 1px solid rgba(255,255,255,0.2);
   box-shadow: 0 8px 18px rgba(0,0,0,0.32);
@@ -3144,9 +3143,7 @@ body.mango-app-shell .app-sidebar .sidebar-toggle {
 }
 
 body.mango-app-shell .app-sidebar .sidebar-toggle button,
-body.mango-app-shell .app-sidebar .sidebar-footer a,
-body.mango-app-shell .topbar-icon-btn,
-body.mango-app-shell .topbar-filter-btn {
+body.mango-app-shell .app-sidebar .sidebar-footer a {
   background: rgba(255,255,255,0.045);
   border: 1px solid @shelf-border;
   color: @shelf-muted;
@@ -3154,9 +3151,7 @@ body.mango-app-shell .topbar-filter-btn {
 }
 
 body.mango-app-shell .app-sidebar .sidebar-toggle button:hover,
-body.mango-app-shell .app-sidebar .sidebar-footer a:hover,
-body.mango-app-shell .topbar-icon-btn:hover,
-body.mango-app-shell .topbar-filter-btn:hover {
+body.mango-app-shell .app-sidebar .sidebar-footer a:hover {
   background: rgba(242, 139, 69, 0.16);
   color: @shelf-accent;
 }
@@ -3168,7 +3163,7 @@ body.mango-app-shell .app-sidebar .sidebar-footer {
 
 body.mango-app-shell .app-content {
   margin-left: 92px;
-  padding: 0 36px 56px;
+  padding: 36px 36px 56px;
   min-height: 100vh;
   color: @shelf-text;
 }
@@ -3177,103 +3172,6 @@ body.sidebar-is-collapsed.mango-app-shell .app-content {
   margin-left: 64px;
 }
 
-.app-topbar {
-  height: 78px;
-  margin: 0 -36px 20px;
-  padding: 0 36px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
-  background: rgba(16, 17, 22, 0.36);
-  backdrop-filter: blur(10px);
-}
-
-.topbar-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  color: @shelf-text;
-  font-size: 1.45rem;
-  font-weight: 800;
-}
-
-.topbar-title i {
-  color: @shelf-muted;
-  font-size: 1.2rem;
-}
-
-.topbar-search {
-  flex: 1;
-  max-width: 420px;
-  margin: 0 22px;
-  position: relative;
-}
-
-.topbar-search i {
-  position: absolute;
-  left: 13px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: @shelf-muted;
-  font-size: 0.88rem;
-  pointer-events: none;
-}
-
-.topbar-search-input {
-  width: 100%;
-  height: 38px;
-  padding: 0 14px 0 38px;
-  border-radius: 6px;
-  border: 1px solid @shelf-border;
-  background: rgba(255,255,255,0.045);
-  color: @shelf-text;
-  font-size: 0.86rem;
-  outline: none;
-}
-
-.topbar-search-input::placeholder {
-  color: @shelf-dim;
-}
-
-.topbar-search-input:focus {
-  border-color: rgba(242,139,69,0.48);
-  background: rgba(255,255,255,0.07);
-}
-
-.topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.topbar-icon-btn,
-.topbar-filter-btn {
-  height: 38px;
-  min-width: 42px;
-  padding: 0 13px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 0.78rem;
-}
-
-.topbar-icon-btn {
-  width: 42px;
-  padding: 0;
-}
-
-.topbar-avatar {
-  display: inline-flex;
-  margin-left: 8px;
-}
-
-.topbar-avatar img {
-  width: 40px;
-  height: 40px;
-}
 
 body.mango-app-shell .section-heading,
 body.mango-app-shell .page-heading,
@@ -3708,19 +3606,13 @@ body.mango-app-shell:not(.uk-light) .app-sidebar {
 }
 
 body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a,
-body.mango-app-shell:not(.uk-light) .topbar-title i,
-body.mango-app-shell:not(.uk-light) .topbar-search i,
-body.mango-app-shell:not(.uk-light) .topbar-icon-btn,
-body.mango-app-shell:not(.uk-light) .topbar-filter-btn,
 body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-toggle button,
 body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-footer a {
   color: @text-secondary;
 }
 
 body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-toggle button,
-body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-footer a,
-body.mango-app-shell:not(.uk-light) .topbar-icon-btn,
-body.mango-app-shell:not(.uk-light) .topbar-filter-btn {
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-footer a {
   background: rgba(255,255,255,0.72);
   border-color: rgba(20,20,30,0.1);
 }
@@ -3732,12 +3624,6 @@ body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a.uk-active {
   background: @accent-light;
 }
 
-body.mango-app-shell:not(.uk-light) .app-topbar {
-  background: rgba(255,255,255,0.48);
-  border-bottom-color: rgba(20,20,30,0.08);
-}
-
-body.mango-app-shell:not(.uk-light) .topbar-title,
 body.mango-app-shell:not(.uk-light) .section-heading,
 body.mango-app-shell:not(.uk-light) .page-heading,
 body.mango-app-shell:not(.uk-light) .title-heading,
@@ -3804,15 +3690,10 @@ body.mango-app-shell:not(.uk-light) .card-progress-percent {
 body.mango-app-shell:not(.uk-light) .search-bar .search-input,
 body.mango-app-shell:not(.uk-light) .sort-select,
 body.mango-app-shell:not(.uk-light) .uk-select,
-body.mango-app-shell:not(.uk-light) .uk-input,
-body.mango-app-shell:not(.uk-light) .topbar-search-input {
+body.mango-app-shell:not(.uk-light) .uk-input {
   background: rgba(255,255,255,0.86) !important;
   color: @text-primary !important;
   border-color: rgba(20,20,30,0.1) !important;
-}
-
-body.mango-app-shell:not(.uk-light) .topbar-search-input::placeholder {
-  color: @text-muted;
 }
 
 body.mango-app-shell:not(.uk-light) .showcase-art::before {
