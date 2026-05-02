@@ -73,9 +73,20 @@
     <div class="app-content">
       <header class="app-topbar uk-visible@m">
         <div class="topbar-title">
-          <i class="fas fa-search"></i>
-          <span><%= page == "home" ? "Library" : page.split("-").map(&.capitalize).join(" ") %></span>
+          <span>
+            <% if page == "home" %>
+              主页
+            <% elsif page == "library" %>
+              资料库
+            <% else %>
+              <%= page.split("-").map(&.capitalize).join(" ") %>
+            <% end %>
+          </span>
         </div>
+        <form class="topbar-search" role="search">
+          <i class="fas fa-search"></i>
+          <input class="topbar-search-input" type="search" placeholder="查找漫画..." aria-label="查找漫画">
+        </form>
         <div class="topbar-actions">
           <button class="topbar-icon-btn" title="切换主题" onclick="toggleTheme()">
             <i class="fas fa-adjust"></i>
@@ -119,40 +130,49 @@
         }
       })();
 
-      // Sidebar search — filters .item elements on any page
-      $(function(){
-        var sidebarFilter = [];
-        var sidebarResult = [];
-        $('.uk-card-title').each(function(){
-          sidebarFilter.push($(this).text());
-        });
-        $('.sidebar-search-input').on('keyup', function(){
-          var input = $(this).val();
-          if (input === '') {
-            $('.item').each(function(){
-              $(this).removeAttr('hidden');
-            });
-            $('#no-results').hide();
+      function filterPageItems(input) {
+        var query = (input || '').trim();
+        var visibleCount = 0;
+
+        if (query === '') {
+          $('.item').each(function(){
+            $(this).removeAttr('hidden');
+          });
+          $('#no-results').hide();
+          return;
+        }
+
+        var regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+        $('.item').each(function(){
+          var text = $(this).find('.uk-card-title').map(function(){
+            return $(this).text();
+          }).get().join(' ');
+          if (text.match(regex)) {
+            $(this).removeAttr('hidden');
+            visibleCount++;
           } else {
-            var regex = new RegExp(input, 'i');
-            var visibleCount = 0;
-            sidebarFilter.forEach(function(text, i){
-              sidebarResult[i] = text.match(regex);
-            });
-            $('.item').each(function(i){
-              if (sidebarResult[i]) {
-                $(this).removeAttr('hidden');
-                visibleCount++;
-              } else {
-                $(this).attr('hidden', '');
-              }
-            });
-            if (visibleCount === 0 && $('#no-results').length) {
-              $('#no-results').show();
-            } else {
-              $('#no-results').hide();
-            }
+            $(this).attr('hidden', '');
           }
+        });
+
+        if (visibleCount === 0 && $('#no-results').length) {
+          $('#no-results').show();
+        } else {
+          $('#no-results').hide();
+        }
+      }
+
+      $(function(){
+        $('.topbar-search-input').on('input', function(){
+          var value = $(this).val();
+          $('.uk-search-input.search-input').val(value);
+          filterPageItems(value);
+        });
+
+        $('.uk-search-input.search-input').on('input', function(){
+          var value = $(this).val();
+          $('.topbar-search-input').val(value);
+          filterPageItems(value);
         });
       });
     </script>
