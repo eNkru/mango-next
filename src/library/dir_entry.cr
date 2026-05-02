@@ -19,7 +19,7 @@ class DirEntry < Entry
     @title = File.basename @dir_path
     @encoded_title = URI.encode_path @title
 
-    unless File.readable? @dir_path
+    unless File::Info.readable? @dir_path
       @err_msg = "Directory #{@dir_path} is not readable."
       Logger.warn "#{@err_msg} Please make sure the " \
                   "file permission is configured correctly."
@@ -118,7 +118,7 @@ class DirEntry < Entry
       .map { |fn| File.join dir_path, fn }
       .select { |fn| is_supported_image_file fn }
       .reject { |fn| File.directory? fn }
-      .select { |fn| File.readable? fn }
+      .select { |fn| File::Info.readable? fn }
   end
 
   def self.sorted_image_files(dir_path)

@@ -667,11 +667,13 @@
       border-radius: @radius-sm;
       color: @text-muted;
       cursor: pointer;
+      text-decoration: none;
       transition: background 0.2s ease, color 0.2s ease;
 
       &:hover {
         background: @accent-light;
         color: @accent;
+        text-decoration: none;
       }
     }
   }
@@ -709,11 +711,13 @@
     color: @text-primary;
     padding: 10px 18px;
     border-radius: @radius-sm;
+    text-decoration: none;
     transition: background 0.2s ease, color 0.2s ease;
 
     &:hover {
       background: @accent-light;
       color: @accent;
+      text-decoration: none;
     }
   }
 
@@ -2509,10 +2513,12 @@
 
       a {
         color: #666;
+        text-decoration: none;
 
         &:hover {
           background: @dark-accent-light;
           color: @dark-accent;
+          text-decoration: none;
         }
       }
     }
@@ -2536,9 +2542,11 @@
 
     .uk-nav-primary > li > a {
       color: @dark-text-primary;
+      text-decoration: none;
       &:hover {
         background: @dark-accent-light;
         color: @dark-accent;
+        text-decoration: none;
       }
     }
     .uk-close { color: #AAA; }
@@ -3198,6 +3206,7 @@ body.mango-app-shell .app-sidebar .sidebar-toggle button:hover,
 body.mango-app-shell .app-sidebar .sidebar-footer a:hover {
   background: rgba(242, 139, 69, 0.16);
   color: @shelf-accent;
+  text-decoration: none;
 }
 
 body.mango-app-shell .app-sidebar .sidebar-footer {
@@ -3694,11 +3703,17 @@ body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-footer a {
   border-color: rgba(20,20,30,0.1);
 }
 
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-footer a,
+body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-footer a:hover {
+  text-decoration: none;
+}
+
 body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a:hover,
 body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a.active,
 body.mango-app-shell:not(.uk-light) .app-sidebar .sidebar-nav a.uk-active {
   color: @accent;
   background: @accent-light;
+  text-decoration: none;
 }
 
 body.mango-app-shell:not(.uk-light) .section-heading,
@@ -4190,6 +4205,42 @@ body.mango-app-shell:not(.uk-light) .showcase-art::before {
   &:hover {
     background: @accent-light !important;
     border-color: @accent !important;
+  }
+}
+
+// --- Language Toggle (single compact cycle button) ---
+.lang-toggle {
+  user-select: none;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.lang-toggle-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+// Mobile nav language toggle — align with other nav items
+#mobile-nav .uk-nav-primary .lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  .lang-toggle-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+}
+
+// Dark theme overrides for language toggle
+.uk-light {
+  .lang-toggle-label {
+    color: inherit;
   }
 }
 

@@ -20,23 +20,24 @@
     <div id="mobile-nav" uk-offcanvas="overlay: true">
       <div class="uk-offcanvas-bar uk-flex uk-flex-column">
         <ul class="uk-nav-parent-icon uk-nav-primary uk-nav-center uk-margin-auto-vertical" uk-nav>
-          <li><a href="<%= base_url %>">主页</a></li>
-          <li><a href="<%= base_url %>library">资料库</a></li>
-          <li><a href="<%= base_url %>tags">标签</a></li>
+          <li><a href="<%= base_url %>" data-i18n="home">主页</a></li>
+          <li><a href="<%= base_url %>library" data-i18n="library">资料库</a></li>
+          <li><a href="<%= base_url %>tags" data-i18n="tags">标签</a></li>
           <% if is_admin %>
-            <li><a href="<%= base_url %>admin">管理员</a></li>
+            <li><a href="<%= base_url %>admin" data-i18n="admin">管理员</a></li>
             <li class="uk-parent">
-              <a href="#">下载</a>
+              <a href="#" data-i18n="download">下载</a>
               <ul class="uk-nav-sub">
-                <li><a href="<%= base_url %>download/plugins">插件</a></li>
-                <li><a href="<%= base_url %>admin/downloads">下载管理器</a></li>
-                <li><a href="<%= base_url %>admin/subscriptions">订阅管理器</a></li>
+                <li><a href="<%= base_url %>download/plugins" data-i18n="plugins">插件</a></li>
+                <li><a href="<%= base_url %>admin/downloads" data-i18n="download_manager">下载管理器</a></li>
+                <li><a href="<%= base_url %>admin/subscriptions" data-i18n="subscription_manager">订阅管理器</a></li>
               </ul>
             </li>
           <% end %>
           <hr uk-divider>
-          <li><a onclick="toggleTheme()"><i class="fas fa-adjust"></i></a></li>
-          <li><a href="<%= base_url %>logout">登出</a></li>
+          <li><a onclick="cycleLanguage()" class="lang-toggle" data-i18n-title="language" title="语言"><span class="lang-toggle-label">简</span></a></li>
+          <li><a onclick="toggleTheme()" data-i18n="theme_toggle" data-i18n-title="theme_toggle"><i class="fas fa-adjust"></i></a></li>
+          <li><a href="<%= base_url %>logout" data-i18n="logout">登出</a></li>
         </ul>
       </div>
     </div>
@@ -47,25 +48,26 @@
         <a href="<%= base_url %>"><img src="<%= base_url %>img/icons/icon.png" alt="Mango"></a>
       </div>
       <ul class="sidebar-nav">
-        <li><a href="<%= base_url %>" title="主页"><i class="fas fa-home"></i><span>主页</span></a></li>
-        <li><a href="<%= base_url %>library" title="资料库"><i class="fas fa-book"></i><span>资料库</span></a></li>
-        <li><a href="<%= base_url %>tags" title="标签"><i class="fas fa-tags"></i><span>标签</span></a></li>
+        <li><a href="<%= base_url %>" data-i18n="home" data-i18n-title="home" title="主页"><i class="fas fa-home"></i><span data-i18n="home">主页</span></a></li>
+        <li><a href="<%= base_url %>library" data-i18n="library" data-i18n-title="library" title="资料库"><i class="fas fa-book"></i><span data-i18n="library">资料库</span></a></li>
+        <li><a href="<%= base_url %>tags" data-i18n="tags" data-i18n-title="tags" title="标签"><i class="fas fa-tags"></i><span data-i18n="tags">标签</span></a></li>
         <% if is_admin %>
-          <li><a href="<%= base_url %>admin" title="管理员"><i class="fas fa-cog"></i><span>管理员</span></a></li>
+          <li><a href="<%= base_url %>admin" data-i18n="admin" data-i18n-title="admin" title="管理员"><i class="fas fa-cog"></i><span data-i18n="admin">管理员</span></a></li>
           <li class="sidebar-divider"></li>
-          <li><a href="<%= base_url %>download/plugins" title="插件"><i class="fas fa-puzzle-piece"></i><span>插件</span></a></li>
-          <li><a href="<%= base_url %>admin/downloads" title="下载管理器"><i class="fas fa-download"></i><span>下载管理器</span></a></li>
-          <li><a href="<%= base_url %>admin/subscriptions" title="订阅管理器"><i class="fas fa-rss"></i><span>订阅管理器</span></a></li>
+          <li><a href="<%= base_url %>download/plugins" data-i18n="plugins" data-i18n-title="plugins" title="插件"><i class="fas fa-puzzle-piece"></i><span data-i18n="plugins">插件</span></a></li>
+          <li><a href="<%= base_url %>admin/downloads" data-i18n="download_manager" data-i18n-title="download_manager" title="下载管理器"><i class="fas fa-download"></i><span data-i18n="download_manager">下载管理器</span></a></li>
+          <li><a href="<%= base_url %>admin/subscriptions" data-i18n="subscription_manager" data-i18n-title="subscription_manager" title="订阅管理器"><i class="fas fa-rss"></i><span data-i18n="subscription_manager">订阅管理器</span></a></li>
         <% end %>
       </ul>
       <div class="sidebar-toggle">
-        <button onclick="toggleSidebar()" title="收起/展开侧栏">
+        <button onclick="toggleSidebar()" data-i18n-title="collapse_sidebar" title="收起/展开侧栏">
           <i class="fas fa-chevron-left"></i>
         </button>
       </div>
       <div class="sidebar-footer">
-        <a onclick="toggleTheme()" title="切换主题"><i class="fas fa-adjust"></i></a>
-        <a href="<%= base_url %>logout" title="登出"><i class="fas fa-sign-out-alt"></i></a>
+        <a onclick="cycleLanguage()" class="lang-toggle" data-i18n-title="language" title="语言"><span class="lang-toggle-label">简</span></a>
+        <a onclick="toggleTheme()" data-i18n-title="theme_toggle" title="切换主题"><i class="fas fa-adjust"></i></a>
+        <a href="<%= base_url %>logout" data-i18n-title="logout" title="登出"><i class="fas fa-sign-out-alt"></i></a>
       </div>
     </nav>
 

@@ -8,18 +8,18 @@
     <div class="empty-icon">
       <i class="fas fa-plus"></i>
     </div>
-    <h2>添加你的第一部漫画</h2>
-    <p>我们还找不到任何文件。添加一些到您的库中，它们将出现在此处。</p>
+    <h2 data-i18n="add_first_comic">添加你的第一部漫画</h2>
+    <p data-i18n="no_files_found">我们还找不到任何文件。添加一些到您的库中，它们将出现在此处。</p>
     <dl class="uk-description-list">
-      <dt>当前资源库路径</dt>
+      <dt data-i18n="current_library_path">当前资源库路径</dt>
       <dd><code><%= Config.current.library_path %></code></dd>
-      <dt>想要更改您的资源库路径？</dt>
-      <dd>配置 <code>config.yml</code> 其路径为: <code><%= Config.current.path %></code></dd>
-      <dt>还看不到您的文件？</dt>
+      <dt data-i18n="change_library_path">想要更改您的资源库路径？</dt>
+      <dd data-i18n="config_path">配置 <code>config.yml</code> 其路径为: <code><%= Config.current.path %></code></dd>
+      <dt data-i18n="still_cant_see">还看不到您的文件？</dt>
       <dd>
-      您必须等待 <%= Config.current.scan_interval_minutes %> 分钟才能完成库扫描
+      <span data-i18n="wait_scan" data-i18n-vars-minutes="<%= Config.current.scan_interval_minutes %>">您必须等待 <%= Config.current.scan_interval_minutes %> 分钟才能完成库扫描</span>
       <% if is_admin %>
-        , 或者从 <a href="<%= base_url %>admin">管理员</a>手动扫描
+        <span data-i18n="or_manual_scan">，或者从 </span><a href="<%= base_url %>admin" data-i18n="admin">管理员</a><span data-i18n="manual_scan_suffix">手动扫描</span>
       <% end %>.
       </dd>
     </dl>
@@ -31,9 +31,9 @@
     <div class="empty-icon">
       <i class="fas fa-book-open"></i>
     </div>
-    <h2>阅读你的第一部漫画</h2>
-    <p>一旦你开始阅读，Mango 会记住你离开的地方并在此处显示您的条目。</p>
-    <a href="<%= base_url %>library" class="uk-button mango-btn mango-btn-primary">查看库</a>
+    <h2 data-i18n="read_first_comic">阅读你的第一部漫画</h2>
+    <p data-i18n="reading_remember">一旦你开始阅读，Mango 会记住你离开的地方并在此处显示您的条目。</p>
+    <a href="<%= base_url %>library" class="uk-button mango-btn mango-btn-primary" data-i18n="view_library">查看库</a>
   </div>
 
 <%- elsif new_user == false && empty_library == false -%>
@@ -43,9 +43,9 @@
       <div class="empty-icon">
         <i class="fas fa-book-reader"></i>
       </div>
-      <h2>欢迎来到 Mango</h2>
-      <p>一个自托管的漫画服务器和阅读器</p>
-      <a href="<%= base_url %>library" class="uk-button mango-btn mango-btn-primary">查看库</a>
+      <h2 data-i18n="welcome_mango">欢迎来到 Mango</h2>
+      <p data-i18n="self_hosted_reader">一个自托管的漫画服务器和阅读器</p>
+      <a href="<%= base_url %>library" class="uk-button mango-btn mango-btn-primary" data-i18n="view_library">查看库</a>
     </div>
   <%- end -%>
 
@@ -54,7 +54,7 @@
     <% hero_progress = continue_reading.first[:percentage] %>
     <div class="carousel-section continue-reading-section">
       <div class="section-header">
-        <h2 class="section-heading">继续阅读</h2>
+        <h2 class="section-heading" data-i18n="continue_reading">继续阅读</h2>
         <span class="section-count"><%= continue_reading.size %></span>
       </div>
 
@@ -63,23 +63,23 @@
         <div class="hero-banner" style="background-image: url('<%= hero_item.cover_url %>');">
           <div class="hero-overlay"></div>
           <div class="hero-content">
-            <span class="hero-badge">继续阅读</span>
+            <span class="hero-badge" data-i18n="continue_reading">继续阅读</span>
             <h1 class="hero-title"><%= HTML.escape(hero_item.display_name) %></h1>
             <p class="hero-meta">
               <% if hero_item.is_a?(Entry) %>
-                <%= hero_item.pages %> 页 · <%= (hero_progress * 100).round(1) %>% 已读
+                <%= hero_item.pages %> <span data-i18n="pages">页</span> · <%= (hero_progress * 100).round(1) %>% <span data-i18n="read">已读</span>
               <% else %>
-                <%= (hero_progress * 100).round(1) %>% 已读
+                <%= (hero_progress * 100).round(1) %>% <span data-i18n="read">已读</span>
               <% end %>
             </p>
             <div class="hero-actions">
               <a href="<%= base_url %>reader/<%= hero_item.is_a?(Entry) ? hero_item.book.id + "/" + hero_item.id : hero_item.id %>" class="mango-btn mango-btn-primary">
-                <i class="fas fa-play"></i> 继续阅读
+                <i class="fas fa-play"></i> <span data-i18n="continue_read_btn">继续阅读</span>
               </a>
               <% if hero_item.is_a?(Entry) %>
-                <a href="<%= base_url %>book/<%= hero_item.book.id %>" class="mango-btn mango-btn-outline hero-btn-outline">查看详情</a>
+                <a href="<%= base_url %>book/<%= hero_item.book.id %>" class="mango-btn mango-btn-outline hero-btn-outline" data-i18n="view_details">查看详情</a>
               <% else %>
-                <a href="<%= base_url %>book/<%= hero_item.id %>" class="mango-btn mango-btn-outline hero-btn-outline">查看详情</a>
+                <a href="<%= base_url %>book/<%= hero_item.id %>" class="mango-btn mango-btn-outline hero-btn-outline" data-i18n="view_details">查看详情</a>
               <% end %>
             </div>
             <% unless hero_progress < 0 || hero_progress > 100 || hero_progress.nan? %>
@@ -115,12 +115,12 @@
   <%- unless start_reading.empty? -%>
     <div class="carousel-section">
       <div class="section-header">
-        <h2 class="section-heading">开始阅读</h2>
+        <h2 class="section-heading" data-i18n="start_reading">开始阅读</h2>
         <span class="section-count"><%= start_reading.size %></span>
-        <a class="section-link" href="<%= base_url %>library">查看全部 <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
+        <a class="section-link" href="<%= base_url %>library"><span data-i18n="view_all">查看全部</span> <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
       </div>
       <div class="carousel-wrapper">
-        <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this, -1)" aria-label="向左滚动">
+        <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this, -1)" aria-label="向左滚动" data-i18n-aria-label="scroll_left">
           <i class="fas fa-chevron-left"></i>
         </button>
         <div class="carousel-track">
@@ -130,7 +130,7 @@
             <%= render_component "card" %>
           <%- end -%>
         </div>
-        <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this, 1)" aria-label="向右滚动">
+        <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this, 1)" aria-label="向右滚动" data-i18n-aria-label="scroll_right">
           <i class="fas fa-chevron-right"></i>
         </button>
       </div>
@@ -140,12 +140,12 @@
   <%- unless recently_added.empty? -%>
     <div class="carousel-section">
       <div class="section-header">
-        <h2 class="section-heading">最近添加</h2>
+        <h2 class="section-heading" data-i18n="recently_added">最近添加</h2>
         <span class="section-count"><%= recently_added.size %></span>
-        <a class="section-link" href="<%= base_url %>library">查看全部 <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
+        <a class="section-link" href="<%= base_url %>library"><span data-i18n="view_all">查看全部</span> <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
       </div>
       <div class="carousel-wrapper">
-        <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this, -1)" aria-label="向左滚动">
+        <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this, -1)" aria-label="向左滚动" data-i18n-aria-label="scroll_left">
           <i class="fas fa-chevron-left"></i>
         </button>
         <div class="carousel-track">
@@ -155,7 +155,7 @@
             <%= render_component "card" %>
           <%- end -%>
         </div>
-        <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this, 1)" aria-label="向右滚动">
+        <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this, 1)" aria-label="向右滚动" data-i18n-aria-label="scroll_right">
           <i class="fas fa-chevron-right"></i>
         </button>
       </div>

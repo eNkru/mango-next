@@ -64,11 +64,11 @@
         <% if is_admin %>
           <div class="card-hover-actions" x-show="hover" @click.stop>
             <% if is_title_hidden %>
-              <button class="card-action-btn card-unhide-btn" onclick="toggleHidden('<%= item.id %>', 0)" title="显示此书">
+              <button class="card-action-btn card-unhide-btn" onclick="toggleHidden('<%= item.id %>', 0)" title="显示此书" data-i18n-title="show_book">
                 <i class="fas fa-eye"></i>
               </button>
             <% else %>
-              <button class="card-action-btn card-hide-btn" onclick="toggleHidden('<%= item.id %>', 1)" title="隐藏此书">
+              <button class="card-action-btn card-hide-btn" onclick="toggleHidden('<%= item.id %>', 1)" title="隐藏此书" data-i18n-title="hide_book">
                 <i class="fas fa-eye-slash"></i>
               </button>
             <% end %>
@@ -76,7 +76,7 @@
         <% end %>
       </div>
       <% if is_title_hidden && show_hidden %>
-        <div class="hidden-badge"><i class="fas fa-eye-slash"></i> 已隐藏</div>
+        <div class="hidden-badge"><i class="fas fa-eye-slash"></i> <span data-i18n="hidden_badge_card">已隐藏</span></div>
       <% end %>
 
       <div class="uk-card-body">
@@ -93,17 +93,17 @@
         <% end %>
         <% if item.is_a? Entry %>
           <% if item.err_msg %>
-            <p class="uk-text-meta uk-margin-remove-bottom">Error <span uk-icon="info"></span></p>
+            <p class="uk-text-meta uk-margin-remove-bottom"><span data-i18n="error_card">Error</span> <span uk-icon="info"></span></p>
             <div uk-dropdown><%= item.err_msg %></div>
           <% else %>
-            <p class="uk-text-meta">Last read page: <%= item.load_progress(username) %>/<%= item.pages %></p>
+            <p class="uk-text-meta"><span data-i18n="last_read_page">Last read page:</span> <%= item.load_progress(username) %>/<%= item.pages %></p>
           <% end %>
         <% end %>
         <% if item.is_a? Title %>
           <% if grouped_count == 1 %>
             <p class="uk-text-meta"><%= item.content_label %></p>
           <% else %>
-            <p class="uk-text-meta"><%= grouped_count %> 新条目</p>
+            <p class="uk-text-meta"><%= grouped_count %> <span data-i18n="new_entries_count">新条目</span></p>
           <% end %>
         <% end %>
       </div>

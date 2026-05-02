@@ -3,7 +3,7 @@
     <button class="uk-modal-close-default" type="button" uk-close></button>
     <div class="uk-modal-header">
       <div>
-        <h3 class="uk-modal-title uk-margin-remove-top"><i class="fas fa-exclamation-circle"></i> 错误</h3>
+        <h3 class="uk-modal-title uk-margin-remove-top"><i class="fas fa-exclamation-circle"></i> <span data-i18n="error_title">错误</span></h3>
       </div>
       <p class="uk-text-meta uk-margin-remove-bottom break-word"><%= entry.path %></p>
       <p class="uk-text-meta uk-margin-remove-top"><%= entry.err_msg %></p>
@@ -11,9 +11,9 @@
     <div class="uk-modal-body">
       <div class="error-actions">
       <% if next_entry = entry.next_entry username %>
-        <a class="uk-button uk-button-default mango-btn mango-btn-outline" href="<%= base_url %>reader/<%= entry.book.id %>/<%= next_entry.id %>">下一个</a>
+        <a class="uk-button uk-button-default mango-btn mango-btn-outline" href="<%= base_url %>reader/<%= entry.book.id %>/<%= next_entry.id %>" data-i18n="next">下一个</a>
       <% end %>
-      <a class="uk-button uk-button-primary mango-btn mango-btn-primary" href="<%= base_url %>book/<%= entry.book.id %>">回到标题</a>
+      <a class="uk-button uk-button-primary mango-btn mango-btn-primary" href="<%= base_url %>book/<%= entry.book.id %>" data-i18n="back_to_title">回到标题</a>
       </div>
     </div>
   </div>
