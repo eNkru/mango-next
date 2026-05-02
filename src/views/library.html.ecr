@@ -29,7 +29,7 @@
     <p>尝试使用不同的关键词搜索</p>
   </div>
 
-  <div class="uk-child-width-1-4@m uk-child-width-1-2" uk-grid>
+  <div class="library-card-grid">
     <% titles.each_with_index do |item, i| %>
       <% progress = percentage[i] %>
       <%= render_component "card" %>

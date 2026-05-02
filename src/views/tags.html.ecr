@@ -1,7 +1,7 @@
 <h2 class="page-heading">标签</h2>
 <p class="page-subtitle"><%= tags.size %> 标签找到</p>
 
-<div class="uk-margin-top">
+<div>
   <% tags.each do |tag| %>
     <span class="tag-pill">
       <a class="uk-link-reset" href="<%= base_url %>tags/<%= tag[:encoded_tag] %>"><%= tag[:tag] %> <small>(<%= tag[:count] %>)</small></a>

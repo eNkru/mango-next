@@ -50,46 +50,126 @@
   <%- end -%>
 
   <%- unless continue_reading.empty? -%>
-    <div class="section-header">
-      <h2 class="section-heading">继续阅读</h2>
-      <span class="section-count"><%= continue_reading.size %></span>
-    </div>
-    <div class="uk-child-width-1-4@m uk-child-width-1-2 card-grid-animated" uk-grid>
-      <%- continue_reading.each do |cr| -%>
-        <% item = cr[:entry] %>
-        <% progress = cr[:percentage] %>
-        <%= render_component "card" %>
-      <%- end -%>
+    <% hero_item = continue_reading.first[:entry] %>
+    <% hero_progress = continue_reading.first[:percentage] %>
+    <div class="carousel-section continue-reading-section">
+      <div class="section-header">
+        <h2 class="section-heading">继续阅读</h2>
+        <span class="section-count"><%= continue_reading.size %></span>
+      </div>
+
+      <div class="continue-reading-row">
+        <!-- Featured hero card (first item, wide) -->
+        <div class="hero-banner" style="background-image: url('<%= hero_item.cover_url %>');">
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="hero-badge">继续阅读</span>
+            <h1 class="hero-title"><%= HTML.escape(hero_item.display_name) %></h1>
+            <p class="hero-meta">
+              <% if hero_item.is_a?(Entry) %>
+                <%= hero_item.pages %> 页 · <%= (hero_progress * 100).round(1) %>% 已读
+              <% else %>
+                <%= (hero_progress * 100).round(1) %>% 已读
+              <% end %>
+            </p>
+            <div class="hero-actions">
+              <a href="<%= base_url %>reader/<%= hero_item.is_a?(Entry) ? hero_item.book.id + "/" + hero_item.id : hero_item.id %>" class="mango-btn mango-btn-primary">
+                <i class="fas fa-play"></i> 继续阅读
+              </a>
+              <% if hero_item.is_a?(Entry) %>
+                <a href="<%= base_url %>book/<%= hero_item.book.id %>" class="mango-btn mango-btn-outline hero-btn-outline">查看详情</a>
+              <% else %>
+                <a href="<%= base_url %>book/<%= hero_item.id %>" class="mango-btn mango-btn-outline hero-btn-outline">查看详情</a>
+              <% end %>
+            </div>
+            <% unless hero_progress < 0 || hero_progress > 100 || hero_progress.nan? %>
+              <div class="hero-progress-bar">
+                <div class="hero-progress-fill" style="width: <%= (hero_progress * 100).round(1) %>%"></div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Remaining items beside hero -->
+        <% if continue_reading.size > 1 %>
+          <div class="continue-reading-cards">
+            <%- continue_reading[1..].each do |cr| -%>
+              <% item = cr[:entry] %>
+              <% progress = cr[:percentage] %>
+              <%= render_component "card" %>
+            <%- end -%>
+          </div>
+        <% end %>
+      </div>
     </div>
   <%- end -%>
 
   <%- unless start_reading.empty? -%>
-    <div class="section-header">
-      <h2 class="section-heading">开始阅读</h2>
-      <span class="section-count"><%= start_reading.size %></span>
-      <a class="section-link" href="<%= base_url %>library">查看全部 <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
-    </div>
-    <div class="uk-child-width-1-4@m uk-child-width-1-2 card-grid-animated" uk-grid>
-      <%- start_reading.each do |t| -%>
-        <% item = t %>
-        <% progress = 0.0 %>
-        <%= render_component "card" %>
-      <%- end -%>
+    <div class="carousel-section">
+      <div class="section-header">
+        <h2 class="section-heading">开始阅读</h2>
+        <span class="section-count"><%= start_reading.size %></span>
+        <a class="section-link" href="<%= base_url %>library">查看全部 <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
+      </div>
+      <div class="carousel-wrapper">
+        <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this, -1)" aria-label="向左滚动">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="carousel-track">
+          <%- start_reading.each do |t| -%>
+            <% item = t %>
+            <% progress = 0.0 %>
+            <%= render_component "card" %>
+          <%- end -%>
+        </div>
+        <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this, 1)" aria-label="向右滚动">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
     </div>
   <%- end -%>
 
   <%- unless recently_added.empty? -%>
-    <div class="section-header">
-      <h2 class="section-heading">最近添加</h2>
-      <span class="section-count"><%= recently_added.size %></span>
-      <a class="section-link" href="<%= base_url %>library">查看全部 <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
+    <div class="showcase-section">
+      <% showcase = recently_added.first %>
+      <% showcase_item = showcase.is_a?(NamedTuple(entry: Entry, percentage: Float64, grouped_count: Int32)) ? showcase[:entry] : showcase %>
+      <% showcase_progress = showcase.is_a?(NamedTuple(entry: Entry, percentage: Float64, grouped_count: Int32)) ? showcase[:percentage] : 0.0 %>
+      <div class="showcase-panel">
+        <div class="showcase-copy">
+          <span class="hero-badge">热门</span>
+          <h2><%= HTML.escape(showcase_item.display_name) %></h2>
+          <p><%= showcase_item.is_a?(Entry) ? "#{showcase_item.pages} 页" : showcase_item.content_label %> · <%= (showcase_progress * 100).round(1) %>% 已读</p>
+          <a href="<%= showcase_item.is_a?(Entry) ? "#{base_url}reader/#{showcase_item.book.id}/#{showcase_item.id}" : "#{base_url}book/#{showcase_item.id}" %>" class="mango-btn mango-btn-primary">
+            <i class="fas fa-play"></i> Continue
+          </a>
+        </div>
+        <div class="showcase-art" style="background-image: url('<%= showcase_item.cover_url %>');"></div>
+      </div>
     </div>
-    <div class="uk-child-width-1-4@m uk-child-width-1-2 card-grid-animated" uk-grid>
-      <%- recently_added.each do |ra| -%>
-        <% item = ra %>
-        <% progress = ra[:percentage] %>
-        <%= render_component "card" %>
-      <%- end -%>
+  <%- end -%>
+
+  <%- unless recently_added.empty? -%>
+    <div class="carousel-section">
+      <div class="section-header">
+        <h2 class="section-heading">最近添加</h2>
+        <span class="section-count"><%= recently_added.size %></span>
+        <a class="section-link" href="<%= base_url %>library">查看全部 <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
+      </div>
+      <div class="carousel-wrapper">
+        <button class="carousel-arrow carousel-arrow-left" onclick="scrollCarousel(this, -1)" aria-label="向左滚动">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="carousel-track">
+          <%- recently_added.each do |ra| -%>
+            <% item = ra %>
+            <% progress = ra[:percentage] %>
+            <%= render_component "card" %>
+          <%- end -%>
+        </div>
+        <button class="carousel-arrow carousel-arrow-right" onclick="scrollCarousel(this, 1)" aria-label="向右滚动">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
     </div>
   <%- end -%>
 
@@ -103,4 +183,27 @@
   <%= render_component "dots" %>
   <script src="<%= base_url %>js/alert.js"></script>
   <script src="<%= base_url %>js/title.js"></script>
+  <script>
+    function scrollCarousel(btn, direction) {
+      var wrapper = btn.closest('.carousel-wrapper');
+      var track = wrapper.querySelector('.carousel-track');
+      var scrollAmount = track.clientWidth * 0.75;
+      track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
+
+    // Update arrow visibility based on scroll position
+    document.querySelectorAll('.carousel-track').forEach(function(track) {
+      function updateArrows() {
+        var wrapper = track.closest('.carousel-wrapper');
+        var leftArrow = wrapper.querySelector('.carousel-arrow-left');
+        var rightArrow = wrapper.querySelector('.carousel-arrow-right');
+        leftArrow.style.opacity = track.scrollLeft > 10 ? '1' : '0';
+        leftArrow.style.pointerEvents = track.scrollLeft > 10 ? 'auto' : 'none';
+        rightArrow.style.opacity = track.scrollLeft < track.scrollWidth - track.clientWidth - 10 ? '1' : '0';
+        rightArrow.style.pointerEvents = track.scrollLeft < track.scrollWidth - track.clientWidth - 10 ? 'auto' : 'none';
+      }
+      track.addEventListener('scroll', updateArrows);
+      updateArrows();
+    });
+  </script>
 <% end %>
