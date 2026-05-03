@@ -127,9 +127,9 @@ class Title
       end
       existence
     end
-    remained_title_dirs = @title_ids.map do |title_id|
-      title = Library.default.get_title! title_id
-      title.dir
+    remained_title_dirs = @title_ids.compact_map do |title_id|
+      title = Library.default.get_title title_id
+      title.try &.dir
     end
 
     previous_entries_size = @entries.size
@@ -303,7 +303,13 @@ class Title
   end
 
   def titles
-    @title_ids.map { |tid| Library.default.get_title! tid }
+    @title_ids.uniq.compact_map { |tid| Library.default.get_title tid }
+  end
+
+  # Removes duplicates and stale IDs from this title's @title_ids.
+  def sanitize_title_ids(title_hash : Hash(String, Title))
+    @title_ids.uniq!
+    @title_ids.select! { |tid| title_hash.has_key?(tid) }
   end
 
   def sorted_titles(username, opt : SortOptions? = nil)

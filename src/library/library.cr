@@ -80,10 +80,28 @@ class Library
     instance = loaded_lib
     return if instance.nil?
 
+    instance.sanitize_title_ids
     @@default = instance
     Logger.debug "Library cache loaded"
     instance.refresh_hidden_states
     instance.register_jobs
+  end
+
+  # Removes duplicates and stale IDs from @title_ids and nested Title
+  #   title_ids. Fixes inconsistencies in the YAML cache that can arise
+  #   from race conditions or filesystem changes between scans.
+  def sanitize_title_ids
+    before = @title_ids.size
+    @title_ids.uniq!
+    @title_ids.select! { |tid| @title_hash.has_key?(tid) }
+    if @title_ids.size < before
+      Logger.warn "Sanitized library title_ids: removed " \
+                  "#{before - @title_ids.size} stale/duplicate entry(ies)"
+    end
+
+    @title_hash.each_value do |title|
+      title.sanitize_title_ids @title_hash
+    end
   end
 
   def initialize
@@ -128,7 +146,7 @@ class Library
   end
 
   def titles
-    @title_ids.map { |tid| self.get_title!(tid) }
+    @title_ids.uniq.compact_map { |tid| self.get_title tid }
   end
 
   def visible_titles : Array(Title)
@@ -234,7 +252,8 @@ class Library
       .select { |fn| !fn.starts_with? "." }
       .map { |fn| File.join @dir, fn }
     @title_ids.select! do |title_id|
-      title = @title_hash[title_id]
+      title = @title_hash[title_id]?
+      next false if title.nil?
       next false unless library_paths.includes? title.dir
       existence = title.examine examine_context
       unless existence
@@ -244,17 +263,20 @@ class Library
       end
       existence
     end
-    remained_title_dirs = @title_ids.map { |id| title_hash[id].dir }
+    remained_title_dirs = @title_ids.compact_map { |id| title_hash[id]?.try &.dir }
     examine_context["deleted_title_ids"].each do |title_id|
       @title_hash.delete title_id
     end
 
     cache = examine_context["cached_contents_signature"]
+    existing_dirs = Set.new(remained_title_dirs)
+    existing_ids = Set.new(@title_ids)
     library_paths
-      .select { |path| !(remained_title_dirs.includes? path) }
+      .select { |path| !(existing_dirs.includes? path) }
       .select { |path| File.directory? path }
       .map { |path| Title.new path, "", cache }
       .select { |title| !(title.entries.empty? && title.titles.empty?) }
+      .reject { |title| existing_ids.includes? title.id }
       .sort! { |a, b| a.sort_title <=> b.sort_title }
       .each do |title|
         @title_hash[title.id] = title
