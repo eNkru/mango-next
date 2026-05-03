@@ -23,7 +23,7 @@ const readerComponent = () => {
 			$.get(`${base_url}api/dimensions/${tid}/${eid}`)
 				.then(data => {
 					if (!data.success && data.error)
-						throw new Error(resp.error);
+						throw new Error(data.error);
 					const dimensions = data.dimensions;
 
 					this.items = dimensions.map((d, i) => {

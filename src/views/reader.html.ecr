@@ -119,7 +119,7 @@
             </div>
           </div>
           <div class="uk-margin uk-form-horizontal" x-show="mode !== 'continuous'">
-            <label class="uk-form-label" for="preload-lookahead" x-text="I18N.get('preload_images', loadLanguageSetting()) + ': ' + `${preloadLookahead} ` + I18N.get('pages', loadLanguageSetting())`"></label>
+            <label class="uk-form-label" for="preload-lookahead" x-text="I18N.get('preload_images', loadLanguageSetting()) + ': ' + `${preloadLookahead} ` + I18N.get('pages', loadLanguageSetting())"></label>
             <div class="uk-form-controls">
               <input id="preload-lookahead" class="uk-range" type="range" min="0" max="5" step="1" x-model.number="preloadLookahead" @change="preloadLookaheadChanged()">
             </div>
