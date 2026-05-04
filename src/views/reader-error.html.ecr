@@ -11,9 +11,9 @@
     <div class="uk-modal-body">
       <div class="error-actions">
       <% if next_entry = entry.next_entry username %>
-        <a class="uk-button uk-button-default mango-btn mango-btn-outline" href="<%= base_url %>reader/<%= entry.book.id %>/<%= next_entry.id %>" data-i18n="next">下一个</a>
+        <a class="uk-button uk-button-default comic-btn comic-btn-outline" href="<%= base_url %>reader/<%= entry.book.id %>/<%= next_entry.id %>" data-i18n="next">下一个</a>
       <% end %>
-      <a class="uk-button uk-button-primary mango-btn mango-btn-primary" href="<%= base_url %>book/<%= entry.book.id %>" data-i18n="back_to_title">回到标题</a>
+      <a class="uk-button uk-button-primary comic-btn comic-btn-primary" href="<%= base_url %>book/<%= entry.book.id %>" data-i18n="back_to_title">回到标题</a>
       </div>
     </div>
   </div>

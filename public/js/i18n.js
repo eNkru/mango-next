@@ -35,6 +35,7 @@ const I18N = (function () {
       download_manager: 'Download Manager',
       subscription_manager: 'Subscription Manager',
       theme_toggle: 'Toggle Theme',
+      ui_style_toggle: 'Toggle UI Style',
       language: 'Language',
       logout: 'Logout',
       collapse_sidebar: 'Collapse / Expand Sidebar',
@@ -50,6 +51,7 @@ const I18N = (function () {
       still_cant_see: "Still can't see your files?",
       wait_scan: 'You must wait {minutes} minutes for the library scan to complete',
       or_manual_scan: ', or manually scan from ',
+      manual_scan_suffix: 'manually scan',
       read_first_comic: 'Read Your First Comic',
       reading_remember: 'Once you start reading, Mango will remember where you left off and show your entries here.',
       view_library: 'View Library',
@@ -175,6 +177,8 @@ const I18N = (function () {
       generate_thumbnails_desc: 'Generate cover thumbnails for comics',
       theme: 'Theme',
       theme_desc: 'Choose interface theme',
+      ui_style: 'UI Style',
+      ui_style_desc: 'Choose interface visual style',
       version_label: 'Version: v{version} · Localization:',
       logout_btn: 'Logout',
 
@@ -193,6 +197,8 @@ const I18N = (function () {
       // ================================================================
       // DOWNLOAD MANAGER
       // ================================================================
+      download_manager_heading: 'Download Manager',
+      download_manager_subtitle: 'Manage and monitor download queue',
       delete_completed: 'Delete Completed Tasks',
       retry_failed: 'Retry Failed Tasks',
       refresh_queue: 'Refresh Queue',
@@ -278,6 +284,18 @@ const I18N = (function () {
       cancel: 'Cancel',
 
       // ================================================================
+      // MISSING ITEMS PAGE
+      // ================================================================
+      no_missing_entries: 'No Missing Entries Found',
+      all_entries_normal: 'All entries are normal',
+      missing_items_description: 'The following items exist in your library, but we cannot find them now. If you deleted them by mistake, try restoring the files or folders back to their original location, then rescan the library. Otherwise, you can safely delete them and their associated metadata using the button below to free up database space.',
+      delete_all: 'Delete All',
+      missing_type_th: 'Type',
+      relative_path_th: 'Relative Path',
+      id_label: 'ID',
+      title_label: 'Title',
+      path_label: 'Path',
+
       // MISC
       // ================================================================
       page_title_suffix: 'Mango - {page}',
@@ -297,6 +315,7 @@ const I18N = (function () {
       download_manager: '下载管理器',
       subscription_manager: '订阅管理器',
       theme_toggle: '切换主题',
+      ui_style_toggle: '切换UI风格',
       language: '语言',
       logout: '登出',
       collapse_sidebar: '收起/展开侧栏',
@@ -420,6 +439,8 @@ const I18N = (function () {
       generate_thumbnails_desc: '为漫画生成封面缩略图',
       theme: '主题',
       theme_desc: '选择界面主题',
+      ui_style: 'UI风格',
+      ui_style_desc: '选择界面视觉风格',
       version_label: '版本: v{version} · 汉化：',
       logout_btn: '登出',
 
@@ -432,6 +453,8 @@ const I18N = (function () {
       delete_user: '删除',
       new_user: '新用户',
 
+      download_manager_heading: '下载管理器',
+      download_manager_subtitle: '管理和监控下载队列',
       delete_completed: '删除已完成的任务',
       retry_failed: '重试失败的任务',
       refresh_queue: '刷新队列',
@@ -484,6 +507,18 @@ const I18N = (function () {
       download_entry: '下载条目',
 
       // ================================================================
+      // MISSING ITEMS PAGE
+      // ================================================================
+      no_missing_entries: '没有找到丢失的条目',
+      all_entries_normal: '所有条目均正常',
+      missing_items_description: '以下项目存在于您的资料库中，但现在我们找不到它们了。 如果您错误地删除了它们，请尝试恢复文件或文件夹，将它们放回原来的位置，然后重新扫描资料库。 除此之外，您可以使用下面的按钮安全地删除它们和相关的元数据以释放数据库空间。',
+      delete_all: '删除全部',
+      missing_type_th: '类型',
+      relative_path_th: '相对路径',
+      id_label: 'ID',
+      title_label: '标题',
+      path_label: '路径',
+
       // PLUGIN DOWNLOAD PAGE
       // ================================================================
       download_with_plugin: '使用插件下载',
@@ -524,6 +559,7 @@ const I18N = (function () {
       download_manager: '下載管理器',
       subscription_manager: '訂閱管理器',
       theme_toggle: '切換主題',
+      ui_style_toggle: '切換UI風格',
       language: '語言',
       logout: '登出',
       collapse_sidebar: '收起/展開側欄',
@@ -647,6 +683,8 @@ const I18N = (function () {
       generate_thumbnails_desc: '為漫畫產生封面縮圖',
       theme: '主題',
       theme_desc: '選擇介面主題',
+      ui_style: 'UI風格',
+      ui_style_desc: '選擇介面視覺風格',
       version_label: '版本：v{version} · 本地化：',
       logout_btn: '登出',
 
@@ -659,6 +697,8 @@ const I18N = (function () {
       delete_user: '刪除',
       new_user: '新增使用者',
 
+      download_manager_heading: '下載管理器',
+      download_manager_subtitle: '管理和監控下載佇列',
       delete_completed: '刪除已完成的任務',
       retry_failed: '重試失敗的任務',
       refresh_queue: '重新整理佇列',
@@ -711,6 +751,18 @@ const I18N = (function () {
       download_entry: '下載條目',
 
       // ================================================================
+      // MISSING ITEMS PAGE
+      // ================================================================
+      no_missing_entries: '沒有找到丟失的條目',
+      all_entries_normal: '所有條目均正常',
+      missing_items_description: '以下項目存在於您的資料庫中，但現在我們找不到它們了。 如果您錯誤地刪除了它們，請嘗試恢復檔案或資料夾，將它們放回原來的位置，然後重新掃描資料庫。 除此之外，您可以使用下面的按鈕安全地刪除它們和相關的中繼資料以釋放資料庫空間。',
+      delete_all: '刪除全部',
+      missing_type_th: '類型',
+      relative_path_th: '相對路徑',
+      id_label: 'ID',
+      title_label: '標題',
+      path_label: '路徑',
+
       // PLUGIN DOWNLOAD PAGE
       // ================================================================
       download_with_plugin: '使用外掛程式下載',

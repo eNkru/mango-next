@@ -80,6 +80,86 @@ const cycleLanguage = () => {
 };
 
 /**
+ * --- UI Style functions (comic vs flat)
+ */
+
+/**
+ * Check whether a given string represents a valid UI style
+ *
+ * @function validUIStyle
+ * @param {string} style - The string representing the UI style
+ * @return {bool}
+ */
+const validUIStyle = (style) => {
+	return ['comic', 'flat'].indexOf(style) >= 0;
+};
+
+/**
+ * Load UI style from local storage, or use 'comic' as default
+ *
+ * @function loadUIStyle
+ * @return {string} The UI style ('comic' or 'flat')
+ */
+const loadUIStyle = () => {
+	let style = localStorage.getItem('ui-style');
+	if (!style || !validUIStyle(style)) style = 'comic';
+	return style;
+};
+
+/**
+ * Save a UI style setting
+ *
+ * @function saveUIStyle
+ * @param {string} style - A UI style ('comic' or 'flat')
+ */
+const saveUIStyle = style => {
+	if (!validUIStyle(style)) style = 'comic';
+	localStorage.setItem('ui-style', style);
+};
+
+/**
+ * Apply a UI style to the body/html elements.
+ * Also syncs the dark-mode visual classes so that switching between
+ * comic/flat doesn't require a full theme re-apply.
+ *
+ * @function setUIStyle
+ * @param {string} style - The UI style to apply
+ */
+const setUIStyle = (style) => {
+	if (!style) style = loadUIStyle();
+	const theme = loadTheme();
+	if (style === 'comic') {
+		$('html').addClass('comic-theme');
+		$('body').addClass('comic-theme');
+		// If dark theme is active, use CSS classes for background
+		if (theme === 'dark') {
+			$('html').css('background', '');
+			$('html').addClass('comic-theme-dark');
+			$('body').addClass('comic-theme-dark');
+		}
+	} else {
+		$('html').removeClass('comic-theme').removeClass('comic-theme-dark');
+		$('body').removeClass('comic-theme').removeClass('comic-theme-dark');
+		// If dark theme is active, use inline style for background
+		if (theme === 'dark') {
+			$('html').css('background', 'rgb(20, 20, 20)');
+		}
+	}
+};
+
+/**
+ * Toggle the UI style between comic and flat
+ *
+ * @function toggleUIStyle
+ */
+const toggleUIStyle = () => {
+	const current = loadUIStyle();
+	const next = current === 'comic' ? 'flat' : 'comic';
+	saveUIStyle(next);
+	setUIStyle(next);
+};
+
+/**
  * --- Theme related functions
  *  	Note: In the comments below we treat "theme" and "theme setting"
  *  		differently. A theme can have only two values, either "dark" or
@@ -159,7 +239,10 @@ const toggleTheme = () => {
 };
 
 /**
- * Apply a theme, or load a theme and then apply it
+ * Apply a theme, or load a theme and then apply it.
+ * Reads the current UI style (comic/flat) to decide whether to use CSS
+ * classes or inline styles for the dark background, but does NOT modify
+ * the UI style setting.
  *
  * @function setTheme
  * @param {string?} theme - (Optional) The theme to apply. When omitted, use
@@ -167,27 +250,51 @@ const toggleTheme = () => {
  */
 const setTheme = (theme) => {
 	if (!theme) theme = loadTheme();
+	const uiStyle = loadUIStyle();
 	if (theme === 'dark') {
-		$('html').css('background', 'rgb(20, 20, 20)');
+		// In comic mode, CSS handles the html/body backgrounds
+		// (comic-theme-dark classes). In flat mode, use inline style.
+		if (uiStyle !== 'comic') {
+			$('html').css('background', 'rgb(20, 20, 20)');
+		} else {
+			$('html').css('background', '');
+		}
 		$('body').addClass('uk-light');
 		$('.ui-widget-content').addClass('dark');
+		if (uiStyle === 'comic') {
+			$('html').addClass('comic-theme-dark');
+			$('body').addClass('comic-theme-dark');
+		}
 	} else {
 		$('html').css('background', '');
 		$('body').removeClass('uk-light');
 		$('.ui-widget-content').removeClass('dark');
+		$('html').removeClass('comic-theme-dark');
+		$('body').removeClass('comic-theme-dark');
 	}
 };
 
-// do it before document is ready to prevent the initial flash of white on
-// 	most pages
-setTheme();
+// Expose functions used in inline onclick handlers on window
+// (const at top-level of non-module scripts doesn't always resolve
+//  in inline event handlers across all browsers/caching scenarios)
+window.toggleTheme = toggleTheme;
+window.toggleUIStyle = toggleUIStyle;
+window.cycleLanguage = cycleLanguage;
+window.setLanguage = setLanguage;
+
+// Apply UI style and theme before document is ready to prevent the
+// initial flash of white on most pages
+setUIStyle();
 // Apply i18n translation on page load (non-default only to avoid flash)
 $(() => {
 	const lang = loadLanguageSetting();
 	if (lang !== I18N.DEFAULT_LANG) {
 		I18N.translatePage(lang);
 	}
-	// hack for the reader page
+	// Apply UI style and theme now that <body> exists in the DOM.
+	// setUIStyle handles comic/flat classes; setTheme handles uk-light,
+	// .ui-widget-content.dark, and comic-theme-dark on the body element.
+	setUIStyle();
 	setTheme();
 
 	// on system dark mode setting change

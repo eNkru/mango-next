@@ -1,5 +1,5 @@
 <div class="admin-sub-page">
-  <table class="uk-table mango-table uk-table-middle">
+  <table class="uk-table comic-table uk-table-middle">
     <thead>
       <tr>
         <th data-i18n="username_th">用户名</th>
@@ -13,9 +13,9 @@
           <td><strong><%= u[0] %></strong></td>
           <td>
             <% if u[1] %>
-              <span class="status-label status-success" data-i18n="yes">是</span>
+              <span class="status-label comic-status comic-status-success" data-i18n="yes">是</span>
             <% else %>
-              <span class="status-label status-pending" data-i18n="no">否</span>
+              <span class="status-label comic-status comic-status-pending" data-i18n="no">否</span>
             <% end %>
           </td>
           <td>
@@ -29,7 +29,7 @@
     </tbody>
   </table>
 
-  <a href="<%= base_url %>admin/user/edit" class="uk-button mango-btn mango-btn-primary mango-btn-sm"><i class="fas fa-plus uk-margin-small-right"></i> <span data-i18n="new_user">新用户</span></a>
+  <a href="<%= base_url %>admin/user/edit" class="uk-button comic-btn comic-btn-primary comic-btn-sm"><i class="fas fa-plus uk-margin-small-right"></i> <span data-i18n="new_user">新用户</span></a>
 </div>
 
 <% content_for "script" do %>

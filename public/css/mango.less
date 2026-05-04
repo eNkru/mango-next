@@ -217,29 +217,6 @@
     z-index: 1;
   }
 
-  // --- Manga banner at top of card ---
-  .login-banner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 14px 18px 0;
-    background: transparent;
-
-    img {
-      width: auto;
-      max-width: 100%;
-      height: auto;
-      max-height: 90px;
-      object-fit: contain;
-      display: block;
-      border-radius: @radius-md;
-    }
-
-    .login-banner-fade {
-      display: none;
-    }
-  }
-
   // --- Card inner padding ---
   .login-card > .login-header,
   .login-card > .login-form {
@@ -254,37 +231,6 @@
 
   .login-form {
     padding-bottom: 32px;
-  }
-
-  // --- Logo ---
-  .login-logo {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 12px;
-    border-radius: 50%;
-    background: @accent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    box-shadow: 0 4px 14px rgba(217, 106, 75, 0.35);
-    position: relative;
-    overflow: hidden;
-
-    img {
-      width: 56px;
-      height: 56px;
-      object-fit: contain;
-      position: relative;
-      z-index: 1;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-    }
   }
 
   .login-card .uk-card-title {
@@ -432,18 +378,6 @@
     box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   }
 
-  .login-banner {
-    background: transparent;
-
-    img {
-      opacity: 1;
-    }
-
-    .login-banner-fade {
-      display: none;
-    }
-  }
-
   .login-subtitle {
     color: @dark-text-secondary;
   }
@@ -494,26 +428,9 @@
     }
   }
 
-  .login-logo {
-    background: @dark-accent;
-    box-shadow: 0 4px 14px rgba(232, 132, 95, 0.25);
-    border-radius: 50%;
-  }
-
   // Footer dark
   .login-footer p {
     color: rgba(255, 255, 255, 0.3);
-  }
-}
-
-// Mobile banner adjustment
-@media (max-width: 480px) {
-  .login-page .login-banner {
-    padding: 10px 12px 0;
-
-    img {
-      max-height: 64px;
-    }
   }
 }
 
@@ -2465,21 +2382,6 @@
   }
 }
 
-// Admin theme row
-.admin-theme-row {
-  .admin-card {
-    cursor: default;
-
-    &:hover {
-      border-color: @border-color;
-    }
-  }
-
-  .sort-select {
-    max-width: 160px;
-  }
-}
-
 // Admin footer
 .admin-footer {
   margin-top: 28px;
@@ -3181,9 +3083,10 @@
 @shelf-accent-2: #69A7FF;
 @shelf-sidebar: #11131A;
 
-html {
-  background: #101116;
-}
+// The html background is controlled dynamically by setTheme() in common.js
+// (inline style: dark = rgb(20,20,20), light = cleared)
+// The body background for dark theme is handled by .uk-light rules below
+
 
 body.mango-app-shell {
   margin: 0;

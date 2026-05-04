@@ -15,11 +15,18 @@ const component = () => {
 
 			const setting = loadThemeSetting();
 			this.themeSetting = setting.charAt(0).toUpperCase() + setting.slice(1);
+			const uiStyle = loadUIStyle();
+			this.uiStyle = uiStyle.charAt(0).toUpperCase() + uiStyle.slice(1);
 		},
 		themeChanged(event) {
 			const newSetting = $(event.currentTarget).val().toLowerCase();
 			saveThemeSetting(newSetting);
 			setTheme();
+		},
+		uiStyleChanged(event) {
+			const newStyle = $(event.currentTarget).val().toLowerCase();
+			saveUIStyle(newStyle);
+			setUIStyle(newStyle);
 		},
 		scan() {
 			if (this.scanning) return;

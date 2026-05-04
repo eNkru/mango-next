@@ -1,16 +1,16 @@
 <div class="admin-sub-page" x-data="component()" x-init="init()" x-cloak>
   <div class="uk-grid-small" uk-grid style="margin-bottom:40px;">
     <div class="uk-container uk-text-center" x-show="plugins.length === 0" style="width:100%">
-      <div class="sub-empty-state">
-        <div class="sub-empty-icon"><i class="fas fa-puzzle-piece"></i></div>
-        <h3 data-i18n="no_plugins_found">未找到插件</h3>
+      <div class="comic-empty-state">
+        <div class="comic-empty-icon"><i class="fas fa-puzzle-piece"></i></div>
+        <h2 data-i18n="no_plugins_found">未找到插件</h2>
         <p><span data-i18n="no_plugins_desc">我们在以下目录中找不到任何插件</span> <code><%= Config.current.plugin_path %></code></p>
         <p><span data-i18n="download_official_plugins">您可以从以下网址下载官方插件</span> <a href="https://github.com/hkalexling/mango-plugins" data-i18n="mango_plugins_repo">Mango 插件库</a></p>
       </div>
     </div>
 
     <div x-show="plugins.length > 0" style="width:100%">
-      <h2 class="page-heading" data-i18n="download_with_plugin">使用插件下载
+      <h2 class="page-heading-comic" data-i18n="download_with_plugin">使用插件下载
         <span x-show="searching" uk-spinner class="uk-margin-left"></span>
       </h2>
 
@@ -21,7 +21,7 @@
               <div class="uk-margin">
                 <div class="uk-form-controls">
                   <label class="uk-form-label">&nbsp;</label>
-                  <input class="uk-input chapter-search-input" type="text" :placeholder="info.placeholder" x-model="query" @keydown.enter="search()" data-i18n-placeholder="chapter_search">
+                  <input class="uk-input comic-input chapter-search-input" type="text" :placeholder="info.placeholder" x-model="query" @keydown.enter="search()" data-i18n-placeholder="chapter_search">
                 </div>
               </div>
             </div>
@@ -29,7 +29,7 @@
               <div class="uk-margin">
                 <label class="uk-form-label" data-i18n="choose_plugin">选择一个插件</label>
                 <div class="uk-form-controls">
-                  <select class="uk-select plugin-select" x-model="pid" @change="pluginChanged()">
+                  <select class="uk-select comic-select plugin-select" x-model="pid" @change="pluginChanged()">
                     <template x-for="p in plugins" :key="p">
                       <option :value="p.id" x-text="p.title"></option>
                     </template>
@@ -67,12 +67,12 @@
           <div class="uk-child-width-1-4@m uk-child-width-1-2" uk-grid x-show="listManga">
             <template x-for="m in manga" :key="m.id">
               <div class="item" :data-id="m.id" @click="mangaSelected($event)">
-                <div class="uk-card uk-card-default">
-                  <div class="uk-card-media-top uk-inline">
+                <div class="uk-card uk-card-default comic-card">
+                  <div class="uk-card-media-top uk-inline comic-card-media">
                     <img uk-img :data-src="m.cover_url">
                   </div>
-                  <div class="uk-card-body">
-                    <h3 class="uk-card-title break-word uk-margin-remove-bottom free-height" x-text="m.title"></h3>
+                  <div class="uk-card-body comic-card-body">
+                    <h3 class="uk-card-title break-word uk-margin-remove-bottom free-height comic-card-title" x-text="m.title"></h3>
                     <p class="uk-text-meta" x-text="`ID: ${m.id}`"></p>
                   </div>
                 </div>
@@ -83,14 +83,14 @@
       </template>
 
       <div class="uk-margin-large-top" x-show="chapters !== undefined">
-        <h3 class="section-heading" x-text="mangaTitle"></h3>
+        <h3 class="comic-section-heading" x-text="mangaTitle"></h3>
         <p x-text="`${chapters ? chapters.length : 0} ` + I18N.get('chapters_found', loadLanguageSetting())" style="color: #888; font-size: 0.9rem;"></p>
 
         <div class="uk-margin action-bar">
           <div x-show="chapters && chapters.length > 0 && chapters.length <= chaptersLimit">
-          <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="selectAll()"><i class="fas fa-check-double uk-margin-small-right"></i> <span data-i18n="select_all">全选</span></button>
-          <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="clearSelection()"><i class="fas fa-times uk-margin-small-right"></i> <span data-i18n="clear_selection">清空</span></button>
-          <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" @click="download()"><i class="fas fa-download uk-margin-small-right"></i> <span data-i18n="download_selected">下载已选</span></button>
+          <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="selectAll()"><i class="fas fa-check-double uk-margin-small-right"></i> <span data-i18n="select_all">全选</span></button>
+          <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="clearSelection()"><i class="fas fa-times uk-margin-small-right"></i> <span data-i18n="clear_selection">清空</span></button>
+          <button class="uk-button comic-btn comic-btn-sm comic-btn-primary" @click="download()"><i class="fas fa-download uk-margin-small-right"></i> <span data-i18n="download_selected">下载已选</span></button>
             <span class="info-toggle" uk-icon="icon:settings" @click="showFilters = !showFilters" style="vertical-align: middle;"></span>
           </div>
           <div uk-spinner class="uk-margin-left" x-show="adding"></div>
@@ -108,25 +108,25 @@
 
               <div x-show="field.type === 'number'" class="uk-grid-small" uk-grid>
                 <div class="uk-width-1-2@s">
-                  <input class="uk-input" placeholder="minimum value" :data-filter-key="field.key" data-filter-type="number-min">
+                  <input class="uk-input comic-input" placeholder="minimum value" :data-filter-key="field.key" data-filter-type="number-min">
                 </div>
                 <div class="uk-width-1-2@s">
-                  <input class="uk-input" placeholder="maximum value" :data-filter-key="field.key" data-filter-type="number-max">
+                  <input class="uk-input comic-input" placeholder="maximum value" :data-filter-key="field.key" data-filter-type="number-max">
                 </div>
               </div>
 
               <div x-show="field.type === 'date'" class="uk-grid-small" uk-grid>
                 <div class="uk-width-1-2@s">
-                  <input class="uk-input" type="date" placeholder="minimum date (yyyy-mm-dd)" :data-filter-key="field.key" data-filter-type="date-min">
+                  <input class="uk-input comic-input" type="date" placeholder="minimum date (yyyy-mm-dd)" :data-filter-key="field.key" data-filter-type="date-min">
                 </div>
                 <div class="uk-width-1-2@s">
-                  <input class="uk-input" type="date" placeholder="maximum date (yyyy-mm-dd)" :data-filter-key="field.key" data-filter-type="date-max">
+                  <input class="uk-input comic-input" type="date" placeholder="maximum date (yyyy-mm-dd)" :data-filter-key="field.key" data-filter-type="date-max">
                 </div>
               </div>
 
-              <input x-show="field.type === 'string'" class="uk-input" placeholder="filter text" :data-filter-key="field.key" data-filter-type="string">
+              <input x-show="field.type === 'string'" class="uk-input comic-input" placeholder="filter text" :data-filter-key="field.key" data-filter-type="string">
 
-              <select class="uk-select" x-show="field.type === 'array'" :data-filter-key="field.key" data-filter-type="array">
+              <select class="uk-select comic-select" x-show="field.type === 'array'" :data-filter-key="field.key" data-filter-type="array">
                 <option value="all" data-i18n="all">全部</option>
                 <template x-for="v in field.values" :key="v">
                   <option x-text="v" :value="v"></option>
@@ -135,11 +135,11 @@
             </div>
           </template>
           <div class="action-bar" style="margin-bottom: 0;">
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" @click.prevent="applyFilters()" data-i18n="apply">应用</button>
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click.prevent="clearFilters()" data-i18n="clear">清除</button>
+            <button class="uk-button comic-btn comic-btn-sm comic-btn-primary" @click.prevent="applyFilters()" data-i18n="apply">应用</button>
+            <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click.prevent="clearFilters()" data-i18n="clear">清除</button>
             <span x-show="subscribable">
               <span class="uk-divider-vertical uk-margin-left uk-margin-right" style="height: 24px; vertical-align: middle;"></span>
-              <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click.prevent="UIkit.modal($refs.modal).show()" :disabled="subscribing"><i class="fas fa-bell uk-margin-small-right"></i> <span data-i18n="subscribe">订阅</span></button>
+              <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click.prevent="UIkit.modal($refs.modal).show()" :disabled="subscribing"><i class="fas fa-bell uk-margin-small-right"></i> <span data-i18n="subscribe">订阅</span></button>
             </span>
           </div>
         </form>
@@ -150,7 +150,7 @@
         <div x-show="chapters && chapters.length > 0 && chapters.length <= chaptersLimit">
           <p class="uk-text-meta" style="margin-bottom: 12px;" data-i18n="select_chapters_hint">单击表格行以选择章节。 将鼠标拖到多行上以将它们全部选中。 按住 Ctrl 进行多个不相邻的选择.</p>
           <div class="uk-overflow-auto">
-            <table class="uk-table mango-table mango-table-striped">
+            <table class="uk-table comic-table">
               <thead>
                 <tr>
                   <template x-for="(k, idx) in chapterKeys" :key="k">
@@ -181,14 +181,14 @@
     </div>
   </div>
 
-  <div uk-modal="container:false" x-ref="modal" class="mango-modal">
+  <div uk-modal="container:false" x-ref="modal" class="comic-modal">
     <div class="uk-modal-dialog">
       <div class="uk-modal-header">
         <h2 class="uk-modal-title" data-i18n="subscription_confirm">订阅确认</h2>
       </div>
       <div class="uk-modal-body">
         <p data-i18n="subscription_create_desc">将创建具有以下过滤器的订阅。 全部 <strong>未来</strong> 匹配过滤器的章节将被自动下载.</p>
-        <table class="uk-table mango-table mango-table-striped">
+        <table class="uk-table comic-table">
           <thead>
             <tr>
               <th data-i18n="keyword_th">关键词</th>
@@ -203,11 +203,11 @@
           </tbody>
         </table>
         <p data-i18n="enter_subscription_name">为订阅输入一个有意义的名称以继续:</p>
-        <input class="uk-input" type="text" x-model="subscriptionName" style="border-radius: 8px; border: 2px solid #e8e8e8; height: 44px; padding: 0 12px; transition: border-color 0.25s ease, box-shadow 0.25s ease;" x-effect="subscriptionName">
+        <input class="uk-input comic-input" type="text" x-model="subscriptionName">
       </div>
       <div class="uk-modal-footer uk-text-right">
-        <button class="uk-button mango-btn mango-btn-sm mango-btn-outline uk-modal-close" type="button" data-i18n="cancel">取消</button>
-        <button class="uk-button mango-btn mango-btn-sm mango-btn-primary" type="button" :disabled="subscriptionName.trim().length === 0" @click="subscribe($refs.modal)" data-i18n="confirm">确认</button>
+        <button class="uk-button comic-btn comic-btn-sm comic-btn-outline uk-modal-close" type="button" data-i18n="cancel">取消</button>
+        <button class="uk-button comic-btn comic-btn-sm comic-btn-primary" type="button" :disabled="subscriptionName.trim().length === 0" @click="subscribe($refs.modal)" data-i18n="confirm">确认</button>
       </div>
     </div>
   </div>

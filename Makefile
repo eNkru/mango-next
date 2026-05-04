@@ -73,6 +73,35 @@ build-image-size:
 run:
 	crystal run src/mango.cr --error-trace $(CRYSTAL_FLAGS)
 
+# Development mode with hot reload for frontend assets (LESS → CSS).
+# Runs gulp in watch mode alongside the Crystal server.
+# For full hot reload including Crystal source changes, install fswatch:
+#   brew install fswatch                # macOS (Homebrew)
+#   sudo port install fswatch           # macOS (MacPorts)
+#   sudo apt install fswatch            # Linux
+# Then use: make dev-full
+dev:
+	gulp dev
+	@trap 'kill %1 2>/dev/null || true' EXIT; \
+	npx gulp watch & \
+	crystal run src/mango.cr --error-trace $(CRYSTAL_FLAGS)
+
+# Full hot reload: watches LESS files AND Crystal source files.
+# Requires fswatch (see install notes above).
+dev-full:
+	gulp dev
+	@trap 'kill 0' EXIT; \
+	npx gulp watch & \
+	while true; do \
+		crystal run src/mango.cr --error-trace $(CRYSTAL_FLAGS) & \
+		SERVER_PID=$$!; \
+		fswatch -1 src/ 2>/dev/null; \
+		echo "[dev] Restarting..."; \
+		kill $$SERVER_PID 2>/dev/null; \
+		wait $$SERVER_PID 2>/dev/null; \
+		sleep 1; \
+	done
+
 test:
 	crystal spec $(CRYSTAL_FLAGS)
 

@@ -21,7 +21,8 @@ gulp.task('node-modules-copy', gulp.parallel('copy-img', 'copy-font'));
 gulp.task('less', () => {
 	return gulp.src([
 			'public/css/mango.less',
-			'public/css/tags.less'
+			'public/css/tags.less',
+			'public/css/comic-theme.less'
 		])
 		.pipe(less())
 		.pipe(gulp.dest('public/css'));
@@ -69,6 +70,14 @@ gulp.task('dev', gulp.parallel('node-modules-copy', 'less'));
 
 // Set up the dist folder for deployment
 gulp.task('deploy', gulp.parallel('babel', 'minify-css', 'copy-files'));
+
+// Watch LESS files for changes during development
+gulp.task('watch', () => {
+	gulp.watch('public/css/*.less', gulp.series('less'));
+});
+
+// Run dev setup then watch for changes
+gulp.task('dev-watch', gulp.series('dev', 'watch'));
 
 // Default task
 gulp.task('default', gulp.series('dev', 'deploy'));

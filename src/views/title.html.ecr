@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
-  <h2 class="title-heading" data-file-title="<%= HTML.escape(title.title) %>" data-sort-title="<%= HTML.escape(title.sort_title_db || "") %>">
+  <h2 class="title-heading comic-heading" data-file-title="<%= HTML.escape(title.title) %>" data-sort-title="<%= HTML.escape(title.sort_title_db || "") %>">
     <span><%= title.display_name %></span>
     <% if is_hidden %>
       <span class="hidden-title-badge"><i class="fas fa-eye-slash"></i> <span data-i18n="hidden_badge">已隐藏</span></span>
@@ -49,9 +49,9 @@
 
 <div class="uk-grid-small" uk-grid>
   <div class="uk-margin-bottom uk-width-3-4@s">
-    <form class="search-bar" role="search">
-      <span class="search-icon" uk-search-icon></span>
-      <input class="uk-search-input search-input" type="search" placeholder="查找漫画..." data-i18n-placeholder="search_manga" aria-label="查找漫画">
+    <form class="search-bar comic-search" role="search">
+      <span class="search-icon comic-search-icon" uk-search-icon></span>
+      <input class="uk-search-input search-input comic-search-input" type="search" placeholder="查找漫画..." data-i18n-placeholder="search_manga" aria-label="查找漫画">
     </form>
   </div>
   <div class="uk-margin-bottom uk-width-1-4@s">
@@ -81,7 +81,7 @@
 
 <%= render_component "entry-modal" %>
 
-<div id="edit-modal" class="uk-flex-top mango-modal" uk-modal>
+<div id="edit-modal" class="uk-flex-top mango-modal comic-modal" uk-modal>
   <div class="uk-modal-dialog uk-margin-auto-vertical">
     <button class="uk-modal-close-default" type="button" uk-close></button>
     <div class="uk-modal-header">

@@ -95,22 +95,22 @@ const component = () => {
 				});
 		},
 		statusLabelClass(status) {
-			let cls = 'status-label ';
+			let cls = 'status-label comic-status ';
 			switch (status) {
 				case 'Pending':
-					cls += 'status-pending';
+					cls += 'status-pending comic-status-pending';
 					break;
 				case 'Completed':
-					cls += 'status-success';
+					cls += 'status-success comic-status-success';
 					break;
 				case 'Error':
-					cls += 'status-danger';
+					cls += 'status-danger comic-status-danger';
 					break;
 				case 'MissingPages':
-					cls += 'status-warning';
+					cls += 'status-warning comic-status-warning';
 					break;
 				default:
-					cls += 'status-pending';
+					cls += 'status-pending comic-status-pending';
 			}
 			return cls;
 		}

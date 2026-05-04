@@ -1,12 +1,14 @@
 <div class="admin-sub-page" x-data="component()" x-init="init()">
+  <h2 class="page-heading-comic" data-i18n="download_manager_heading">下载管理器</h2>
+  <p class="page-subtitle" data-i18n="download_manager_subtitle">管理和监控下载队列</p>
   <div class="action-bar">
-    <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="jobAction('delete')"><i class="fas fa-trash-alt uk-margin-small-right"></i> <span data-i18n="delete_completed">删除已完成的任务</span></button>
-    <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="jobAction('retry')"><i class="fas fa-redo uk-margin-small-right"></i> <span data-i18n="retry_failed">重试失败的任务</span></button>
-    <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" @click="load()" :disabled="loading"><i class="fas fa-sync-alt uk-margin-small-right"></i> <span data-i18n="refresh_queue">刷新队列</span></button>
-    <button class="uk-button mango-btn mango-btn-sm mango-btn-outline" x-show="paused !== undefined" x-text="paused ? I18N.get('resume_download', loadLanguageSetting()) : I18N.get('pause_download', loadLanguageSetting())" @click="toggle()" :disabled="toggling"></button>
+    <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="jobAction('delete')"><i class="fas fa-trash-alt uk-margin-small-right"></i> <span data-i18n="delete_completed">删除已完成的任务</span></button>
+    <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="jobAction('retry')"><i class="fas fa-redo uk-margin-small-right"></i> <span data-i18n="retry_failed">重试失败的任务</span></button>
+    <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="load()" :disabled="loading"><i class="fas fa-sync-alt uk-margin-small-right"></i> <span data-i18n="refresh_queue">刷新队列</span></button>
+    <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" x-show="paused !== undefined" x-text="paused ? I18N.get('resume_download', loadLanguageSetting()) : I18N.get('pause_download', loadLanguageSetting())" @click="toggle()" :disabled="toggling"></button>
   </div>
   <div class="uk-overflow-auto">
-    <table class="uk-table mango-table mango-table-striped">
+    <table class="uk-table comic-table">
       <thead>
         <tr>
           <th data-i18n="chapter_th">章节</th>

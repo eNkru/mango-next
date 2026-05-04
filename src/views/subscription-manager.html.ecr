@@ -1,13 +1,13 @@
 <div class="admin-sub-page">
-  <h2 class="page-heading" data-i18n="subscription_manager_heading">订阅管理器</h2>
+  <h2 class="page-heading-comic" data-i18n="subscription_manager_heading">订阅管理器</h2>
   <p class="page-subtitle" data-i18n="subscription_subtitle">管理插件订阅</p>
 
   <div x-data="component()" x-init="init()">
     <div class="uk-grid-small" uk-grid style="margin-bottom:40px;">
       <div class="uk-container uk-text-center" x-show="plugins.length === 0" style="width:100%">
-        <div class="sub-empty-state">
-          <div class="sub-empty-icon"><i class="fas fa-puzzle-piece"></i></div>
-          <h3 data-i18n="no_plugins_found">未找到插件</h3>
+        <div class="comic-empty-state">
+          <div class="comic-empty-icon"><i class="fas fa-puzzle-piece"></i></div>
+          <h2 data-i18n="no_plugins_found">未找到插件</h2>
           <p><span data-i18n="no_plugins_desc">我们在下列目录中找不到任何插件</span> <code><%= Config.current.plugin_path %></code></p>
           <p><span data-i18n="download_official_plugins">您可以从以下网址下载官方插件</span> <a href="https://github.com/hkalexling/mango-plugins" data-i18n="mango_plugins_repo">Mango 插件库</a></p>
         </div>
@@ -17,7 +17,7 @@
         <div class="uk-margin">
           <label class="uk-form-label" data-i18n="choose_plugin">选择一个插件</label>
           <div class="uk-form-controls">
-            <select class="uk-select plugin-select" x-model="pid" @change="pluginChanged()">
+            <select class="uk-select comic-select plugin-select" x-model="pid" @change="pluginChanged()">
               <template x-for="p in plugins" :key="p">
                 <option :value="p.id" x-text="p.title"></option>
               </template>
@@ -28,7 +28,7 @@
         <p x-show="subscriptions.length === 0" class="uk-text-meta" style="color: #999;" data-i18n="no_subscriptions">未找到订阅.</p>
 
         <div class="uk-overflow-auto" x-show="subscriptions.length > 0">
-          <table class="uk-table mango-table mango-table-striped">
+          <table class="uk-table comic-table">
             <thead>
               <tr>
                 <th data-i18n="name_th">名称</th>
@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <div uk-modal="container:false" x-ref="modal" class="uk-flex-top mango-modal">
+    <div uk-modal="container:false" x-ref="modal" class="uk-flex-top comic-modal">
       <div class="uk-modal-dialog uk-margin-auto-vertical uk-overflow-auto">
         <div class="uk-modal-header">
           <h2 class="uk-modal-title" data-i18n="subscription_details">订阅详情</h2>
@@ -78,7 +78,7 @@
             <dd x-html="subscription && subscription.manga_id"></dd>
             <dt data-i18n="filter">过滤器</dt>
           </dl>
-          <table class="uk-table mango-table mango-table-striped" style="margin-top: 16px;">
+          <table class="uk-table comic-table" style="margin-top: 16px;">
             <thead>
               <tr>
                 <th data-i18n="keyword_th">关键词</th>
@@ -93,7 +93,7 @@
             </tbody>
           </table>
           <p class="uk-text-right">
-            <button class="uk-button mango-btn mango-btn-sm mango-btn-outline uk-modal-close" type="button" data-i18n="confirm">确认</button>
+            <button class="uk-button comic-btn comic-btn-sm comic-btn-outline uk-modal-close" type="button" data-i18n="confirm">确认</button>
           </p>
         </div>
       </div>

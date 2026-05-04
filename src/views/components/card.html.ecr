@@ -40,11 +40,11 @@
       onclick="location='<%= base_url %>book/<%= item.id %>'" 
     <% end %>>
 
-    <div class="uk-card uk-card-default" x-data="{selected: false, hover: false, disabled: true, selecting: false}" :class="{selected: selected}" @count.window="selecting = $event.detail.count > 0"
+    <div class="uk-card uk-card-default comic-card" x-data="{selected: false, hover: false, disabled: true, selecting: false}" :class="{selected: selected}" @count.window="selecting = $event.detail.count > 0"
       <% if page == "title" && item.is_a?(Entry) && item.err_msg.nil? %>
         x-init="disabled = false"
       <% end %>>
-      <div class="uk-card-media-top uk-inline" @mouseenter="hover = true" @mouseleave="hover = false">
+      <div class="uk-card-media-top uk-inline comic-card-media" @mouseenter="hover = true" @mouseleave="hover = false">
         <img data-src="<%= item.cover_url %>" alt="" uk-img
         <% if item.is_a? Entry && item.err_msg %>
           class="grayscale"
@@ -79,8 +79,8 @@
         <div class="hidden-badge"><i class="fas fa-eye-slash"></i> <span data-i18n="hidden_badge_card">已隐藏</span></div>
       <% end %>
 
-      <div class="uk-card-body">
-        <h3 class="uk-card-title break-word
+      <div class="uk-card-body comic-card-body">
+        <h3 class="uk-card-title break-word comic-card-title
           <% if page == "home" && item.is_a? Entry %>
             <%= "uk-margin-remove-bottom" %>
           <% end %>

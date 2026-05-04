@@ -440,3 +440,7 @@ const tagsComponent = () => {
 		}
 	};
 };
+
+// Expose functions used in inline onclick handlers on window
+window.toggleHidden = toggleHidden;
+window.toggleShowHidden = toggleShowHidden;
