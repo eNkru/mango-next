@@ -16,7 +16,9 @@
 		"less": "^3.11.3"
 	},
 	"scripts": {
-		"uglify": "gulp"
+		"uglify": "gulp",
+		"watch": "gulp dev-watch",
+		"dev": "gulp dev"
 	},
 	"dependencies": {
 		"@fortawesome/fontawesome-free": "^5.14.0",

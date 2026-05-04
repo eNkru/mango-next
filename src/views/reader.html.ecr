@@ -34,9 +34,9 @@
               />
           </template>
           <%- if next_entry_url -%>
-            <button id="next-btn" class="uk-align-center uk-button uk-button-primary" @click="nextEntry('<%= next_entry_url %>')" data-i18n="next_item">下一项</button>
+            <button id="next-btn" class="uk-align-center uk-button uk-button-primary comic-reader-btn comic-reader-btn-primary" @click="nextEntry('<%= next_entry_url %>')" data-i18n="next_item">下一项</button>
           <%- else -%>
-            <button id="next-btn" class="uk-align-center uk-button uk-button-primary" @click="exitReader('<%= exit_url %>')" data-i18n="exit_reader">退出阅读</button>
+            <button id="next-btn" class="uk-align-center uk-button uk-button-primary comic-reader-btn comic-reader-btn-primary" @click="exitReader('<%= exit_url %>')" data-i18n="exit_reader">退出阅读</button>
           <%- end -%>
         </div>
 
@@ -62,7 +62,7 @@
       </div>
     </div>
 
-    <div id="modal-sections" class="uk-flex-top reader-modal" uk-modal>
+    <div id="modal-sections" class="uk-flex-top reader-modal comic-reader-modal" uk-modal>
       <div class="uk-modal-dialog uk-margin-auto-vertical">
         <button class="uk-modal-close-default" type="button" uk-close></button>
         <div class="uk-modal-header">
@@ -151,12 +151,12 @@
         </div>
         <div class="uk-modal-footer uk-text-right">
           <% if previous_entry_url %>
-            <a class="uk-button uk-button-default reader-nav-btn uk-margin-small-bottom uk-margin-small-right" href="<%= previous_entry_url %>" data-i18n="previous">上一个</a>
+            <a class="uk-button uk-button-default reader-nav-btn comic-reader-btn uk-margin-small-bottom uk-margin-small-right" href="<%= previous_entry_url %>" data-i18n="previous">上一个</a>
           <% end %>
           <% if next_entry_url %>
-            <a class="uk-button uk-button-default reader-nav-btn uk-margin-small-bottom uk-margin-small-right" href="<%= next_entry_url %>" data-i18n="next">下一个</a>
+            <a class="uk-button uk-button-default reader-nav-btn comic-reader-btn uk-margin-small-bottom uk-margin-small-right" href="<%= next_entry_url %>" data-i18n="next">下一个</a>
           <% end %>
-          <a class="uk-button uk-button-danger reader-nav-btn reader-exit-btn uk-margin-small-bottom uk-margin-small-right" href="<%= exit_url %>" data-i18n="exit_reader">退出阅读</a>
+          <a class="uk-button uk-button-danger reader-nav-btn reader-exit-btn comic-reader-btn uk-margin-small-bottom uk-margin-small-right" href="<%= exit_url %>" data-i18n="exit_reader">退出阅读</a>
         </div>
       </div>
     </div>
