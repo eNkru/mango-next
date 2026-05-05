@@ -94,7 +94,7 @@
         <% if item.is_a? Entry %>
           <% if item.err_msg %>
             <p class="uk-text-meta uk-margin-remove-bottom"><span data-i18n="error_card">Error</span> <span uk-icon="info"></span></p>
-            <div uk-dropdown><%= HTML.escape(item.err_msg) %></div>
+            <div uk-dropdown><%= HTML.escape(item.err_msg || "") %></div>
           <% else %>
             <p class="uk-text-meta"><span data-i18n="last_read_page">Last read page:</span> <%= item.load_progress(username) %>/<%= item.pages %></p>
           <% end %>

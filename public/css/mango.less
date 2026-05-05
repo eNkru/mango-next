@@ -844,6 +844,7 @@
   gap: 18px;
   align-items: stretch;
   height: 280px;
+  overflow: visible;
 
   @media (min-width: 600px) {
     height: 310px;
@@ -862,12 +863,13 @@
   > .carousel-wrapper {
     flex: 1;
     min-width: 0;
-    margin: 0;
-    padding: 0 16px;
+    margin: 0 -24px;
+    padding: 0 24px;
     display: flex;
     align-items: stretch;
 
     @media (min-width: 960px) {
+      margin: 0 -32px;
       padding: 0 32px;
     }
   }
@@ -3263,6 +3265,12 @@ body.mango-app-shell .continue-reading-section {
 body.mango-app-shell .continue-reading-row {
   height: 330px;
   gap: 16px;
+  overflow: visible;
+}
+
+body.mango-app-shell .continue-reading-row > .carousel-wrapper {
+  margin: 0 -36px;
+  padding: 0 36px;
 }
 
 body.mango-app-shell .hero-banner {
@@ -3443,6 +3451,16 @@ body.mango-app-shell .carousel-wrapper {
   }
 
   body.mango-app-shell .carousel-wrapper {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
+  .continue-reading-row > .carousel-wrapper {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+
+  body.mango-app-shell .continue-reading-row > .carousel-wrapper {
     margin: 0 -16px;
     padding: 0 16px;
   }
