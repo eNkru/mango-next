@@ -863,9 +863,13 @@
     flex: 1;
     min-width: 0;
     margin: 0;
-    padding: 0 12px;
+    padding: 0 16px;
     display: flex;
     align-items: stretch;
+
+    @media (min-width: 960px) {
+      padding: 0 32px;
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const minify = require('gulp-babel-minify');
-const minifyCss = require('gulp-minify-css');
+const minifyCss = require('gulp-clean-css');
 const less = require('gulp-less');
 
 gulp.task('copy-img', () => {

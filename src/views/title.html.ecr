@@ -20,7 +20,7 @@
     </div>
   </div>
   <h2 class="title-heading comic-heading" data-file-title="<%= HTML.escape(title.title) %>" data-sort-title="<%= HTML.escape(title.sort_title_db || "") %>">
-    <span><%= title.display_name %></span>
+    <span><%= HTML.escape(title.display_name) %></span>
     <% if is_hidden %>
       <span class="hidden-title-badge"><i class="fas fa-eye-slash"></i> <span data-i18n="hidden_badge">已隐藏</span></span>
     <% end %>
@@ -36,9 +36,9 @@
   <ul class="uk-breadcrumb">
     <li><a href="<%= base_url %>library" data-i18n="library">资料库</a></li>
     <%- title.parents.each do |t| -%>
-      <li><a href="<%= base_url %>book/<%= t.id %>"><%= t.display_name %></a></li>
+      <li><a href="<%= base_url %>book/<%= t.id %>"><%= HTML.escape(t.display_name) %></a></li>
     <%- end -%>
-    <li class="uk-disabled"><a><%= title.display_name %></a></li>
+    <li class="uk-disabled"><a><%= HTML.escape(title.display_name) %></a></li>
   </ul>
 </div>  <p class="page-subtitle"><%= title.content_label %> <span data-i18n="found_label">找到</span></p>
 

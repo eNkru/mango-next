@@ -233,7 +233,7 @@ class Plugin
       raise Error.new "Manga searching is only available for plugins " \
                       "targeting API v2 or above"
     end
-    json = eval_json "searchManga('#{query}')"
+    json = eval_json "searchManga('#{escape_js(query)}')"
     begin
       json.as_a.each do |obj|
         assert_manga_type obj
@@ -245,7 +245,7 @@ class Plugin
   end
 
   def list_chapters(query : String)
-    json = eval_json "listChapters('#{query}')"
+    json = eval_json "listChapters('#{escape_js(query)}')"
     begin
       if info.version > 1
         # Since v2, listChapters returns an array
@@ -278,7 +278,7 @@ class Plugin
   end
 
   def select_chapter(id : String)
-    json = eval_json "selectChapter('#{id}')"
+    json = eval_json "selectChapter('#{escape_js(id)}')"
     begin
       if info.version > 1
         assert_chapter_type json
@@ -309,7 +309,7 @@ class Plugin
   def new_chapters(manga_id : String, after : Int64)
     # Converting standard timestamp to milliseconds so plugins can easily do
     #   `new Date(ms_timestamp)` in JS.
-    json = eval_json "newChapters('#{manga_id}', #{after * 1000})"
+    json = eval_json "newChapters('#{escape_js(manga_id)}', #{after * 1000})"
     begin
       json.as_a.each do |obj|
         assert_chapter_type obj
@@ -330,6 +330,10 @@ class Plugin
 
   private def eval_json(str)
     JSON.parse eval(str).as String
+  end
+
+  private def escape_js(str : String) : String
+    str.gsub("\\", "\\\\").gsub("'", "\\'").gsub("\n", "\\n").gsub("\r", "\\r")
   end
 
   private def eval_exists?(str) : Bool

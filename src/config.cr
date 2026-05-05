@@ -5,7 +5,7 @@ class Config
     "host"                                => "0.0.0.0",
     "port"                                => 9000,
     "base_url"                            => "/",
-    "session_secret"                      => "mango-session-secret",
+    "session_secret"                      => "",
     "library_path"                        => "~/mango/library",
     "library_cache_path"                  => "~/mango/library.yml.gz",
     "db_path"                             => "~/mango.db",
