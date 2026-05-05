@@ -186,6 +186,7 @@ struct APIRouter
           ""
         else
           env.response.headers["ETag"] = e_tag
+          env.response.headers["Cache-Control"] = "public, max-age=86400"
           send_img env, img
         end
       rescue e
