@@ -66,8 +66,8 @@
       <div class="uk-modal-dialog uk-margin-auto-vertical">
         <button class="uk-modal-close-default" type="button" uk-close></button>
         <div class="uk-modal-header">
-          <h3 class="uk-modal-title break-word"><%= entry.display_name %></h3>
-          <p class="uk-text-meta uk-margin-remove-bottom break-word"><%= entry.path %></p>
+          <h3 class="uk-modal-title break-word"><%= HTML.escape(entry.display_name) %></h3>
+          <p class="uk-text-meta uk-margin-remove-bottom break-word"><%= HTML.escape(entry.path) %></p>
         </div>
         <div class="uk-modal-body">
           <div class="uk-margin">
@@ -142,7 +142,7 @@
                   <% if e.id == entry.id %>
                     selected
                   <% end %>>
-                  <%= e.title %>
+                  <%= HTML.escape(e.title) %>
                   </option>
                 <% end %>
               </select>

@@ -12,10 +12,15 @@ class UploadHandler < Kemal::Handler
     end
 
     ary = env.request.path.split(File::SEPARATOR).select do |part|
-      !part.empty?
+      !part.empty? && part != ".."
     end
     ary[0] = @upload_dir
     path = File.join ary
+
+    unless path.starts_with?(@upload_dir)
+      env.response.status_code = 403
+      return
+    end
 
     if File.exists? path
       send_file env, path

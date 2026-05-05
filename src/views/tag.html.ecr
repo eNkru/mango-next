@@ -1,5 +1,5 @@
 <div class="library-page">
-  <h2 class="page-heading-comic"><span data-i18n="tag_heading_prefix">标签:</span> <%= tag %> <span class="comic-section-count"><%= titles.size %> <span data-i18n="items_count">标记</span></span></h2>
+  <h2 class="page-heading-comic"><span data-i18n="tag_heading_prefix">标签:</span> <%= HTML.escape(tag) %> <span class="comic-section-count"><%= titles.size %> <span data-i18n="items_count">标记</span></span></h2>
 
   <div class="library-toolbar">
     <form class="search-bar comic-search" role="search">

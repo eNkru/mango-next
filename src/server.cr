@@ -49,7 +49,13 @@ class Server
 
     Kemal::Session.config do |c|
       c.timeout = 365.days
-      c.secret = Config.current.session_secret
+      secret = Config.current.session_secret
+      if secret.empty?
+        secret = Random::Secure.hex(32)
+        Logger.warn "No session_secret configured. Using a randomly generated " \
+                     "secret. Sessions will be invalidated on restart."
+      end
+      c.secret = secret
       c.cookie_name = "mango-sessid-#{Config.current.port}"
       c.path = Config.current.base_url
     end

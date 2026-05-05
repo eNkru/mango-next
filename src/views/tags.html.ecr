@@ -4,7 +4,7 @@
 <div>
   <% tags.each do |tag| %>
     <span class="tag-pill comic-tag-pill">
-      <a class="uk-link-reset" href="<%= base_url %>tags/<%= tag[:encoded_tag] %>"><%= tag[:tag] %> <small>(<%= tag[:count] %>)</small></a>
+      <a class="uk-link-reset" href="<%= base_url %>tags/<%= tag[:encoded_tag] %>"><%= HTML.escape(tag[:tag]) %> <small>(<%= tag[:count] %>)</small></a>
     </span>
   <% end %>
 </div>

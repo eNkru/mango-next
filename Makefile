@@ -81,7 +81,7 @@ run:
 #   sudo apt install fswatch            # Linux
 # Then use: make dev-full
 dev:
-	gulp dev
+	npx gulp dev
 	@trap 'kill %1 2>/dev/null || true' EXIT; \
 	npx gulp watch & \
 	crystal run src/mango.cr --error-trace $(CRYSTAL_FLAGS)
@@ -89,13 +89,14 @@ dev:
 # Full hot reload: watches LESS files AND Crystal source files.
 # Requires fswatch (see install notes above).
 dev-full:
-	gulp dev
+	@command -v fswatch >/dev/null 2>&1 || { echo "Error: fswatch is not installed. Install it with: brew install fswatch"; exit 1; }
+	npx gulp dev
 	@trap 'kill 0' EXIT; \
 	npx gulp watch & \
 	while true; do \
 		crystal run src/mango.cr --error-trace $(CRYSTAL_FLAGS) & \
 		SERVER_PID=$$!; \
-		fswatch -1 src/ 2>/dev/null; \
+		fswatch -1 --include '\.cr$$' --latency 0.5 src/ 2>/dev/null; \
 		echo "[dev] Restarting..."; \
 		kill $$SERVER_PID 2>/dev/null; \
 		wait $$SERVER_PID 2>/dev/null; \

@@ -5,8 +5,8 @@
       <div>
         <h3 class="uk-modal-title uk-margin-remove-top"><i class="fas fa-exclamation-circle"></i> <span data-i18n="error_title">错误</span></h3>
       </div>
-      <p class="uk-text-meta uk-margin-remove-bottom break-word"><%= entry.path %></p>
-      <p class="uk-text-meta uk-margin-remove-top"><%= entry.err_msg %></p>
+      <p class="uk-text-meta uk-margin-remove-bottom break-word"><%= HTML.escape(entry.path) %></p>
+      <p class="uk-text-meta uk-margin-remove-top"><%= HTML.escape(entry.err_msg) %></p>
     </div>
     <div class="uk-modal-body">
       <div class="error-actions">
@@ -23,7 +23,7 @@
   <script>
     UIkit.modal('#modal').show();
     UIkit.util.on('#modal', 'hide', function() {
-      location.href = "<%= base_url %>book/<%= entry.book.id %>";
+      location.href = "<%= base_url %>book/<%= HTML.escape(entry.book.id) %>";
     });
   </script>
 <% end %>
