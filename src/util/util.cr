@@ -54,6 +54,7 @@ def register_mime_types
     # FontAwesome fonts
     ".woff"  => "font/woff",
     ".woff2" => "font/woff2",
+    ".ttf"   => "font/ttf",
 
     # Supported image formats. JPG, PNG, GIF, WebP, and SVG are already
     #   defiend by Crystal in `MIME.DEFAULT_TYPES`

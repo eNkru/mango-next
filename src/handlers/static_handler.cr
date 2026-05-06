@@ -21,9 +21,10 @@ class StaticHandler < Kemal::Handler
       file = FS.get? env.request.path
       return call_next env if file.nil?
 
-      slice = Bytes.new file.size
-      file.read slice
-      return send_file env, slice, MIME.from_filename file.path
+      io = IO::Memory.new
+      IO.copy file, io
+      file.close
+      return send_file env, io.to_slice, MIME.from_filename file.path
     end
     call_next env
   end

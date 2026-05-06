@@ -10,7 +10,13 @@ gulp.task('copy-img', () => {
 });
 
 gulp.task('copy-font', () => {
-	return gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.{woff,woff2,ttf}')
+	return gulp.src([
+			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff',
+			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2',
+			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf'
+		], {
+			encoding: false
+		})
 		.pipe(gulp.dest('public/webfonts'));
 });
 
@@ -60,7 +66,8 @@ gulp.task('copy-files', () => {
 			'public/webfonts/*',
 			'public/js/*.min.js'
 		], {
-			base: 'public'
+			base: 'public',
+			encoding: false
 		})
 		.pipe(gulp.dest('dist'));
 });
@@ -69,7 +76,12 @@ gulp.task('copy-files', () => {
 gulp.task('dev', gulp.parallel('node-modules-copy', 'less'));
 
 // Set up the dist folder for deployment
-gulp.task('deploy', gulp.parallel('babel', 'minify-css', 'copy-files'));
+gulp.task('deploy', gulp.series(
+	'node-modules-copy',
+	'less',
+	gulp.parallel('babel', 'minify-css'),
+	'copy-files'
+));
 
 // Watch LESS files for changes during development
 gulp.task('watch', () => {
