@@ -833,10 +833,6 @@
 // ============================================
 .continue-reading-section {
   margin-bottom: 40px;
-
-  .section-header {
-    margin-bottom: 18px;
-  }
 }
 
 .continue-reading-row {
@@ -863,30 +859,21 @@
   > .carousel-wrapper {
     flex: 1;
     min-width: 0;
-    margin: 0 -24px;
-    padding: 0 24px;
     display: flex;
     align-items: stretch;
-
-    @media (min-width: 960px) {
-      margin: 0 -32px;
-      padding: 0 32px;
-    }
   }
 }
 
 .continue-reading-cards {
   display: flex;
-  gap: 14px;
+  gap: 18px;
   overflow-x: auto;
   align-items: stretch;
-  padding-top: 8px;
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 
   &.carousel-track {
-    gap: 14px;
-    padding-top: 8px;
+    gap: 18px;
     min-width: 0;
   }
 
@@ -1076,14 +1063,16 @@
 }
 
 .carousel-wrapper {
+  --carousel-edge-offset: 24px;
+  --carousel-arrow-width: 32px;
+  --carousel-arrow-height: 44px;
   position: relative;
-  margin: 0 -24px;
-  padding: 0 24px;
+  margin: 0 calc(var(--carousel-edge-offset) * -1);
+  padding: 0 var(--carousel-edge-offset);
 
   // On larger screens, extend carousel closer to edges
   @media (min-width: 960px) {
-    margin: 0 -32px;
-    padding: 0 32px;
+    --carousel-edge-offset: 32px;
   }
 }
 
@@ -1094,7 +1083,6 @@
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 10px;
 
   // Hide scrollbar
   scrollbar-width: none;
@@ -1122,8 +1110,8 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  width: 32px;
-  height: 44px;
+  width: var(--carousel-arrow-width);
+  height: var(--carousel-arrow-height);
   border: none;
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
@@ -1132,23 +1120,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease, opacity 0.2s ease, width 0.2s ease;
+  transition: background 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
   backdrop-filter: blur(8px);
 
   &:hover {
     background: rgba(0, 0, 0, 0.75);
-    width: 36px;
   }
 
   &.carousel-arrow-left {
-    left: 0;
+    left: calc((var(--carousel-edge-offset) - var(--carousel-arrow-width)) / 2);
     border-radius: 0 50% 50% 0;
     box-shadow: 2px 0 8px rgba(0,0,0,0.2);
     padding-left: 2px;
   }
 
   &.carousel-arrow-right {
-    right: 0;
+    right: calc((var(--carousel-edge-offset) - var(--carousel-arrow-width)) / 2);
     border-radius: 50% 0 0 50%;
     box-shadow: -2px 0 8px rgba(0,0,0,0.2);
     padding-right: 2px;
@@ -2591,7 +2578,6 @@
 
     &:hover {
       background: rgba(255, 255, 255, 0.25);
-      width: 36px;
     }
 
     &.carousel-arrow-left {
@@ -3263,14 +3249,12 @@ body.mango-app-shell .continue-reading-section {
 }
 
 body.mango-app-shell .continue-reading-row {
-  height: 330px;
   gap: 16px;
   overflow: visible;
 }
 
 body.mango-app-shell .continue-reading-row > .carousel-wrapper {
-  margin: 0 -36px;
-  padding: 0 36px;
+  --carousel-edge-offset: 36px;
 }
 
 body.mango-app-shell .hero-banner {
@@ -3440,57 +3424,51 @@ body.mango-app-shell .card-progress-percent {
 }
 
 body.mango-app-shell .carousel-wrapper {
-  margin: 0 -36px;
-  padding: 0 36px;
+  --carousel-edge-offset: 36px;
 }
 
 @media (max-width: 959px) {
   .carousel-wrapper {
-    margin: 0 -16px;
-    padding: 0 16px;
+    --carousel-edge-offset: 16px;
   }
 
   body.mango-app-shell .carousel-wrapper {
-    margin: 0 -16px;
-    padding: 0 16px;
+    --carousel-edge-offset: 16px;
   }
 
   .continue-reading-row > .carousel-wrapper {
-    margin: 0 -16px;
-    padding: 0 16px;
+    --carousel-edge-offset: 16px;
   }
 
   body.mango-app-shell .continue-reading-row > .carousel-wrapper {
-    margin: 0 -16px;
-    padding: 0 16px;
+    --carousel-edge-offset: 16px;
   }
 }
 
 body.mango-app-shell .carousel-arrow {
-  width: 32px;
-  height: 44px;
+  width: var(--carousel-arrow-width);
+  height: var(--carousel-arrow-height);
   background: rgba(18,19,26,0.85);
   border: 1px solid @shelf-border;
   backdrop-filter: blur(10px);
   font-size: 13px;
-  transition: background 0.2s ease, opacity 0.2s ease, width 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
 
   &:hover {
     background: rgba(242, 139, 69, 0.25);
     border-color: rgba(242, 139, 69, 0.4);
-    width: 36px;
   }
 
   &.carousel-arrow-left {
     border-radius: 0 50% 50% 0;
-    left: 0;
+    left: calc((var(--carousel-edge-offset) - var(--carousel-arrow-width)) / 2);
     box-shadow: 2px 0 8px rgba(0,0,0,0.3);
     padding-left: 2px;
   }
 
   &.carousel-arrow-right {
     border-radius: 50% 0 0 50%;
-    right: 0;
+    right: calc((var(--carousel-edge-offset) - var(--carousel-arrow-width)) / 2);
     box-shadow: -2px 0 8px rgba(0,0,0,0.3);
     padding-right: 2px;
   }

@@ -716,13 +716,15 @@ body.comic-theme-dark {
 
   // --- CAROUSEL ARROWS ---
   .comic-carousel-arrow {
-    width: 38px !important;
-    height: 48px !important;
+    --carousel-arrow-width: 38px;
+    --carousel-arrow-height: 48px;
+    width: var(--carousel-arrow-width) !important;
+    height: var(--carousel-arrow-height) !important;
     background: @comic-yellow !important;
     border: 3px solid @comic-black !important;
     box-shadow: 2px 2px 0 @comic-black !important;
     &:hover {
-      width: 38px !important;
+      width: var(--carousel-arrow-width) !important;
       background: @comic-red !important;
       color: @comic-white !important;
       transform: translateY(-50%) scale(1.1) !important;
@@ -1397,8 +1399,10 @@ body:not(.comic-theme):not(.comic-theme-dark) {
     top: 50% !important;
     transform: translateY(-50%) !important;
     z-index: 10 !important;
-    width: 32px !important;
-    height: 44px !important;
+    --carousel-arrow-width: 32px;
+    --carousel-arrow-height: 44px;
+    width: var(--carousel-arrow-width) !important;
+    height: var(--carousel-arrow-height) !important;
     border: none !important;
     background: rgba(0, 0, 0, 0.5) !important;
     color: #fff !important;
@@ -1410,18 +1414,18 @@ body:not(.comic-theme):not(.comic-theme-dark) {
     box-shadow: none !important;
     border-radius: 0 !important;
     &.carousel-arrow-left {
-      left: 0 !important;
+      left: calc((var(--carousel-edge-offset) - var(--carousel-arrow-width)) / 2) !important;
       border-radius: 0 50% 50% 0 !important;
       padding-left: 2px !important;
     }
     &.carousel-arrow-right {
-      right: 0 !important;
+      right: calc((var(--carousel-edge-offset) - var(--carousel-arrow-width)) / 2) !important;
       border-radius: 50% 0 0 50% !important;
       padding-right: 2px !important;
     }
     &:hover {
       background: rgba(0, 0, 0, 0.75) !important;
-      width: 36px !important;
+      width: var(--carousel-arrow-width) !important;
       transform: translateY(-50%) !important;
     }
   }
