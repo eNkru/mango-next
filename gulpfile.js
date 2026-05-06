@@ -10,7 +10,7 @@ gulp.task('copy-img', () => {
 });
 
 gulp.task('copy-font', () => {
-	return gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff**')
+	return gulp.src('node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.{woff,woff2,ttf}')
 		.pipe(gulp.dest('public/webfonts'));
 });
 
