@@ -53,10 +53,10 @@
     var username;
     var error;
     <%- if !new_user -%>
-      username = '/<%= username.gsub("\\", "\\\\").gsub("'", "\\\\'").gsub("\"", "\\\\\"") %>';
+      username = '/<%= (username || "").gsub("\\", "\\\\").gsub("'", "\\\\'").gsub("\"", "\\\\\"") %>';
     <%- end -%>
       <%- if error -%>
-        error = '<%= error.gsub("\\", "\\\\").gsub("'", "\\\\'").gsub("\"", "\\\\\"") %>';
+        error = '<%= (error || "").gsub("\\", "\\\\").gsub("'", "\\\\'").gsub("\"", "\\\\\"") %>';
       <%- end -%>
 
     function togglePw(fieldId) {
