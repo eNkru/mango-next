@@ -72,6 +72,10 @@ struct Image
     img.size = res.read Int32
     img
   end
+
+  def instance_size
+    sizeof(Image) + @data.size + @mime.bytesize + @filename.bytesize
+  end
 end
 
 class TitleInfo

@@ -128,11 +128,12 @@ struct Tuple(*T)
 end
 
 alias CacheableType = Array(Entry) | Array(Title) | String |
-                      Tuple(String, Int32)
+                      Tuple(String, Int32) | Image
 alias CacheEntryType = SortedEntriesCacheEntry |
                        SortedTitlesCacheEntry |
                        CacheEntry(String, String) |
-                       CacheEntry(Tuple(String, Int32), Tuple(String, Int32))
+                       CacheEntry(Tuple(String, Int32), Tuple(String, Int32)) |
+                       CacheEntry(Image, Image)
 
 def generate_cache_entry(key : String, value : CacheableType)
   if value.is_a? Array(Entry)
