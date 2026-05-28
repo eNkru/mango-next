@@ -215,6 +215,8 @@ abstract class Entry
         img.mime = "image/jpeg"
       end
       Storage.default.save_thumbnail @id, img
+      cache_key = "thumbnail:#{@id}"
+      LRUCache.set generate_cache_entry cache_key, img
     rescue e
       Logger.warn "Failed to generate thumbnail for file #{path}. #{e}"
     end
@@ -223,7 +225,15 @@ abstract class Entry
   end
 
   def get_thumbnail : Image?
-    Storage.default.get_thumbnail @id
+    cache_key = "thumbnail:#{@id}"
+    cached = LRUCache.get cache_key
+    return cached if cached.is_a? Image
+
+    img = Storage.default.get_thumbnail @id
+    if img
+      LRUCache.set generate_cache_entry cache_key, img
+    end
+    img
   end
 
   def date_added : Time
