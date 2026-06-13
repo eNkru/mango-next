@@ -84,11 +84,9 @@ The simplest and recommended way to deploy Mango is using Docker or via Synology
 
 ### Using Docker
 
-We provide a pre-built image optimized with local file handling and permissions intact. 
-
-1. **Pull the latest image**:
+1. **Build the image**:
    ```bash
-   docker pull dezhao/mango_cn
+   docker build -t mango .
    ```
 2. **Run the container**:
    Ensure you mount your manga library containing your archive files to `/root/mango/library` within the container.
@@ -98,7 +96,7 @@ We provide a pre-built image optimized with local file handling and permissions 
      -v /path/to/your/manga:/root/mango/library \\
      -v /path/to/mango/config:/root/mango/config \\
      --name manga-server \\
-     dezhao/mango_cn
+     mango
    ```
 
 *Or use the included `docker-compose.yml` for convenience!*
