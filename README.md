@@ -101,6 +101,10 @@ The simplest and recommended way to deploy Mango is using Docker or via Synology
 
 *Or use the included `docker-compose.yml` for convenience!*
 
+### Publish to Docker Hub
+
+See [DOCKER_HUB.md](DOCKER_HUB.md) for instructions on pushing the image to Docker Hub.
+
 ### Synology NAS Direct Installation
 Since this fork is heavily optimized for Synology devices, you can install the packaged `.spk` application directly via the Synology Package Center instead of using Docker manually.
 
