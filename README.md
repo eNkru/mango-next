@@ -101,6 +101,38 @@ The simplest and recommended way to deploy Mango is using Docker or via Synology
 
 *Or use the included `docker-compose.yml` for convenience!*
 
+### Use the Pre-built Docker Hub Image
+
+A pre-built image is available on Docker Hub:
+
+- **Repository**: [`enkru/mango`](https://hub.docker.com/r/enkru/mango)
+- **Pull**: `docker pull enkru/mango:latest`
+- **Run with Docker**:
+  ```bash
+  docker run -d \\
+    -p 9000:9000 \\
+    -v /path/to/your/manga:/root/mango/library \\
+    -v /path/to/mango/config:/root/mango/config \\
+    --name manga-server \\
+    enkru/mango:latest
+  ```
+- **Run with Docker Compose**:
+  Save the following to a `docker-compose.yml` (edit the volume paths as needed), then run:
+  ```yaml
+  services:
+    mango:
+      image: enkru/mango:latest
+      container_name: manga-server
+      ports:
+        - "9000:9000"
+      volumes:
+        - /path/to/your/manga:/root/mango/library
+        - /path/to/mango/config:/root/mango/config
+  ```
+  ```bash
+  docker compose up -d
+  ```
+
 ### Publish to Docker Hub
 
 See [DOCKER_HUB.md](DOCKER_HUB.md) for instructions on pushing the image to Docker Hub.
