@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>urn:mango:index</id>
+
+  <link rel="self" href="{{.BaseURL}}opds/" type="application/atom+xml;profile=opds-catalog;kind=navigation" />
+  <link rel="start" href="{{.BaseURL}}opds/" type="application/atom+xml;profile=opds-catalog;kind=navigation" />
+
+  <title>资料库</title>
+
+  <author>
+    <name>Mango</name>
+    <uri>https://github.com/hkalexling/Mango</uri>
+  </author>
+
+  {{range $t := .Titles}}
+    <entry>
+      <title>{{$t.Name}}</title>
+      <id>urn:mango:{{$t.ID}}</id>
+      <link type="application/atom+xml;profile=opds-catalog;kind=navigation" rel="subsection" href="{{$.BaseURL}}opds/book/{{$t.ID}}" />
+    </entry>
+  {{end}}
+</feed>

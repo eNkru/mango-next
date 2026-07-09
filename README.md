@@ -78,9 +78,43 @@ For ARM architectures:
 
 ---
 
+### Go Migration Build (Phase 4)
+
+Mango is being migrated from Crystal to Go. The Go version lives in `go/`:
+
+**Prerequisites:** Go 1.26+
+
+**Build:**
+```bash
+make go-build       # build Go binary → mango-go
+make go-static      # fully static binary (no cgo)
+```
+
+**Run:**
+```bash
+make go-run         # run in dev mode
+./mango-go          # run the built binary
+```
+
+**Test:**
+```bash
+make go-check       # go vet
+make go-test        # run all tests (170+)
+make go-all         # vet + test + build
+```
+
+**Docker (Go version):**
+```bash
+docker compose -f docker-compose.go.yml up -d
+```
+
+The Go binary is fully static (no cgo), uses the same SQLite DB and plugins as the Crystal version.
+
+---
+
 ## 🚀 How to Deploy
 
-The simplest and recommended way to deploy Mango is using Docker or via Synology NAS Manager. All static assets (HTML/CSS/JS) are bundled inside the compiled binary. 
+The simplest and recommended way to deploy Mango is using Docker or via Synology NAS Manager. Both the Crystal and Go versions bundle all static assets (HTML/CSS/JS) inside the compiled binary. 
 
 ### Using Docker
 

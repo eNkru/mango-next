@@ -129,3 +129,23 @@ cleandist:
 
 clean:
 	rm -f mango
+
+# Go build targets (Phase 4+ migration)
+GO_DIR := go
+
+go-build:
+	cd $(GO_DIR) && go build -o ../mango-go ./cmd/mango/
+
+go-static:
+	cd $(GO_DIR) && CGO_ENABLED=0 go build -ldflags="-s -w" -o ../mango-go ./cmd/mango/
+
+go-test:
+	cd $(GO_DIR) && go test ./...
+
+go-check:
+	cd $(GO_DIR) && go vet ./...
+
+go-run:
+	cd $(GO_DIR) && go run ./cmd/mango/
+
+go-all: go-check go-test go-build

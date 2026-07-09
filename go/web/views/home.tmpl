@@ -1,0 +1,279 @@
+{{define "content"}}
+<div class="home-page comic-card-entrance">
+
+{{if and .NewUser .EmptyLibrary}}
+
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="fas fa-plus"></i>
+    </div>
+    <h2 data-i18n="add_first_comic">添加你的第一部漫画</h2>
+    <p data-i18n="no_files_found">我们还找不到任何文件。添加一些到您的库中，它们将出现在此处。</p>
+    <dl class="uk-description-list">
+      <dt data-i18n="current_library_path">当前资源库路径</dt>
+      <dd><code>{{.ConfigLibraryPath}}</code></dd>
+      <dt data-i18n="change_library_path">想要更改您的资源库路径？</dt>
+      <dd data-i18n="config_path">配置 <code>config.yml</code> 其路径为: <code>{{.ConfigPath}}</code></dd>
+      <dt data-i18n="still_cant_see">还看不到您的文件？</dt>
+      <dd>
+      <span data-i18n="wait_scan" data-i18n-vars-minutes="{{.ScanIntervalMinutes}}">您必须等待 {{.ScanIntervalMinutes}} 分钟才能完成库扫描</span>
+      {{if .IsAdmin}}
+        <span data-i18n="or_manual_scan">，或者从 </span><a href="{{.BaseURL}}admin" data-i18n="admin">管理员</a><span data-i18n="manual_scan_suffix">手动扫描</span>
+      {{end}}.
+      </dd>
+    </dl>
+  </div>
+
+{{else if and .NewUser (not .EmptyLibrary)}}
+
+  <div class="empty-state">
+    <div class="empty-icon">
+      <i class="fas fa-book-open"></i>
+    </div>
+    <h2 data-i18n="read_first_comic">阅读你的第一部漫画</h2>
+    <p data-i18n="reading_remember">一旦你开始阅读，Mango 会记住你离开的地方并在此处显示您的条目。</p>
+    <a href="{{.BaseURL}}library" class="comic-btn comic-btn-primary" data-i18n="view_library">查看库</a>
+  </div>
+
+{{else if and (not .NewUser) (not .EmptyLibrary)}}
+
+  {{if and (eq (len .ContinueReading) 0) (eq (len .RecentlyAdded) 0)}}
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-book-reader"></i>
+      </div>
+      <h2 data-i18n="welcome_mango">欢迎来到 Mango</h2>
+      <p data-i18n="self_hosted_reader">一个自托管的漫画服务器和阅读器</p>
+      <a href="{{.BaseURL}}library" class="comic-btn comic-btn-primary" data-i18n="view_library">查看库</a>
+    </div>
+  {{end}}
+
+  {{if gt (len .ContinueReading) 0}}
+    {{$hero_item := index .ContinueReading 0}}
+    <div class="carousel-section continue-reading-section">
+      <div class="section-header">
+        <h2 class="comic-section-heading" data-i18n="continue_reading">继续阅读</h2>
+        <span class="comic-section-count">{{len .ContinueReading}}</span>
+      </div>
+
+      <div class="continue-reading-row">
+        <!-- Featured hero card (first item, wide) -->
+        <div class="hero-banner comic-hero" style="background-image: url('{{$hero_item.CoverURL}}');">
+          <div class="hero-overlay comic-hero-overlay"></div>
+          <div class="hero-content">
+            <span class="comic-hero-badge" data-i18n="continue_reading">继续阅读</span>
+            <h1 class="comic-hero-title">{{$hero_item.EntryName}}</h1>
+            <p class="hero-meta">
+              {{$hero_item.Percentage | printf "%.1f"}}% <span data-i18n="read">已读</span>
+            </p>
+            <div class="hero-actions comic-hero-actions">
+              <a href="{{$.BaseURL}}reader/{{$hero_item.TitleID}}/{{$hero_item.EntryID}}" class="comic-btn comic-btn-primary">
+                <i class="fas fa-play"></i> <span data-i18n="continue_read_btn">继续阅读</span>
+              </a>
+              <a href="{{$.BaseURL}}book/{{$hero_item.TitleID}}" class="comic-btn comic-btn-outline" data-i18n="view_details">查看详情</a>
+            </div>
+            <div class="hero-progress-bar">
+              <div class="hero-progress-fill" style="width: {{$hero_item.Percentage | printf "%.1f"}}%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining items beside hero -->
+        {{if gt (len .ContinueReading) 1}}
+          <div class="carousel-wrapper continue-reading-carousel-wrapper">
+            <button class="carousel-arrow carousel-arrow-left comic-carousel-arrow" onclick="scrollCarousel(this, -1)" aria-label="向左滚动">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="continue-reading-cards carousel-track">
+              {{range $i, $cr := .ContinueReading}}
+                {{if gt $i 0}}
+                  <div class="item">
+                    <div class="acard is_entry">
+                      <div class="uk-card uk-card-default comic-card">
+                        <div class="uk-card-media-top uk-inline comic-card-media">
+                          <img data-src="{{$cr.CoverURL}}" alt="" uk-img>
+                          {{if and (ge $cr.Percentage 0.0) (le $cr.Percentage 100.0)}}
+                            <div class="card-progress-bar">
+                              <div class="card-progress-fill" style="width: {{$cr.Percentage | printf "%.1f"}}%"></div>
+                            </div>
+                            <span class="card-progress-percent">{{$cr.Percentage | printf "%.0f"}}%</span>
+                          {{end}}
+                        </div>
+                        <div class="uk-card-body comic-card-body">
+                          <h3 class="uk-card-title break-word comic-card-title uk-margin-remove-bottom">{{$cr.EntryName}}</h3>
+                          <a class="uk-card-title break-word uk-margin-remove-top uk-text-meta uk-display-inline-block no-modal" href="{{$.BaseURL}}book/{{$cr.TitleID}}">{{$cr.TitleName}}</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {{end}}
+              {{end}}
+            </div>
+            <button class="carousel-arrow carousel-arrow-right comic-carousel-arrow" onclick="scrollCarousel(this, 1)" aria-label="向右滚动">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        {{end}}
+      </div>
+    </div>
+  {{end}}
+
+  {{if gt (len .StartReading) 0}}
+    <div class="carousel-section">
+      <div class="section-header">
+        <h2 class="comic-section-heading" data-i18n="start_reading">开始阅读</h2>
+        <span class="comic-section-count">{{len .StartReading}}</span>
+        <a class="comic-section-link" href="{{.BaseURL}}library"><span data-i18n="view_all">查看全部</span> <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
+      </div>
+      <div class="carousel-wrapper">
+        <button class="carousel-arrow carousel-arrow-left comic-carousel-arrow" onclick="scrollCarousel(this, -1)" aria-label="向左滚动" data-i18n-aria-label="scroll_left">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="carousel-track">
+          {{range $t := .StartReading}}
+            <div class="item">
+              <div class="acard">
+                <div class="uk-card uk-card-default comic-card">
+                  <div class="uk-card-media-top uk-inline comic-card-media">
+                    <img data-src="{{$t.CoverURL}}" alt="" uk-img>
+                  </div>
+                  <div class="uk-card-body comic-card-body">
+                    <h3 class="uk-card-title break-word comic-card-title">{{$t.TitleName}}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{end}}
+        </div>
+        <button class="carousel-arrow carousel-arrow-right comic-carousel-arrow" onclick="scrollCarousel(this, 1)" aria-label="向右滚动" data-i18n-aria-label="scroll_right">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  {{end}}
+
+  {{if gt (len .RecentlyAdded) 0}}
+    <div class="carousel-section">
+      <div class="section-header">
+        <h2 class="comic-section-heading" data-i18n="recently_added">最近添加</h2>
+        <span class="comic-section-count">{{len .RecentlyAdded}}</span>
+        <a class="comic-section-link" href="{{.BaseURL}}library"><span data-i18n="view_all">查看全部</span> <i class="fas fa-arrow-right" style="font-size: 0.7em;"></i></a>
+      </div>
+      <div class="carousel-wrapper">
+        <button class="carousel-arrow carousel-arrow-left comic-carousel-arrow" onclick="scrollCarousel(this, -1)" aria-label="向左滚动" data-i18n-aria-label="scroll_left">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="carousel-track">
+          {{range $ra := .RecentlyAdded}}
+            <div class="item">
+              <div class="acard is_entry">
+                <div class="uk-card uk-card-default comic-card">
+                  <div class="uk-card-media-top uk-inline comic-card-media">
+                    <img data-src="{{$ra.CoverURL}}" alt="" uk-img>
+                    <div class="card-progress-bar">
+                      <div class="card-progress-fill" style="width: {{$ra.Percentage | printf "%.1f"}}%"></div>
+                    </div>
+                    <span class="card-progress-percent">{{$ra.Percentage | printf "%.0f"}}%</span>
+                  </div>
+                  <div class="uk-card-body comic-card-body">
+                    <h3 class="uk-card-title break-word comic-card-title uk-margin-remove-bottom">{{$ra.EntryName}}</h3>
+                    <a class="uk-card-title break-word uk-margin-remove-top uk-text-meta uk-display-inline-block no-modal" href="{{$.BaseURL}}book/{{$ra.TitleID}}">{{$ra.TitleName}}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{end}}
+        </div>
+        <button class="carousel-arrow carousel-arrow-right comic-carousel-arrow" onclick="scrollCarousel(this, 1)" aria-label="向右滚动" data-i18n-aria-label="scroll_right">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  {{end}}
+
+  {{template "entry-modal" .}}
+
+{{end}}
+
+</div>
+
+{{define "scripts"}}
+  {{template "dots" .}}
+  <script src="{{.BaseURL}}js/alert.js"></script>
+  <script src="{{.BaseURL}}js/title.js"></script>
+  <script>
+    function scrollCarousel(btn, direction) {
+      var wrapper = btn.closest('.carousel-wrapper');
+      var track = wrapper.querySelector('.carousel-track');
+      var scrollAmount = track.clientWidth * 0.75;
+      track.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    }
+
+    // Update arrow visibility based on scroll position
+    document.querySelectorAll('.carousel-track').forEach(function(track) {
+      function updateArrows() {
+        var wrapper = track.closest('.carousel-wrapper');
+        if (!wrapper) return;
+        var leftArrow = wrapper.querySelector('.carousel-arrow-left');
+        var rightArrow = wrapper.querySelector('.carousel-arrow-right');
+        if (!leftArrow || !rightArrow) return;
+        var canScrollLeft = track.scrollLeft > 10;
+        var canScrollRight = track.scrollLeft < track.scrollWidth - track.clientWidth - 10;
+        leftArrow.style.opacity = canScrollLeft ? '1' : '0';
+        leftArrow.style.pointerEvents = canScrollLeft ? 'auto' : 'none';
+        rightArrow.style.opacity = canScrollRight ? '1' : '0';
+        rightArrow.style.pointerEvents = canScrollRight ? 'auto' : 'none';
+      }
+      track.addEventListener('scroll', updateArrows);
+      window.addEventListener('resize', updateArrows);
+      updateArrows();
+    });
+
+    // Drag-to-scroll for carousel tracks
+    document.querySelectorAll('.carousel-track').forEach(function(track) {
+      var isDown = false;
+      var startX;
+      var scrollLeft;
+      var dragDistance = 0;
+
+      track.addEventListener('mousedown', function(e) {
+        isDown = true;
+        dragDistance = 0;
+        track.style.cursor = 'grabbing';
+        startX = e.clientX;
+        scrollLeft = track.scrollLeft;
+      });
+
+      track.addEventListener('mouseleave', function() {
+        isDown = false;
+        track.style.cursor = 'grab';
+      });
+
+      track.addEventListener('mouseup', function() {
+        isDown = false;
+        track.style.cursor = 'grab';
+      });
+
+      track.addEventListener('mousemove', function(e) {
+        if (!isDown) return;
+        e.preventDefault();
+        var x = e.clientX;
+        var walk = (x - startX) * 1.5;
+        dragDistance = Math.abs(walk);
+        track.scrollLeft = scrollLeft - walk;
+      });
+
+      // Prevent card clicks when dragging
+      track.addEventListener('click', function(e) {
+        if (dragDistance > 5) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, true);
+
+      track.style.cursor = 'grab';
+      track.style.userSelect = 'none';
+      track.style.webkitUserSelect = 'none';
+    });
+  </script>
+{{end}}

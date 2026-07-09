@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>urn:mango:{{.Title.ID}}</id>
+
+  <link rel="self" href="{{.BaseURL}}opds/book/{{.Title.ID}}" type="application/atom+xml;profile=opds-catalog;kind=navigation" />
+  <link rel="start" href="{{.BaseURL}}opds/" type="application/atom+xml;profile=opds-catalog;kind=navigation" />
+
+  <title>{{.Title.Name}}</title>
+
+  <author>
+    <name>Mango</name>
+    <uri>https://github.com/hkalexling/Mango</uri>
+  </author>
+
+  {{range $t := .SubTitles}}
+    <entry>
+      <title>{{$t.Name}}</title>
+      <id>urn:mango:{{$t.ID}}</id>
+      <link type="application/atom+xml;profile=opds-catalog;kind=navigation" rel="subsection" href="{{$.BaseURL}}opds/book/{{$t.ID}}" />
+    </entry>
+  {{end}}
+
+  {{range $e := .Entries}}
+    <entry>
+      <title>{{$e.Name}}</title>
+      <id>urn:mango:{{$e.ID}}</id>
+
+      <link rel="http://opds-spec.org/image" href="{{$.BaseURL}}api/cover/{{$.Title.ID}}/{{$e.ID}}" />
+      <link rel="http://opds-spec.org/image/thumbnail" href="{{$.BaseURL}}api/cover/{{$.Title.ID}}/{{$e.ID}}" />
+
+      <link rel="http://opds-spec.org/acquisition" href="{{$.BaseURL}}api/download/{{$.Title.ID}}/{{$e.ID}}" title="阅读" type="{{$e.MimeType}}" />
+
+      <link type="text/html" rel="alternate" title="在Mango中阅读" href="{{$.BaseURL}}reader/{{$.Title.ID}}/{{$e.ID}}" />
+      <link type="text/html" rel="alternate" title="在Mango中打开" href="{{$.BaseURL}}book/{{$.Title.ID}}" />
+    </entry>
+  {{end}}
+</feed>

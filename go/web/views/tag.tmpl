@@ -1,0 +1,61 @@
+{{define "content"}}
+<div class="library-page">
+  <h2 class="page-heading-comic"><span data-i18n="tag_heading_prefix">标签:</span> {{.Tag}} <span class="comic-section-count">{{len .Titles}} <span data-i18n="items_count">标记</span></span></h2>
+
+  <div class="library-toolbar">
+    <form class="search-bar comic-search" role="search">
+      <span class="search-icon" uk-search-icon></span>
+      <input class="uk-search-input search-input comic-search-input" type="search" placeholder="查找漫画..." data-i18n-placeholder="search_manga" aria-label="查找漫画">
+    </form>
+    <div class="sort-form-wrapper">
+      <div class="uk-form-horizontal">
+        <select class="uk-select sort-select comic-select" id="sort-select">
+          <option id="auto-up" data-i18n="sort_auto">▲ 自动</option>
+          <option id="auto-down" data-i18n="sort_auto">▼ 自动</option>
+          <option id="time_modified-up" data-i18n="sort_time_modified">▲ 修改日期</option>
+          <option id="time_modified-down" data-i18n="sort_time_modified">▼ 修改日期</option>
+          <option id="progress-up" data-i18n="sort_progress">▲ 进度</option>
+          <option id="progress-down" data-i18n="sort_progress">▼ 进度</option>
+        </select>
+      </div>
+    </div>
+    {{if .IsAdmin}}
+      <a href="#" onclick="toggleShowHidden(0); return false;" class="comic-btn comic-btn-sm comic-btn-outline hide-toggle-btn" title="显示隐藏" data-i18n-title="show_hidden">
+        <i class="fas fa-eye-slash"></i>
+        <span data-i18n="show_hidden">显示隐藏</span>
+      </a>
+    {{end}}
+  </div>
+
+  <div class="no-results" id="no-results">
+    <div class="no-results-icon"><i class="fas fa-search"></i></div>
+    <h3 data-i18n="no_results">未找到结果</h3>
+    <p data-i18n="try_different_keywords">尝试使用不同的关键词搜索</p>
+  </div>
+
+  <div class="uk-child-width-1-4@m uk-child-width-1-2" uk-grid>
+    {{range $i, $item := .Titles}}
+      <div class="item" data-title-id="{{$item.ID}}">
+        <div class="acard" onclick="location='{{$.BaseURL}}book/{{$item.ID}}'">
+          <div class="uk-card uk-card-default comic-card">
+            <div class="uk-card-media-top uk-inline comic-card-media">
+              <img data-src="{{$item.CoverURL}}" alt="" uk-img>
+            </div>
+            <div class="uk-card-body comic-card-body">
+              <h3 class="uk-card-title break-word comic-card-title" data-title="{{$item.Name}}">{{$item.Name}}</h3>
+              <p class="uk-text-meta">{{$item.EntryCount}} <span data-i18n="entries">项</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{end}}
+  </div>
+</div>
+
+{{define "scripts"}}
+  {{template "dots" .}}
+  <script src="{{.BaseURL}}js/alert.js"></script>
+  <script src="{{.BaseURL}}js/title.js"></script>
+  <script src="{{.BaseURL}}js/search.js"></script>
+  <script src="{{.BaseURL}}js/sort-items.js"></script>
+{{end}}
