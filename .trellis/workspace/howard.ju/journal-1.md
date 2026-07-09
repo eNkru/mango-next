@@ -67,3 +67,36 @@ Task: `07-08-migrate-crystal-to-go` (in_progress)
 **全部 Phase 0-5 完成!** Go 二进制可指向生产 DB+插件目录启动。
 170 tests 全通过, build + vet clean。
 
+
+
+## Session 1: Complete Go Migration Phase 4-5
+
+**Date**: 2026-07-09
+**Task**: Complete Go Migration Phase 4-5
+**Branch**: `migrate-to-go`
+
+### Summary
+
+Implement Phase 4 (HTTP routes, API handlers, templates, OPDS, progress DB) and Phase 5 (Dockerfile, docker-compose, Makefile targets, README) of the Crystal-to-Go migration. 170 tests passing.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f9efaa8` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
