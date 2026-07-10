@@ -199,15 +199,20 @@ class Storage
     validate_password password unless password.empty?
     MainFiber.run do
       get_db do |db|
-        if password.empty?
-          db.exec "update users set username = (?), admin = (?) " \
-                  "where username = (?)",
-            username, admin, original_username
-        else
-          hash = hash_password password
-          db.exec "update users set username = (?), admin = (?)," \
-                  "password = (?) where username = (?)",
-            username, admin, hash, original_username
+        db.transaction do |tran|
+          conn = tran.connection
+          ensure_admin_remains conn, original_username if admin == 0
+
+          if password.empty?
+            conn.exec "update users set username = (?), admin = (?) " \
+                      "where username = (?)",
+              username, admin, original_username
+          else
+            hash = hash_password password
+            conn.exec "update users set username = (?), admin = (?)," \
+                      "password = (?) where username = (?)",
+              username, admin, hash, original_username
+          end
         end
       end
     end
@@ -216,9 +221,30 @@ class Storage
   def delete_user(username)
     MainFiber.run do
       get_db do |db|
-        db.exec "delete from users where username = (?)", username
+        db.transaction do |tran|
+          conn = tran.connection
+          ensure_admin_remains conn, username
+          conn.exec "delete from users where username = (?)", username
+        end
       end
     end
+  end
+
+  private def ensure_admin_remains(conn, username)
+    return unless user_is_admin? conn, username
+    return if admin_count(conn) > 1
+
+    raise "Cannot remove the last admin user"
+  end
+
+  private def user_is_admin?(conn, username)
+    admin = conn.query_one? "select admin from users where username = (?)",
+      username, as: Int32
+    admin.try { |value| value > 0 } || false
+  end
+
+  private def admin_count(conn)
+    conn.query_one "select count(*) from users where admin = 1", as: Int32
   end
 
   def logout(token)

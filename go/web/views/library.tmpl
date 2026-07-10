@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div class="library-page comic-card-entrance">
   <h2 class="page-heading-comic" data-i18n="library_heading">资料库 <span class="comic-section-count">{{len .Titles}} <span data-i18n="files_count">文件</span></span></h2>
 
@@ -79,10 +79,10 @@
   </div>
 </div>
 
-{{define "scripts"}}
+
   {{template "dots" .}}
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/title.js"></script>
   <script src="{{.BaseURL}}js/search.js"></script>
   <script src="{{.BaseURL}}js/sort-items.js"></script>
-{{end}}
+{{template "views/bottom" .}}

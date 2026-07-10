@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div class="admin-sub-page" x-data="component()" x-init="load()" x-cloak x-show="!loading">
   <div x-show="empty" class="comic-empty-state">
     <div class="comic-empty-icon"><i class="fas fa-check-circle"></i></div>
@@ -41,7 +41,7 @@
   </div>
 </div>
 
-{{define "scripts"}}
+
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/missing-items.js"></script>
-{{end}}
+{{template "views/bottom" .}}

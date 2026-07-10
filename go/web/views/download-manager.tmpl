@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div class="admin-sub-page" x-data="component()" x-init="init()">
   <h2 class="page-heading-comic" data-i18n="download_manager_heading">下载管理器</h2>
   <p class="page-subtitle" data-i18n="download_manager_subtitle">管理和监控下载队列</p>
@@ -60,8 +60,8 @@
   </div>
 </div>
 
-{{define "scripts"}}
+
   {{template "moment" .}}
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/download-manager.js"></script>
-{{end}}
+{{template "views/bottom" .}}

@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div class="admin-sub-page">
   <h2 class="page-heading-comic" data-i18n="subscription_manager_heading">订阅管理器</h2>
   <p class="page-subtitle" data-i18n="subscription_subtitle">管理插件订阅</p>
@@ -106,8 +106,8 @@
   </div>
 </div>
 
-{{define "scripts"}}
+
   {{template "moment" .}}
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/subscription-manager.js"></script>
-{{end}}
+{{template "views/bottom" .}}

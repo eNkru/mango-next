@@ -120,6 +120,7 @@ type EntryDetail struct {
 
 type ReaderPageData struct {
 	BaseURL          string
+	PageName         string
 	Title            TitleDetail
 	Entry            EntryDetail
 	PageIdx          int
@@ -132,6 +133,7 @@ type ReaderPageData struct {
 
 type ReaderErrorPageData struct {
 	BaseURL      string
+	PageName     string
 	EntryName    string
 	EntryError   string
 	ExitURL      string

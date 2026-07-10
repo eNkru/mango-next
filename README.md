@@ -29,14 +29,40 @@ Mango is a self-hosted manga server and web-based reader.
 
 ## 🛠️ How to Develop
 
-Mango is primarily built in [Crystal](https://crystal-lang.org/) and utilizes the Kemal web framework, backed by SQLite3. The frontend utilizes Node.js and Gulp for asset processing.
+There are two versions:
 
-### Prerequisites
+| Version | Language | Requirements | Status |
+|---------|----------|-------------|--------|
+| **Go** (recommended) | Go | Only Go 1.26+ | Active migration |
+| Crystal | Crystal + Node.js | Crystal, Shards, Node.js, Yarn, system libs | Original |
+
+### Go Development (Recommended)
+
+Go development is much simpler — no Node.js, no system libraries, just Go:
+
+**Prerequisites:** Go 1.26+
+
+**Steps:**
+```bash
+# Build and run with one command:
+make go-run
+
+# Or manually:
+cd go && go run ./cmd/mango/
+```
+
+The Go server starts on port 9000 by default. On first launch it creates a default config and admin user.
+
+### Crystal Development
+
+Crystal requires more tooling:
+
+**Prerequisites**
 - **Crystal `1.0.0` or higher & Shards** (macOS: `brew install crystal`, Ubuntu/Debian: `sudo snap install crystal --classic`)
 - **Node.js & Yarn** (macOS: `brew install node yarn`)
 - **Required system libraries** (e.g., `libarchive`, `sqlite3`, and `wget`. macOS: `brew install libarchive sqlite3 wget`)
 
-### Development Steps
+**Steps**
 1. Clone the repository and navigate into the directory.
 2. Initialize and compile the frontend assets:
    ```bash
@@ -78,37 +104,123 @@ For ARM architectures:
 
 ---
 
-### Go Migration Build (Phase 4)
+## Go Migration
 
-Mango is being migrated from Crystal to Go. The Go version lives in `go/`:
+Mango is being migrated from Crystal to Go. The Go version lives under `go/` and is **fully self-contained** — no Crystal, no Node.js, no system libraries needed. Everything (templates, JS, CSS, images) is embedded into a single binary.
 
-**Prerequisites:** Go 1.26+
+### Prerequisites
 
-**Build:**
+- **Go 1.26+** — install via `brew install go` (macOS) or download from [go.dev](https://go.dev/dl/)
+- No other dependencies needed (SQLite, archive libraries, etc. are built-in)
+
+### Build the Binary
+
 ```bash
-make go-build       # build Go binary → mango-go
-make go-static      # fully static binary (no cgo)
+# From the project root:
+make go-build       # builds go/mango-go — a dynamically linked binary
+make go-static      # builds go/mango-go — fully static (no cgo), ideal for Docker
+```
+
+Or manually:
+
+```bash
+cd go
+go build -o mango-go ./cmd/mango/
+```
+
+The binary embeds all HTML templates, JavaScript, CSS, and images — it's a single file you can move anywhere.
+
+### Run Locally (first time)
+
+When you start the binary for the first time, it will:
+1. Create a default config file at `~/.config/mango/config.yml`
+2. Create a SQLite database at `~/.config/mango/...` (see the generated config)
+3. Print a one-time admin password to the console
+
+**Quick start:**
+
+```bash
+# Build
+make go-build
+
+# Run (creates default config + admin user on first launch)
+./mango-go
+
+# Or specify a custom config path:
+./mango-go -c /path/to/config.yml
+```
+
+**Using environment variables** (override config file values):
+
+```bash
+PORT=9001 DB_PATH=/tmp/mango.db ./mango-go
+```
+
+**Available env vars:** `HOST`, `PORT`, `BASE_URL`, `SESSION_SECRET`, `DB_PATH`, `LIBRARY_PATH`, `QUEUE_DB_PATH`, `LOG_LEVEL`, `DISABLE_LOGIN`, etc. (see `go/internal/config/config.go`).
+
+#### Config File Reference
+
+The config file is YAML. Example (`~/.config/mango/config.yml`):
+
+```yaml
+host: 0.0.0.0
+port: 9000
+base_url: /
+session_secret: your-secret-here
+library_path: /path/to/your/manga/collection
+db_path: /path/to/mango.db
+queue_db_path: /path/to/queue.db
+log_level: info
+disable_login: false
+```
+
+Set `library_path` to the directory containing your `.cbz`/`.zip`/`.cbr`/`.rar` files.
+
+### Run with Docker (Go version)
+
+**Build the Docker image:**
+
+```bash
+# From project root:
+docker build -t mango:go -f go/Dockerfile .
 ```
 
 **Run:**
+
 ```bash
-make go-run         # run in dev mode
-./mango-go          # run the built binary
+docker run -d \
+  -p 9000:9000 \
+  -v /path/to/your/manga:/library \
+  -v /path/to/config.yml:/config.yml \
+  --name mango \
+  mango:go -c /config.yml
 ```
 
-**Test:**
-```bash
-make go-check       # go vet
-make go-test        # run all tests (170+)
-make go-all         # vet + test + build
-```
+**Or use docker-compose:**
 
-**Docker (Go version):**
 ```bash
 docker compose -f docker-compose.go.yml up -d
 ```
 
-The Go binary is fully static (no cgo), uses the same SQLite DB and plugins as the Crystal version.
+### Test
+
+```bash
+make go-test        # run all 170+ tests
+make go-check       # go vet (static analysis)
+make go-all         # vet + test + build (all in one)
+```
+
+Or manually:
+
+```bash
+cd go && go test ./...
+```
+
+### Important Notes
+
+- The Go binary uses the **same SQLite database** and **same plugin directory** as the Crystal version — you can switch between them freely.
+- On first launch, the server creates an admin user with a random password (printed to stdout). **Save this password** or add a user via the admin CLI.
+- The binary is fully static (`make go-static` or `CGO_ENABLED=0 go build`) — no external dependencies at runtime. Works on any Linux distro without installing anything.
 
 ---
 
@@ -134,6 +246,8 @@ The simplest and recommended way to deploy Mango is using Docker or via Synology
    ```
 
 *Or use the included `docker-compose.yml` for convenience!*
+
+> **💡 Go version users:** See the [Go Migration → Run with Docker](#run-with-docker-go-version) section above for a simpler, dependency-free Docker image.
 
 ### Use the Pre-built Docker Hub Image
 

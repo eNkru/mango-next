@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <h2 class="page-heading-comic" data-i18n="admin_heading">管理员</h2>
 <p class="page-subtitle" data-i18n="admin_subtitle">系统设置与操作</p>
 
@@ -76,7 +76,7 @@
   <a class="uk-button comic-btn comic-btn-danger" href="{{.BaseURL}}logout" data-i18n="logout_btn">登出</a>
 </div>
 
-{{define "scripts"}}
+
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/admin.js"></script>
-{{end}}
+{{template "views/bottom" .}}

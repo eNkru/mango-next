@@ -56,49 +56,54 @@ const component = () => {
 					);
 				});
 		},
-		renderStrCell(str) {
+		formatCellValue(value) {
+			if (value === undefined || value === null) return "";
+			return value.toString();
+		},
+		renderStrCellText(str) {
+			const text = this.formatCellValue(str);
 			const maxLength = 40;
-			if (str.length > maxLength)
-				return `<td><span>${str.substring(
-					0,
-					maxLength
-				)}...</span><div uk-dropdown>${str}</div></td>`;
-			return `<td>${str}</td>`;
+			if (text.length > maxLength)
+				return `${text.substring(0, maxLength)}...`;
+			return text;
+		},
+		renderStrCellTitle(str) {
+			const text = this.formatCellValue(str);
+			return text.length > 40 ? text : "";
 		},
 		renderDateCell(timestamp) {
-			return `<td>${moment
+			return moment
 				.duration(moment.unix(timestamp).diff(moment()))
-				.humanize(true)}</td>`;
+				.humanize(true);
 		},
 		selected(event, modal) {
 			const id = event.currentTarget.getAttribute("sid");
 			this.subscription = this.subscriptions.find((s) => s.id === id);
 			UIkit.modal(modal).show();
 		},
-		renderFilterRow(ft) {
-			const key = ft.key;
+		renderFilterType(ft) {
 			let type = ft.type;
 			switch (type) {
 				case "number-min":
-					type = "number (minimum value)";
-					break;
+					return "number (minimum value)";
 				case "number-max":
-					type = "number (maximum value)";
-					break;
+					return "number (maximum value)";
 				case "date-min":
-					type = "minimum date";
-					break;
+					return "minimum date";
 				case "date-max":
-					type = "maximum date";
-					break;
+					return "maximum date";
+				default:
+					return type;
 			}
+		},
+		renderFilterValue(ft) {
 			let value = ft.value;
 
 			if (ft.type.startsWith("number") && isNaN(value)) value = "";
 			else if (ft.type.startsWith("date") && value)
 				value = moment(Number(value)).format("MMM D, YYYY");
 
-			return `<td>${key}</td><td>${type}</td><td>${value}</td>`;
+			return this.formatCellValue(value);
 		},
 		actionHandler(event, type) {
 			const id = $(event.currentTarget).closest("tr").attr("sid");

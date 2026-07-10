@@ -14,6 +14,7 @@ import (
 	"github.com/hkalexling/mango-go/internal/library"
 	"github.com/hkalexling/mango-go/internal/plugin"
 	"github.com/hkalexling/mango-go/internal/queue"
+	"github.com/hkalexling/mango-go/internal/thumbnail"
 )
 
 func (s *Server) apiLibrary(w http.ResponseWriter, r *http.Request) {
@@ -293,20 +294,23 @@ func (s *Server) apiDimensions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var dims []map[string]any
-	for i := 0; i < entry.PageCount(); i++ {
+	for i := 1; i <= entry.PageCount(); i++ {
 		img, err := entry.ReadPage(i)
 		if err != nil {
 			dims = append(dims, map[string]any{"width": 0, "height": 0})
 			continue
 		}
-		_ = img
+		w, h, err := thumbnail.DecodeConfig(img.Data)
+		if err != nil {
+			w, h = 0, 0
+		}
 		dims = append(dims, map[string]any{
-			"width":  0,
-			"height": 0,
+			"width":  w,
+			"height": h,
 		})
 	}
 
-	sendJSON(w, map[string]any{"success": true, "data": dims})
+	sendJSON(w, map[string]any{"success": true, "dimensions": dims})
 }
 
 func (s *Server) apiDownload(w http.ResponseWriter, r *http.Request) {

@@ -168,7 +168,9 @@
                   <template x-for="ch in chapters" :key="ch">
                     <tr class="ui-widget-content" :id="ch.id">
                       <template x-for="k in chapterKeys" :key="k">
-                        <td x-html="renderCell(ch[k])"></td>
+                        <td>
+                          <span x-text="renderCellText(ch[k])" :title="renderCellTitle(ch[k])"></span>
+                        </td>
                       </template>
                     </tr>
                   </template>
@@ -198,7 +200,11 @@
           </thead>
           <tbody>
             <template x-for="ft in filterSettings" :key="ft">
-              <tr x-html="renderFilterRow(ft)"></tr>
+              <tr>
+                <td x-text="ft.key"></td>
+                <td x-text="renderFilterType(ft)"></td>
+                <td x-text="renderFilterValue(ft)"></td>
+              </tr>
             </template>
           </tbody>
         </table>

@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div class="admin-sub-page">
   <table class="uk-table comic-table uk-table-middle">
     <thead>
@@ -33,7 +33,7 @@
   <a href="{{.BaseURL}}admin/user/edit" class="uk-button comic-btn comic-btn-primary comic-btn-sm"><i class="fas fa-plus uk-margin-small-right"></i> <span data-i18n="new_user">新用户</span></a>
 </div>
 
-{{define "scripts"}}
+
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/user.js"></script>
-{{end}}
+{{template "views/bottom" .}}

@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div class="home-page comic-card-entrance">
 
 {{if and .NewUser .EmptyLibrary}}
@@ -195,9 +195,6 @@
 
 {{end}}
 
-</div>
-
-{{define "scripts"}}
   {{template "dots" .}}
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/title.js"></script>
@@ -276,4 +273,5 @@
       track.style.webkitUserSelect = 'none';
     });
   </script>
-{{end}}
+</div>
+{{template "views/bottom" .}}

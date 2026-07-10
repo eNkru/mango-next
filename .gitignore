@@ -14,3 +14,11 @@ public/js/*.min.js
 public/css/*.css
 public/webfonts
 .idea/
+
+.agents/
+.claude/
+.codex/
+.opencode/
+.trellis/
+AGENTS.md
+mango-go

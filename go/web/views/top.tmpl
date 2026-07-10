@@ -25,14 +25,6 @@
           <li><a href="{{.BaseURL}}tags" data-i18n="tags">标签</a></li>
           {{if .IsAdmin}}
             <li><a href="{{.BaseURL}}admin" data-i18n="admin">管理员</a></li>
-            <li class="uk-parent">
-              <a href="#" data-i18n="download">下载</a>
-              <ul class="uk-nav-sub">
-                <li><a href="{{.BaseURL}}download/plugins" data-i18n="plugins">插件</a></li>
-                <li><a href="{{.BaseURL}}admin/downloads" data-i18n="download_manager">下载管理器</a></li>
-                <li><a href="{{.BaseURL}}admin/subscriptions" data-i18n="subscription_manager">订阅管理器</a></li>
-              </ul>
-            </li>
           {{end}}
           <hr uk-divider>
           <li><a onclick="cycleLanguage()" class="lang-toggle" data-i18n-title="language" title="语言"><span class="lang-toggle-label">简</span></a></li>
@@ -54,10 +46,7 @@
         <li><a href="{{.BaseURL}}tags" data-i18n="tags" data-i18n-title="tags" title="标签"><i class="fas fa-tags"></i><span data-i18n="tags">标签</span></a></li>
         {{if .IsAdmin}}
           <li><a href="{{.BaseURL}}admin" data-i18n="admin" data-i18n-title="admin" title="管理员"><i class="fas fa-cog"></i><span data-i18n="admin">管理员</span></a></li>
-          <li class="sidebar-divider"></li>
-          <li><a href="{{.BaseURL}}download/plugins" data-i18n="plugins" data-i18n-title="plugins" title="插件"><i class="fas fa-puzzle-piece"></i><span data-i18n="plugins">插件</span></a></li>
-          <li><a href="{{.BaseURL}}admin/downloads" data-i18n="download_manager" data-i18n-title="download_manager" title="下载管理器"><i class="fas fa-download"></i><span data-i18n="download_manager">下载管理器</span></a></li>
-          <li><a href="{{.BaseURL}}admin/subscriptions" data-i18n="subscription_manager" data-i18n-title="subscription_manager" title="订阅管理器"><i class="fas fa-rss"></i><span data-i18n="subscription_manager">订阅管理器</span></a></li>
+
         {{end}}
       </ul>
       <div class="sidebar-toggle">
@@ -76,72 +65,3 @@
     <!-- Main content (single render, responsive) -->
     <div class="app-content">
       <div id="alert"></div>
-      {{template "content" .}}
-      <div id="totop-wrapper" x-data="{}" x-show="$('body').height() > 1.5 * $(window).height()">
-        <a href="#" uk-totop uk-scroll></a>
-      </div>
-    </div>
-    <script>
-      setTheme();
-      const base_url = "{{.BaseURL}}";
-
-      // Sidebar toggle (collapse/expand)
-      function toggleSidebar() {
-        const sidebar = document.querySelector('.app-sidebar');
-        const body = document.body;
-        sidebar.classList.toggle('sidebar-collapsed');
-        body.classList.toggle('sidebar-is-collapsed');
-        localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('sidebar-collapsed'));
-      }
-
-      // Restore sidebar state on load
-      (function() {
-        if (localStorage.getItem('sidebar-collapsed') === 'true') {
-          document.querySelector('.app-sidebar').classList.add('sidebar-collapsed');
-          document.body.classList.add('sidebar-is-collapsed');
-        }
-      })();
-
-      function filterPageItems(input) {
-        var query = (input || '').trim();
-        var visibleCount = 0;
-
-        if (query === '') {
-          $('.item').each(function(){
-            $(this).removeAttr('hidden');
-          });
-          $('#no-results').hide();
-          return;
-        }
-
-        var regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-        $('.item').each(function(){
-          var text = $(this).find('.uk-card-title').map(function(){
-            return $(this).text();
-          }).get().join(' ');
-          if (text.match(regex)) {
-            $(this).removeAttr('hidden');
-            visibleCount++;
-          } else {
-            $(this).attr('hidden', '');
-          }
-        });
-
-        if (visibleCount === 0 && $('#no-results').length) {
-          $('#no-results').show();
-        } else {
-          $('#no-results').hide();
-        }
-      }
-
-      $(function(){
-        $('.uk-search-input.search-input').on('input', function(){
-          filterPageItems($(this).val());
-        });
-      });
-    </script>
-    {{ template "uikit" . }}
-    {{block "scripts" .}}{{end}}
-  </body>
-
-</html>

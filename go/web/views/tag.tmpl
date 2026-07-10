@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div class="library-page">
   <h2 class="page-heading-comic"><span data-i18n="tag_heading_prefix">标签:</span> {{.Tag}} <span class="comic-section-count">{{len .Titles}} <span data-i18n="items_count">标记</span></span></h2>
 
@@ -52,10 +52,10 @@
   </div>
 </div>
 
-{{define "scripts"}}
+
   {{template "dots" .}}
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/title.js"></script>
   <script src="{{.BaseURL}}js/search.js"></script>
   <script src="{{.BaseURL}}js/sort-items.js"></script>
-{{end}}
+{{template "views/bottom" .}}

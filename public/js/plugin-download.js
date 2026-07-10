@@ -195,7 +195,8 @@ const component = () => {
 								"success",
 								`${successCount} of ${
 									successCount + failCount
-								} 章节已添加到下载队列。 您可以在 <a href="${base_url}admin/downloads">下载管理器</a>页面查看和管理.`
+								} 章节已添加到下载队列。 您可以在 <a href="${base_url}admin/downloads">下载管理器</a>页面查看和管理.`,
+								{ allowHtml: true }
 							);
 						})
 						.catch((e) => {
@@ -410,43 +411,46 @@ const component = () => {
 		numIsDate(num) {
 			return !isNaN(num) && Number(num) > 328896000000; // 328896000000 => 1 Jan, 1980
 		},
-		renderCell(value) {
+		formatCellValue(value) {
+			if (Array.isArray(value)) return value.join(", ");
+			if (value === undefined || value === null) return "";
 			if (this.numIsDate(value))
-				return `<span>${moment(Number(value)).format(
-					"MMM D, YYYY"
-				)}</span>`;
-			const maxLength = 40;
-			if (value && value.length > maxLength)
-				return `<span>${value.substr(
-					0,
-					maxLength
-				)}...</span><div uk-dropdown>${value}</div>`;
-			return `<span>${value}</span>`;
+				return moment(Number(value)).format("MMM D, YYYY");
+			return value.toString();
 		},
-		renderFilterRow(ft) {
-			const key = ft.key;
+		renderCellText(value) {
+			const text = this.formatCellValue(value);
+			const maxLength = 40;
+			if (text.length > maxLength) return `${text.substr(0, maxLength)}...`;
+			return text;
+		},
+		renderCellTitle(value) {
+			const text = this.formatCellValue(value);
+			return text.length > 40 ? text : "";
+		},
+		renderFilterType(ft) {
 			let type = ft.type;
 			switch (type) {
 				case "number-min":
-					type = "number (minimum value)";
-					break;
+					return "number (minimum value)";
 				case "number-max":
-					type = "number (maximum value)";
-					break;
+					return "number (maximum value)";
 				case "date-min":
-					type = "minimum date";
-					break;
+					return "minimum date";
 				case "date-max":
-					type = "maximum date";
-					break;
+					return "maximum date";
+				default:
+					return type;
 			}
+		},
+		renderFilterValue(ft) {
 			let value = ft.value;
 
 			if (ft.type.startsWith("number") && isNaN(value)) value = "";
 			else if (ft.type.startsWith("date") && value)
 				value = moment(Number(value)).format("MMM D, YYYY");
 
-			return `<td>${key}</td><td>${type}</td><td>${value}</td>`;
+			return this.formatCellValue(value);
 		},
 	};
 };

@@ -69,7 +69,6 @@ func (s *Server) Start(ctx context.Context) error {
 func (s *Server) RegisterRoutes() {
 	r := s.Router
 	deps := s.Deps
-	cfg := deps.Config
 
 	r.Get("/login", s.handleLoginPage)
 	r.Post("/login", s.handleLogin)
@@ -93,9 +92,10 @@ func (s *Server) RegisterRoutes() {
 		r.Get("/opds", s.handleOPDSIndex)
 		r.Get("/opds/book/{title_id}", s.handleOPDSTitle)
 
-		if cfg.PluginPath != "" {
-			r.Get("/download/plugins", s.handlePluginDownload)
-		}
+		// DISABLED: plugin downloads
+		// if deps.Config.PluginPath != "" {
+		// 	r.Get("/download/plugins", s.handlePluginDownload)
+		// }
 
 		r.Route("/admin", func(r chi.Router) {
 			r.Use(AdminMiddleware)
@@ -104,8 +104,9 @@ func (s *Server) RegisterRoutes() {
 			r.Get("/user/edit", s.handleUserEdit)
 			r.Post("/user/edit", s.handleUserEditPost)
 			r.Post("/user/edit/{original_username}", s.handleUserEditPost)
-			r.Get("/downloads", s.handleDownloadManager)
-			r.Get("/subscriptions", s.handleSubscriptionManager)
+			// DISABLED: download/subscription manager
+			// r.Get("/downloads", s.handleDownloadManager)
+			// r.Get("/subscriptions", s.handleSubscriptionManager)
 			r.Get("/missing", s.handleMissingItems)
 		})
 
@@ -135,17 +136,18 @@ func (s *Server) RegisterRoutes() {
 				r.Put("/display_name/{tid}/{name}", s.apiAdminSetDisplayName)
 				r.Put("/sort_title/{tid}", s.apiAdminSetSortTitle)
 				r.Post("/upload/{target}", s.apiAdminUpload)
-				r.Get("/plugin", s.apiAdminListPlugins)
-				r.Get("/plugin/info", s.apiAdminPluginInfo)
-				r.Get("/plugin/search", s.apiAdminPluginSearch)
-				r.Post("/plugin/subscriptions", s.apiAdminCreateSubscription)
-				r.Get("/plugin/subscriptions", s.apiAdminListSubscriptions)
-				r.Delete("/plugin/subscriptions", s.apiAdminDeleteSubscription)
-				r.Post("/plugin/subscriptions/update", s.apiAdminUpdateSubscription)
-				r.Get("/plugin/list", s.apiAdminPluginList)
-				r.Post("/plugin/download", s.apiAdminPluginDownload)
-				r.Get("/queue", s.apiAdminQueue)
-				r.Post("/queue/{action}", s.apiAdminQueueAction)
+				// DISABLED: plugin and queue management
+				// r.Get("/plugin", s.apiAdminListPlugins)
+				// r.Get("/plugin/info", s.apiAdminPluginInfo)
+				// r.Get("/plugin/search", s.apiAdminPluginSearch)
+				// r.Post("/plugin/subscriptions", s.apiAdminCreateSubscription)
+				// r.Get("/plugin/subscriptions", s.apiAdminListSubscriptions)
+				// r.Delete("/plugin/subscriptions", s.apiAdminDeleteSubscription)
+				// r.Post("/plugin/subscriptions/update", s.apiAdminUpdateSubscription)
+				// r.Get("/plugin/list", s.apiAdminPluginList)
+				// r.Post("/plugin/download", s.apiAdminPluginDownload)
+				// r.Get("/queue", s.apiAdminQueue)
+				// r.Post("/queue/{action}", s.apiAdminQueueAction)
 				r.Put("/tags/{tid}/{tag}", s.apiAdminAddTag)
 				r.Delete("/tags/{tid}/{tag}", s.apiAdminDeleteTag)
 				r.Get("/titles/missing", s.apiAdminMissingTitles)
@@ -183,8 +185,7 @@ func (s *Server) servePublic() {
 
 func (s *Server) renderLayout(w http.ResponseWriter, page string, data any) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	// The layout template references page content via {{ template "content" . }}
-	if err := s.Deps.Templates.Render(w, "views/layout", data); err != nil {
+	if err := s.Deps.Templates.Render(w, "views/"+page, data); err != nil {
 		log.Printf("Template render error: %v", err)
 		http.Error(w, "Template error", http.StatusInternalServerError)
 	}

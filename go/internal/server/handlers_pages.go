@@ -47,10 +47,10 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
 	data := HomePageData{
 		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  GetIsAdmin(r),
-			PageName: "home",
-			Version:  "0.1.0",
+			BaseURL:             s.Deps.Config.BaseURL,
+			IsAdmin:             GetIsAdmin(r),
+			PageName:            "home",
+			Version:             "0.1.0",
 		},
 		ConfigLibraryPath:  s.Deps.Config.LibraryPath,
 		ConfigPath:         s.Deps.Config.DBPath,
@@ -88,10 +88,10 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 
 	data := LibraryPageData{
 		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  isAdmin,
-			PageName: "library",
-			Version:  "0.1.0",
+			BaseURL:             s.Deps.Config.BaseURL,
+			IsAdmin:             isAdmin,
+			PageName:            "library",
+			Version:             "0.1.0",
 		},
 		Titles:     titles,
 		Percentage: make([]float64, len(titles)),
@@ -101,13 +101,101 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleTitle(w http.ResponseWriter, r *http.Request) {
-	ld := LayoutData{
-		BaseURL:  s.Deps.Config.BaseURL,
-		IsAdmin:  GetIsAdmin(r),
-		PageName: "title",
-		Version:  "0.1.0",
+	titleID := chi.URLParam(r, "title")
+	username := GetUsername(r)
+	lib := s.Deps.Library
+
+	lib.RLock()
+	t, ok := lib.TitleHash[titleID]
+	lib.RUnlock()
+
+	if !ok {
+		http.Error(w, "Title not found", http.StatusNotFound)
+		return
 	}
-	s.renderLayout(w, "title", ld)
+
+	// Build sorted sub-titles
+	var sortedTitles []TitleDetail
+	lib.RLock()
+	for _, subID := range t.TitleIDs {
+		subT, subOk := lib.TitleHash[subID]
+		if !subOk {
+			continue
+		}
+		sortedTitles = append(sortedTitles, TitleDetail{
+			ID:       subT.ID,
+			Name:     subT.Name,
+			CoverURL: fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, subT.ID, firstEntryID(subT)),
+		})
+	}
+
+	// Build entries
+	var entries []EntryDetail
+	for _, e := range t.Entries {
+		entries = append(entries, EntryDetail{
+			ID:        e.ID(),
+			Name:      e.Name(),
+			PageCount: e.PageCount(),
+			CoverURL:  fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, e.ID()),
+		})
+	}
+
+	// Build parent IDs for breadcrumb
+	var parentIDs []string
+	if t.ParentID != "" {
+		parentIDs = append(parentIDs, t.ParentID)
+	}
+
+	// Compute percentages
+	percentage := make([]float64, len(entries))
+	for i, entry := range entries {
+		prog, _ := s.Deps.Storage.LoadProgress(username, t.ID, strPtr(entry.ID))
+		if entry.PageCount > 0 {
+			percentage[i] = float64(prog) / float64(entry.PageCount) * 100
+		}
+	}
+
+	titlePercentage := make([]float64, len(sortedTitles))
+	for i, st := range sortedTitles {
+		subT, subOk := lib.TitleHash[st.ID]
+		if !subOk {
+			continue
+		}
+		prog, _ := s.Deps.Storage.LoadProgress(username, st.ID, nil)
+		totalPages := 0
+		for _, e := range subT.DeepEntries() {
+			totalPages += e.PageCount()
+		}
+		if totalPages > 0 {
+			titlePercentage[i] = float64(prog) / float64(totalPages) * 100
+		}
+	}
+	lib.RUnlock()
+
+	hidden, _ := s.Deps.Storage.GetTitleHidden(t.ID)
+
+	data := TitlePageData{
+		LayoutData: LayoutData{
+			BaseURL:  s.Deps.Config.BaseURL,
+			IsAdmin:  GetIsAdmin(r),
+			PageName: "title",
+			Version:  "0.1.0",
+		},
+		Title: TitleDetail{
+			ID:        t.ID,
+			Name:      t.Name,
+			CoverURL:  fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, firstEntryID(t)),
+			ParentIDs: parentIDs,
+			Hidden:    hidden == 1,
+		},
+		SortedTitles:    sortedTitles,
+		Entries:         entries,
+		Percentage:      percentage,
+		TitlePercentage: titlePercentage,
+		IsHidden:        hidden == 1,
+	}
+
+	s.renderLayout(w, "title", data)
 }
 
 func (s *Server) handleTags(w http.ResponseWriter, r *http.Request) {
@@ -134,10 +222,10 @@ func (s *Server) handleTags(w http.ResponseWriter, r *http.Request) {
 
 	data := TagsPageData{
 		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  isAdmin,
-			PageName: "tags",
-			Version:  "0.1.0",
+			BaseURL:             s.Deps.Config.BaseURL,
+			IsAdmin:             isAdmin,
+			PageName:            "tags",
+			Version:             "0.1.0",
 		},
 		Tags: tagList,
 	}
@@ -146,13 +234,45 @@ func (s *Server) handleTags(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleTag(w http.ResponseWriter, r *http.Request) {
-	ld := LayoutData{
-		BaseURL:  s.Deps.Config.BaseURL,
-		IsAdmin:  GetIsAdmin(r),
-		PageName: "tag",
-		Version:  "0.1.0",
+	tag := chi.URLParam(r, "tag")
+	showHidden := r.URL.Query().Get("show_hidden") == "1"
+
+	titleIDs, err := s.Deps.Storage.GetTagTitles(tag, showHidden)
+	if err != nil || len(titleIDs) == 0 {
+		http.Error(w, "Tag not found", http.StatusNotFound)
+		return
 	}
-	s.renderLayout(w, "tag", ld)
+
+	lib := s.Deps.Library
+	lib.RLock()
+	var titles []LibraryTitle
+	for _, id := range titleIDs {
+		t, ok := lib.TitleHash[id]
+		if !ok {
+			continue
+		}
+		titles = append(titles, LibraryTitle{
+			ID:         t.ID,
+			Name:       t.Name,
+			CoverURL:   fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, firstEntryID(t)),
+			EntryCount: len(t.Entries),
+		})
+	}
+	lib.RUnlock()
+
+	data := TagPageData{
+		LayoutData: LayoutData{
+			BaseURL:  s.Deps.Config.BaseURL,
+			IsAdmin:  GetIsAdmin(r),
+			PageName: "tag",
+			Version:  "0.1.0",
+		},
+		Tag:        tag,
+		Titles:     titles,
+		ShowHidden: showHidden,
+	}
+
+	s.renderLayout(w, "tag", data)
 }
 
 func (s *Server) handleAPIDocs(w http.ResponseWriter, r *http.Request) {
@@ -226,6 +346,7 @@ func (s *Server) handleReader(w http.ResponseWriter, r *http.Request) {
 
 	data := ReaderPageData{
 		BaseURL:          s.Deps.Config.BaseURL,
+		PageName:         "reader",
 		Title:            TitleDetail{ID: t.ID, Name: t.Name},
 		Entry:            EntryDetail{ID: entryID, Name: entry.Name()},
 		PageIdx:          page,
@@ -241,11 +362,11 @@ func (s *Server) handleReader(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handlePluginDownload(w http.ResponseWriter, r *http.Request) {
 	ld := LayoutData{
-		BaseURL:    s.Deps.Config.BaseURL,
-		IsAdmin:    GetIsAdmin(r),
-		PageName:   "plugin-download",
-		Version:    "0.1.0",
-		PluginPath: s.Deps.Config.PluginPath,
+		BaseURL:             s.Deps.Config.BaseURL,
+		IsAdmin:             GetIsAdmin(r),
+		PageName:            "plugin-download",
+		Version:             "0.1.0",
+		PluginPath:          s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "plugin-download", ld)
 }
@@ -253,10 +374,10 @@ func (s *Server) handlePluginDownload(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleAdmin(w http.ResponseWriter, r *http.Request) {
 	ld := AdminPageData{
 		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  true,
-			PageName: "admin",
-			Version:  "0.1.0",
+			BaseURL:             s.Deps.Config.BaseURL,
+			IsAdmin:             true,
+			PageName:            "admin",
+			Version:             "0.1.0",
 		},
 	}
 	s.renderLayout(w, "admin", ld)
@@ -280,10 +401,10 @@ func (s *Server) handleUserList(w http.ResponseWriter, r *http.Request) {
 
 	data := UserPageData{
 		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  true,
-			PageName: "user",
-			Version:  "0.1.0",
+			BaseURL:             s.Deps.Config.BaseURL,
+			IsAdmin:             true,
+			PageName:            "user",
+			Version:             "0.1.0",
 		},
 		Users:    userPairs,
 		Username: GetUsername(r),
@@ -297,10 +418,10 @@ func (s *Server) handleUserEdit(w http.ResponseWriter, r *http.Request) {
 
 	data := UserEditPageData{
 		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  true,
-			PageName: "user-edit",
-			Version:  "0.1.0",
+			BaseURL:             s.Deps.Config.BaseURL,
+			IsAdmin:             true,
+			PageName:            "user-edit",
+			Version:             "0.1.0",
 		},
 		NewUser:  username == "",
 		Username: username,
@@ -340,32 +461,32 @@ func (s *Server) handleUserEditPost(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleDownloadManager(w http.ResponseWriter, r *http.Request) {
 	ld := LayoutData{
-		BaseURL:    s.Deps.Config.BaseURL,
-		IsAdmin:    true,
-		PageName:   "download-manager",
-		Version:    "0.1.0",
-		PluginPath: s.Deps.Config.PluginPath,
+		BaseURL:             s.Deps.Config.BaseURL,
+		IsAdmin:             true,
+		PageName:            "download-manager",
+		Version:             "0.1.0",
+		PluginPath:          s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "download-manager", ld)
 }
 
 func (s *Server) handleSubscriptionManager(w http.ResponseWriter, r *http.Request) {
 	ld := LayoutData{
-		BaseURL:    s.Deps.Config.BaseURL,
-		IsAdmin:    true,
-		PageName:   "subscription-manager",
-		Version:    "0.1.0",
-		PluginPath: s.Deps.Config.PluginPath,
+		BaseURL:             s.Deps.Config.BaseURL,
+		IsAdmin:             true,
+		PageName:            "subscription-manager",
+		Version:             "0.1.0",
+		PluginPath:          s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "subscription-manager", ld)
 }
 
 func (s *Server) handleMissingItems(w http.ResponseWriter, r *http.Request) {
 	ld := LayoutData{
-		BaseURL:  s.Deps.Config.BaseURL,
-		IsAdmin:  true,
-		PageName: "missing-items",
-		Version:  "0.1.0",
+		BaseURL:             s.Deps.Config.BaseURL,
+		IsAdmin:             true,
+		PageName:            "missing-items",
+		Version:             "0.1.0",
 	}
 	s.renderLayout(w, "missing-items", ld)
 }

@@ -182,13 +182,11 @@ func userExists(st *storage.Storage, username string) bool {
 	return err == nil && exists
 }
 
-// requireAuth sends a 401 response appropriate for the request type.
+// requireAuth sends a 401 for API routes or redirects to login for pages.
 func requireAuth(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/api") {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	// For non-API routes, we'd redirect to login. Since Phase 1 doesn't
-	// have the full server yet, send a 401 with info.
-	http.Error(w, "Authentication required", http.StatusUnauthorized)
+	http.Redirect(w, r, "/login", http.StatusFound)
 }

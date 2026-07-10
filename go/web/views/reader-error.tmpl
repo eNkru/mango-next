@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div id="modal" class="uk-flex-top error-modal" uk-modal>
   <div class="uk-modal-dialog uk-margin-auto-vertical">
     <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -20,11 +20,11 @@
   </div>
 </div>
 
-{{define "scripts"}}
+
   <script>
     UIkit.modal('#modal').show();
     UIkit.util.on('#modal', 'hide', function() {
       location.href = "{{.ExitURL}}";
     });
   </script>
-{{end}}
+{{template "views/bottom" .}}

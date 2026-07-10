@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <h2 class="page-heading-comic" data-i18n="tags_heading">标签</h2>
 <p class="page-subtitle">{{len .Tags}} <span data-i18n="tags_count">标签找到</span></p>
 
@@ -9,4 +9,4 @@
     </span>
   {{end}}
 </div>
-{{end}}
+{{template "views/bottom" .}}

@@ -178,7 +178,7 @@ struct APIRouter
 
         img = entry.get_thumbnail || entry.read_page 1
         raise "Failed to get cover of `#{title.title}/#{entry.title}`" \
-           if img.nil?
+          if img.nil?
 
         e_tag = Digest::SHA1.hexdigest img.data
         if prev_e_tag == e_tag
@@ -524,6 +524,8 @@ struct APIRouter
     delete "/api/admin/user/delete/:username" do |env|
       begin
         username = env.params.url["username"]
+        raise "Cannot delete the current user" if username == get_username env
+
         Storage.default.delete_user username
       rescue e
         Logger.error e

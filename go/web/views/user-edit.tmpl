@@ -1,4 +1,4 @@
-{{define "content"}}
+{{template "views/top" .}}
 <div class="admin-sub-page">
   <form class="mango-form" action="{{.BaseURL}}admin/user/edit" method="post" accept-charset="utf-8">
 
@@ -49,7 +49,7 @@
   </form>
 </div>
 
-{{define "scripts"}}
+
   <script>
     var username;
     var error;
@@ -72,4 +72,4 @@
   </script>
   <script src="{{.BaseURL}}js/alert.js"></script>
   <script src="{{.BaseURL}}js/user-edit.js"></script>
-{{end}}
+{{template "views/bottom" .}}
