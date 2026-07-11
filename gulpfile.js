@@ -13,7 +13,10 @@ gulp.task('copy-font', () => {
 	return gulp.src([
 			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff',
 			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2',
-			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf'
+			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.ttf',
+			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff',
+			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2',
+			'node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.ttf'
 		], {
 			encoding: false
 		})

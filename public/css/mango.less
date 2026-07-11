@@ -4,6 +4,7 @@
 // FontAwesome
 @import "../../node_modules/@fortawesome/fontawesome-free/less/fontawesome.less";
 @import "../../node_modules/@fortawesome/fontawesome-free/less/solid.less";
+@import "../../node_modules/@fortawesome/fontawesome-free/less/brands.less";
 
 @font-face {
   src: url('@{fa-font-path}/fa-solid-900.woff2');
@@ -4233,6 +4234,67 @@ body.mango-app-shell:not(.uk-light) .showcase-art::before {
 .uk-light {
   .lang-toggle-label {
     color: inherit;
+  }
+}
+
+// --- Floating GitHub button (flat baseline; comic overrides in comic-theme.less) ---
+.github-float {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1100;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  color: @text-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: @shadow-md;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  font-size: 1.2rem;
+
+  &:hover {
+    background: @accent;
+    color: #fff;
+    transform: scale(1.08);
+    box-shadow: @shadow-lg;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid @accent;
+    outline-offset: 2px;
+  }
+
+  // On mobile, adjust position below the top bar
+  @media (max-width: 959px) {
+    top: 64px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+}
+
+// Flat dark theme overrides for GitHub button
+.uk-light {
+  .github-float {
+    background: rgba(255,255,255,0.1);
+    color: @dark-text-secondary;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+
+    &:hover {
+      background: @dark-accent;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+
+    &:focus-visible {
+      outline-color: @dark-accent;
+    }
   }
 }
 
