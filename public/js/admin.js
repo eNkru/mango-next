@@ -27,6 +27,7 @@ const component = () => {
 			const newStyle = $(event.currentTarget).val().toLowerCase();
 			saveUIStyle(newStyle);
 			setUIStyle(newStyle);
+			setTheme();
 		},
 		scan() {
 			if (this.scanning) return;
