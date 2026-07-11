@@ -25,6 +25,7 @@
           <li><a href="<%= base_url %>tags" data-i18n="tags">标签</a></li>
           <% if is_admin %>
             <li><a href="<%= base_url %>admin" data-i18n="admin">管理员</a></li>
+            <!-- Download menu hidden
             <li class="uk-parent">
               <a href="#" data-i18n="download">下载</a>
               <ul class="uk-nav-sub">
@@ -33,6 +34,7 @@
                 <li><a href="<%= base_url %>admin/subscriptions" data-i18n="subscription_manager">订阅管理器</a></li>
               </ul>
             </li>
+            -->
           <% end %>
           <hr uk-divider>
           <li><a onclick="cycleLanguage()" class="lang-toggle" data-i18n-title="language" title="语言"><span class="lang-toggle-label">简</span></a></li>
@@ -55,9 +57,11 @@
         <% if is_admin %>
           <li><a href="<%= base_url %>admin" data-i18n="admin" data-i18n-title="admin" title="管理员"><i class="fas fa-cog"></i><span data-i18n="admin">管理员</span></a></li>
           <li class="sidebar-divider"></li>
+          <!-- Plugins, downloads, and subscriptions hidden
           <li><a href="<%= base_url %>download/plugins" data-i18n="plugins" data-i18n-title="plugins" title="插件"><i class="fas fa-puzzle-piece"></i><span data-i18n="plugins">插件</span></a></li>
           <li><a href="<%= base_url %>admin/downloads" data-i18n="download_manager" data-i18n-title="download_manager" title="下载管理器"><i class="fas fa-download"></i><span data-i18n="download_manager">下载管理器</span></a></li>
           <li><a href="<%= base_url %>admin/subscriptions" data-i18n="subscription_manager" data-i18n-title="subscription_manager" title="订阅管理器"><i class="fas fa-rss"></i><span data-i18n="subscription_manager">订阅管理器</span></a></li>
+          -->
         <% end %>
       </ul>
       <div class="sidebar-toggle">
@@ -72,6 +76,11 @@
         <a href="<%= base_url %>logout" data-i18n-title="logout" title="登出"><i class="fas fa-sign-out-alt"></i></a>
       </div>
     </nav>
+
+    <!-- Floating GitHub button -->
+    <a href="https://github.com/eNkru/mango-next" target="_blank" rel="noopener noreferrer" class="github-float" data-i18n-title="view_on_github" data-i18n-aria-label="view_on_github" title="在 GitHub 上查看" aria-label="在 GitHub 上查看">
+      <i class="fab fa-github"></i>
+    </a>
 
     <!-- Main content (single render, responsive) -->
     <div class="app-content">
