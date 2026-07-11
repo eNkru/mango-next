@@ -118,6 +118,27 @@ const saveUIStyle = style => {
 };
 
 /**
+ * Apply classList changes to documentElement and body when present.
+ * Avoids jQuery no-ops when script runs before <body> exists (FOUC).
+ */
+const applyThemeClass = (action, className) => {
+	const roots = [document.documentElement];
+	if (document.body) roots.push(document.body);
+	roots.forEach(el => {
+		if (action === 'add') el.classList.add(className);
+		else el.classList.remove(className);
+	});
+	// Keep jQuery in sync for any late-bound body selectors
+	if (action === 'add') {
+		$('html').addClass(className);
+		$('body').addClass(className);
+	} else {
+		$('html').removeClass(className);
+		$('body').removeClass(className);
+	}
+};
+
+/**
  * Apply a UI style to the body/html elements.
  * Also syncs the dark-mode visual classes so that switching between
  * comic/flat doesn't require a full theme re-apply.
@@ -129,20 +150,20 @@ const setUIStyle = (style) => {
 	if (!style) style = loadUIStyle();
 	const theme = loadTheme();
 	if (style === 'comic') {
-		$('html').addClass('comic-theme');
-		$('body').addClass('comic-theme');
+		applyThemeClass('add', 'comic-theme');
 		// If dark theme is active, use CSS classes for background
 		if (theme === 'dark') {
+			document.documentElement.style.background = '';
 			$('html').css('background', '');
-			$('html').addClass('comic-theme-dark');
-			$('body').addClass('comic-theme-dark');
+			applyThemeClass('add', 'comic-theme-dark');
 		}
 	} else {
-		$('html').removeClass('comic-theme').removeClass('comic-theme-dark');
-		$('body').removeClass('comic-theme').removeClass('comic-theme-dark');
+		applyThemeClass('remove', 'comic-theme');
+		applyThemeClass('remove', 'comic-theme-dark');
 		// If dark theme is active, use inline style for background
 		if (theme === 'dark') {
-			$('html').css('background', 'rgb(20, 20, 20)');
+			document.documentElement.style.background = '#121212';
+			$('html').css('background', '#121212');
 		}
 	}
 };
@@ -253,24 +274,28 @@ const setTheme = (theme) => {
 	const uiStyle = loadUIStyle();
 	if (theme === 'dark') {
 		// In comic mode, CSS handles the html/body backgrounds
-		// (comic-theme-dark classes). In flat mode, use inline style.
+		// (comic-theme-dark classes). In flat mode, html bg via inline;
+		// body bg via body.uk-light:not(.comic-theme*) in comic-theme.less.
 		if (uiStyle !== 'comic') {
-			$('html').css('background', 'rgb(20, 20, 20)');
+			document.documentElement.style.background = '#121212';
+			$('html').css('background', '#121212');
 		} else {
+			document.documentElement.style.background = '';
 			$('html').css('background', '');
 		}
+		if (document.body) document.body.classList.add('uk-light');
 		$('body').addClass('uk-light');
 		$('.ui-widget-content').addClass('dark');
 		if (uiStyle === 'comic') {
-			$('html').addClass('comic-theme-dark');
-			$('body').addClass('comic-theme-dark');
+			applyThemeClass('add', 'comic-theme-dark');
 		}
 	} else {
+		document.documentElement.style.background = '';
 		$('html').css('background', '');
+		if (document.body) document.body.classList.remove('uk-light');
 		$('body').removeClass('uk-light');
 		$('.ui-widget-content').removeClass('dark');
-		$('html').removeClass('comic-theme-dark');
-		$('body').removeClass('comic-theme-dark');
+		applyThemeClass('remove', 'comic-theme-dark');
 	}
 };
 
@@ -282,9 +307,92 @@ window.toggleUIStyle = toggleUIStyle;
 window.cycleLanguage = cycleLanguage;
 window.setLanguage = setLanguage;
 
+/**
+ * Floating utility speed-dial (language / theme / style / GitHub / logout)
+ */
+const setUtilityFabOpen = (open) => {
+	const root = document.getElementById('utility-fab');
+	if (!root) return;
+	const primary = document.getElementById('utility-fab-primary');
+	const menu = document.getElementById('utility-fab-menu');
+	if (!primary || !menu) return;
+
+	if (open) {
+		root.classList.add('is-open');
+		menu.hidden = false;
+		primary.setAttribute('aria-expanded', 'true');
+	} else {
+		root.classList.remove('is-open');
+		menu.hidden = true;
+		primary.setAttribute('aria-expanded', 'false');
+	}
+};
+
+const closeUtilityFab = () => setUtilityFabOpen(false);
+
+const toggleUtilityFab = () => {
+	const root = document.getElementById('utility-fab');
+	if (!root) return;
+	setUtilityFabOpen(!root.classList.contains('is-open'));
+};
+
+const initUtilityFab = () => {
+	const root = document.getElementById('utility-fab');
+	const primary = document.getElementById('utility-fab-primary');
+	const menu = document.getElementById('utility-fab-menu');
+	if (!root || !primary || !menu) return;
+
+	primary.addEventListener('click', (event) => {
+		event.stopPropagation();
+		toggleUtilityFab();
+	});
+
+	menu.addEventListener('click', (event) => {
+		const actionEl = event.target.closest('[data-utility-action]');
+		if (!actionEl || !menu.contains(actionEl)) return;
+
+		const action = actionEl.getAttribute('data-utility-action');
+		if (action === 'language') {
+			event.preventDefault();
+			cycleLanguage();
+			closeUtilityFab();
+		} else if (action === 'theme') {
+			event.preventDefault();
+			toggleTheme();
+			closeUtilityFab();
+		} else if (action === 'ui-style') {
+			event.preventDefault();
+			toggleUIStyle();
+			closeUtilityFab();
+		} else {
+			// GitHub / logout: let navigation proceed, still close for consistency
+			closeUtilityFab();
+		}
+	});
+
+	document.addEventListener('click', (event) => {
+		if (!root.classList.contains('is-open')) return;
+		if (root.contains(event.target)) return;
+		closeUtilityFab();
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key !== 'Escape') return;
+		if (!root.classList.contains('is-open')) return;
+		closeUtilityFab();
+		primary.focus();
+	});
+};
+
+window.toggleUtilityFab = toggleUtilityFab;
+window.closeUtilityFab = closeUtilityFab;
+
 // Apply UI style and theme before document is ready to prevent the
-// initial flash of white on most pages
+// initial flash of white on most pages. applyThemeClass targets
+// documentElement immediately; body classes apply when body exists
+// (layout/login also call setUIStyle+setTheme after body is present).
 setUIStyle();
+setTheme();
 // Apply i18n translation on page load (non-default only to avoid flash)
 $(() => {
 	const lang = loadLanguageSetting();
@@ -296,6 +404,7 @@ $(() => {
 	// .ui-widget-content.dark, and comic-theme-dark on the body element.
 	setUIStyle();
 	setTheme();
+	initUtilityFab();
 
 	// on system dark mode setting change
 	if (window.matchMedia) {

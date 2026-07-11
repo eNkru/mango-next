@@ -484,8 +484,7 @@
   display: flex;
   flex-direction: column;
   z-index: 1000;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
   transition: width 0.25s ease;
   box-shadow: 1px 0 8px rgba(0,0,0,0.04);
 
@@ -510,30 +509,46 @@
     }
   }
 
-  .sidebar-logo {
-    padding: 20px 16px 16px;
+  .sidebar-header {
+    position: relative;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 72px;
+    padding: 16px 12px;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 
     a {
       display: flex;
       align-items: center;
       justify-content: center;
+      line-height: 0;
     }
 
     img {
-      width: 36px;
-      height: 36px;
-      border-radius: @radius-sm;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
     }
   }
 
   .sidebar-nav {
     list-style: none;
-    padding: 0 8px;
+    padding: 0 8px 16px;
     margin: 0;
     flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     li {
       margin-bottom: 2px;
@@ -618,35 +633,43 @@
   }
 
 
-  // Sidebar toggle (round button, inside sidebar)
+  // Sidebar toggle — rides the right edge of the header row
   .sidebar-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(50%, -50%);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 12px 8px;
+    padding: 0;
+    z-index: 5;
 
     button {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: @bg-surface;
+      width: 26px;
+      height: 26px;
+      border: 1px solid @border-color;
+      background: #fff;
       color: @text-muted;
       cursor: pointer;
       border-radius: 50%;
-      transition: background 0.2s ease, color 0.2s ease;
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       padding: 0;
+      box-shadow: @shadow-sm;
 
       i {
         transition: transform 0.25s ease;
-        font-size: 0.7rem;
+        font-size: 0.65rem;
       }
 
       &:hover {
         background: @accent;
         color: #fff;
+        border-color: @accent;
+        box-shadow: @shadow-md;
       }
     }
   }
@@ -656,32 +679,10 @@
     .sidebar-toggle i {
       transform: rotate(180deg);
     }
-  }
 
-  .sidebar-footer {
-    padding: 12px 8px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: @radius-sm;
-      color: @text-muted;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s ease, color 0.2s ease;
-
-      &:hover {
-        background: @accent-light;
-        color: @accent;
-        text-decoration: none;
-      }
+    .sidebar-header {
+      min-height: 64px;
+      padding: 12px 8px;
     }
   }
 }
@@ -2511,12 +2512,15 @@
 
   // Sidebar toggle dark
   .app-sidebar .sidebar-toggle button {
-    background: rgba(255,255,255,0.05);
-    color: #666;
+    background: @dark-bg-surface;
+    color: @dark-text-secondary;
+    border-color: @dark-border;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
 
     &:hover {
       background: @dark-accent;
       color: #fff;
+      border-color: @dark-accent;
     }
   }
 
@@ -3076,9 +3080,9 @@
 @shelf-accent-2: #69A7FF;
 @shelf-sidebar: #11131A;
 
-// The html background is controlled dynamically by setTheme() in common.js
-// (inline style: dark = rgb(20,20,20), light = cleared)
-// The body background for dark theme is handled by .uk-light rules below
+// Flat dark: html bg via setTheme()/setUIStyle() inline (#121212 = @dark-bg-base);
+// body bg via body.uk-light:not(.comic-theme):not(.comic-theme-dark) in comic-theme.less.
+// Comic dark: html/body via comic-theme-dark classes. Do not rely on mango-app-shell.
 
 
 body.mango-app-shell {
@@ -4237,30 +4241,50 @@ body.mango-app-shell:not(.uk-light) .showcase-art::before {
   }
 }
 
-// --- Floating GitHub button (flat baseline; comic overrides in comic-theme.less) ---
-.github-float {
+// --- Floating utility speed-dial (flat baseline; comic overrides in comic-theme.less) ---
+.utility-fab {
   position: fixed;
   top: 16px;
   right: 16px;
   z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  @media (max-width: 959px) {
+    top: 64px;
+    right: 12px;
+  }
+}
+
+.utility-fab__primary,
+.utility-fab__item {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.08);
   background: #fff;
   color: @text-primary;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: @shadow-md;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  font-size: 1.2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.14);
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.05rem;
+  line-height: 1;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
 
   &:hover {
     background: @accent;
     color: #fff;
+    border-color: @accent;
     transform: scale(1.08);
-    box-shadow: @shadow-lg;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
     text-decoration: none;
   }
 
@@ -4269,32 +4293,97 @@ body.mango-app-shell:not(.uk-light) .showcase-art::before {
     outline-offset: 2px;
   }
 
-  // On mobile, adjust position below the top bar
   @media (max-width: 959px) {
-    top: 64px;
-    right: 12px;
     width: 36px;
     height: 36px;
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }
 
-// Flat dark theme overrides for GitHub button
+.utility-fab__primary {
+  position: relative;
+  z-index: 2;
+  font-size: 1.15rem;
+
+  @media (max-width: 959px) {
+    font-size: 1.05rem;
+  }
+}
+
+.utility-fab__icon-open {
+  display: none;
+}
+
+.utility-fab.is-open .utility-fab__icon-rest {
+  display: none;
+}
+
+.utility-fab.is-open .utility-fab__icon-open {
+  display: inline-block;
+}
+
+.utility-fab.is-open .utility-fab__primary {
+  background: @accent;
+  color: #fff;
+}
+
+.utility-fab__menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 1;
+}
+
+.utility-fab__menu[hidden] {
+  display: none !important;
+}
+
+.utility-fab.is-open .utility-fab__menu:not([hidden]) {
+  display: flex;
+}
+
+.utility-fab__item .lang-toggle-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+// Flat dark theme overrides for utility FAB
 .uk-light {
-  .github-float {
-    background: rgba(255,255,255,0.1);
-    color: @dark-text-secondary;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  .utility-fab__primary,
+  .utility-fab__item {
+    background: @dark-bg-surface;
+    color: @dark-text-primary;
+    border: 1px solid @dark-border;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.45);
 
     &:hover {
       background: @dark-accent;
       color: #fff;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+      border-color: @dark-accent;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
 
     &:focus-visible {
       outline-color: @dark-accent;
     }
+  }
+
+  .utility-fab.is-open .utility-fab__primary {
+    background: @dark-accent;
+    color: #fff;
+    border-color: @dark-accent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .utility-fab__primary,
+  .utility-fab__item {
+    transition: none;
   }
 }
 
