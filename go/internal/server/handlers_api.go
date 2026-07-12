@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/hkalexling/mango-go/internal/plugin"
 	"github.com/hkalexling/mango-go/internal/queue"
 	"github.com/hkalexling/mango-go/internal/thumbnail"
+	"github.com/hkalexling/mango-go/internal/upload"
 )
 
 func (s *Server) apiLibrary(w http.ResponseWriter, r *http.Request) {
@@ -504,8 +506,97 @@ func (s *Server) apiAdminSetSortTitle(w http.ResponseWriter, r *http.Request) {
 	sendJSON(w, map[string]any{"success": true})
 }
 
+// apiAdminUpload mirrors Crystal POST /api/admin/upload/:target (src/routes/api.cr).
+// Failures return HTTP 200 + {"success":false,"error":...} like Crystal send_json rescue.
 func (s *Server) apiAdminUpload(w http.ResponseWriter, r *http.Request) {
-	sendJSON(w, map[string]any{"success": true})
+	fail := func(msg string) {
+		log.Printf("apiAdminUpload: %s", msg)
+		sendJSON(w, map[string]any{"success": false, "error": msg})
+	}
+
+	target := chi.URLParam(r, "target")
+	if err := r.ParseMultipartForm(32 << 20); err != nil {
+		fail("No file uploaded")
+		return
+	}
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		fail("No part with name `file` found")
+		return
+	}
+	defer file.Close()
+
+	if header.Filename == "" {
+		fail("No file uploaded")
+		return
+	}
+
+	switch target {
+	case "cover":
+		tid := r.URL.Query().Get("tid")
+		if tid == "" {
+			fail("Title not found")
+			return
+		}
+		eid := r.URL.Query().Get("eid")
+
+		mimeType := upload.MIMEFromFilename(header.Filename)
+		if !upload.IsSupportedImageMIME(mimeType) {
+			fail("The uploaded image must be either JPEG or PNG")
+			return
+		}
+
+		lib := s.Deps.Library
+		lib.RLock()
+		t, ok := lib.TitleHash[tid]
+		lib.RUnlock()
+		if !ok || t == nil {
+			fail("Title not found")
+			return
+		}
+
+		cfg := s.Deps.Config
+		if cfg == nil {
+			cfg = config.Current()
+		}
+		up, err := upload.New(cfg.UploadPath)
+		if err != nil {
+			fail(err.Error())
+			return
+		}
+		ext := filepath.Ext(header.Filename)
+		saved, err := up.Save("img", ext, file)
+		if err != nil {
+			fail(err.Error())
+			return
+		}
+		urlPath, ok := up.PathToURL(saved)
+		if !ok {
+			fail("Failed to generate a public URL for the uploaded file")
+			return
+		}
+
+		if eid == "" {
+			if err := t.SetCoverURL(urlPath); err != nil {
+				fail(err.Error())
+				return
+			}
+		} else {
+			entry := library.EntryByID(t, eid)
+			if entry == nil {
+				fail("Entry not found")
+				return
+			}
+			if err := t.SetEntryCoverURL(entry.Name(), urlPath); err != nil {
+				fail(err.Error())
+				return
+			}
+		}
+		sendJSON(w, map[string]any{"success": true})
+	default:
+		// Crystal typo "Unkown" preserved for behavior parity in message prefix.
+		fail(fmt.Sprintf("Unkown upload target %s", target))
+	}
 }
 
 func (s *Server) apiAdminListPlugins(w http.ResponseWriter, r *http.Request) {
