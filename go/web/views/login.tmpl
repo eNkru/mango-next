@@ -14,12 +14,12 @@
         <div class="uk-container">
           <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid="">
             <div class="uk-width-1-1@m">
-              <div class="login-card uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body">
-                <div class="login-header uk-text-center">
-                  <h3 class="uk-card-title" data-i18n="welcome_back">欢迎回来</h3>
+              <div class="login-card comic-login-card uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body">
+                <div class="login-header comic-login-header uk-text-center">
+                  <h3 class="uk-card-title comic-login-title" data-i18n="welcome_back">欢迎回来</h3>
                   <p class="login-subtitle" data-i18n="login_to_mango">登录到 Mango</p>
                 </div>
-                <form class="login-form" id="loginForm" action="{{.BaseURL}}login" method="post">
+                <form class="login-form comic-login-form" id="loginForm" action="{{.BaseURL}}login" method="post">
                   <div class="login-field">
                     <label class="login-label" for="username" data-i18n="username">用户名</label>
                     <div class="uk-inline uk-width-1-1">
@@ -54,6 +54,7 @@
       </div>
     </div>
     <script>
+      setUIStyle();
       setTheme();
 
       // Password show/hide toggle

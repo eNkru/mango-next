@@ -3,6 +3,7 @@
       </div>
     </div>
     <script>
+      setUIStyle();
       setTheme();
       const base_url = "{{.BaseURL}}";
 
@@ -18,8 +19,11 @@
       // Restore sidebar state on load
       (function() {
         if (localStorage.getItem('sidebar-collapsed') === 'true') {
-          document.querySelector('.app-sidebar').classList.add('sidebar-collapsed');
-          document.body.classList.add('sidebar-is-collapsed');
+          const sidebar = document.querySelector('.app-sidebar');
+          if (sidebar) {
+            sidebar.classList.add('sidebar-collapsed');
+            document.body.classList.add('sidebar-is-collapsed');
+          }
         }
       })();
 

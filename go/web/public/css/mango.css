@@ -17149,6 +17149,22 @@ iframe.uk-cover {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
 }
+/*!
+ * Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ */
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('../webfonts/fa-brands-400.eot');
+  src: url('../webfonts/fa-brands-400.eot?#iefix') format('embedded-opentype'), url('../webfonts/fa-brands-400.woff2') format('woff2'), url('../webfonts/fa-brands-400.woff') format('woff'), url('../webfonts/fa-brands-400.ttf') format('truetype'), url('../webfonts/fa-brands-400.svg#fontawesome') format('svg');
+}
+.fab {
+  font-family: 'Font Awesome 5 Brands';
+  font-weight: 400;
+}
 @font-face {
   src: url('../webfonts/fa-solid-900.woff2');
   src: url('../webfonts/fa-solid-900.woff2') format('woff2'), url('../webfonts/fa-solid-900.woff') format('woff');
@@ -17673,8 +17689,7 @@ iframe.uk-cover {
   display: flex;
   flex-direction: column;
   z-index: 1000;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
   transition: width 0.25s ease;
   box-shadow: 1px 0 8px rgba(0, 0, 0, 0.04);
 }
@@ -17694,27 +17709,42 @@ iframe.uk-cover {
   padding: 10px 0;
   gap: 0;
 }
-.app-sidebar .sidebar-logo {
-  padding: 20px 16px 16px;
+.app-sidebar .sidebar-header {
+  position: relative;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 72px;
+  padding: 16px 12px;
+}
+.app-sidebar .sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 .app-sidebar .sidebar-logo a {
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 0;
 }
 .app-sidebar .sidebar-logo img {
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
 }
 .app-sidebar .sidebar-nav {
   list-style: none;
-  padding: 0 8px;
+  padding: 0 8px 16px;
   margin: 0;
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .app-sidebar .sidebar-nav li {
   margin-bottom: 2px;
@@ -17786,59 +17816,47 @@ iframe.uk-cover {
   pointer-events: none;
 }
 .app-sidebar .sidebar-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 12px 8px;
+  padding: 0;
+  z-index: 5;
 }
 .app-sidebar .sidebar-toggle button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: #FAFAFA;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #E0E0E0;
+  background: #fff;
   color: #999999;
   cursor: pointer;
   border-radius: 50%;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   padding: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .app-sidebar .sidebar-toggle button i {
   transition: transform 0.25s ease;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
 }
 .app-sidebar .sidebar-toggle button:hover {
   background: #D96A4B;
   color: #fff;
+  border-color: #D96A4B;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 .app-sidebar.sidebar-collapsed .sidebar-toggle i {
   transform: rotate(180deg);
 }
-.app-sidebar .sidebar-footer {
-  padding: 12px 8px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.app-sidebar .sidebar-footer a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 4px;
-  color: #999999;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-.app-sidebar .sidebar-footer a:hover {
-  background: rgba(217, 106, 75, 0.08);
-  color: #D96A4B;
-  text-decoration: none;
+.app-sidebar.sidebar-collapsed .sidebar-header {
+  min-height: 64px;
+  padding: 12px 8px;
 }
 .app-content {
   margin-left: 220px;
@@ -19628,8 +19646,10 @@ body.sidebar-is-collapsed .app-content {
 .uk-card-secondary > :not([class*='uk-card-media']) .app-sidebar .sidebar-toggle button,
 .uk-overlay-primary .app-sidebar .sidebar-toggle button,
 .uk-offcanvas-bar .app-sidebar .sidebar-toggle button {
-  background: rgba(255, 255, 255, 0.05);
-  color: #666;
+  background: #1A1A1A;
+  color: #AAAAAA;
+  border-color: #333333;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 .uk-light .app-sidebar .sidebar-toggle button:hover,
 .uk-section-primary:not(.uk-preserve-color) .app-sidebar .sidebar-toggle button:hover,
@@ -19644,6 +19664,7 @@ body.sidebar-is-collapsed .app-content {
 .uk-offcanvas-bar .app-sidebar .sidebar-toggle button:hover {
   background: #E8845F;
   color: #fff;
+  border-color: #E8845F;
 }
 .uk-light #mobile-nav .uk-offcanvas-bar,
 .uk-section-primary:not(.uk-preserve-color) #mobile-nav .uk-offcanvas-bar,
@@ -22511,6 +22532,208 @@ body.mango-app-shell:not(.uk-light) .showcase-art::before {
 .uk-overlay-primary .lang-toggle-label,
 .uk-offcanvas-bar .lang-toggle-label {
   color: inherit;
+}
+.utility-fab {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+@media (max-width: 959px) {
+  .utility-fab {
+    top: 64px;
+    right: 12px;
+  }
+}
+.utility-fab__primary,
+.utility-fab__item {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  color: #2C2C2C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.05rem;
+  line-height: 1;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.utility-fab__primary:hover,
+.utility-fab__item:hover {
+  background: #D96A4B;
+  color: #fff;
+  border-color: #D96A4B;
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+}
+.utility-fab__primary:focus-visible,
+.utility-fab__item:focus-visible {
+  outline: 2px solid #D96A4B;
+  outline-offset: 2px;
+}
+@media (max-width: 959px) {
+  .utility-fab__primary,
+  .utility-fab__item {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+.utility-fab__primary {
+  position: relative;
+  z-index: 2;
+  font-size: 1.15rem;
+}
+@media (max-width: 959px) {
+  .utility-fab__primary {
+    font-size: 1.05rem;
+  }
+}
+.utility-fab__icon-open {
+  display: none;
+}
+.utility-fab.is-open .utility-fab__icon-rest {
+  display: none;
+}
+.utility-fab.is-open .utility-fab__icon-open {
+  display: inline-block;
+}
+.utility-fab.is-open .utility-fab__primary {
+  background: #D96A4B;
+  color: #fff;
+}
+.utility-fab__menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 1;
+}
+.utility-fab__menu[hidden] {
+  display: none !important;
+}
+.utility-fab.is-open .utility-fab__menu:not([hidden]) {
+  display: flex;
+}
+.utility-fab__item .lang-toggle-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.uk-light .utility-fab__primary,
+.uk-light .utility-fab__item,
+.uk-section-primary:not(.uk-preserve-color) .utility-fab__primary,
+.uk-section-primary:not(.uk-preserve-color) .utility-fab__item,
+.uk-section-secondary:not(.uk-preserve-color) .utility-fab__primary,
+.uk-section-secondary:not(.uk-preserve-color) .utility-fab__item,
+.uk-tile-primary:not(.uk-preserve-color) .utility-fab__primary,
+.uk-tile-primary:not(.uk-preserve-color) .utility-fab__item,
+.uk-tile-secondary:not(.uk-preserve-color) .utility-fab__primary,
+.uk-tile-secondary:not(.uk-preserve-color) .utility-fab__item,
+.uk-card-primary.uk-card-body .utility-fab__primary,
+.uk-card-primary.uk-card-body .utility-fab__item,
+.uk-card-primary > :not([class*='uk-card-media']) .utility-fab__primary,
+.uk-card-primary > :not([class*='uk-card-media']) .utility-fab__item,
+.uk-card-secondary.uk-card-body .utility-fab__primary,
+.uk-card-secondary.uk-card-body .utility-fab__item,
+.uk-card-secondary > :not([class*='uk-card-media']) .utility-fab__primary,
+.uk-card-secondary > :not([class*='uk-card-media']) .utility-fab__item,
+.uk-overlay-primary .utility-fab__primary,
+.uk-overlay-primary .utility-fab__item,
+.uk-offcanvas-bar .utility-fab__primary,
+.uk-offcanvas-bar .utility-fab__item {
+  background: #1A1A1A;
+  color: #E0E0E0;
+  border: 1px solid #333333;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+.uk-light .utility-fab__primary:hover,
+.uk-light .utility-fab__item:hover,
+.uk-section-primary:not(.uk-preserve-color) .utility-fab__primary:hover,
+.uk-section-primary:not(.uk-preserve-color) .utility-fab__item:hover,
+.uk-section-secondary:not(.uk-preserve-color) .utility-fab__primary:hover,
+.uk-section-secondary:not(.uk-preserve-color) .utility-fab__item:hover,
+.uk-tile-primary:not(.uk-preserve-color) .utility-fab__primary:hover,
+.uk-tile-primary:not(.uk-preserve-color) .utility-fab__item:hover,
+.uk-tile-secondary:not(.uk-preserve-color) .utility-fab__primary:hover,
+.uk-tile-secondary:not(.uk-preserve-color) .utility-fab__item:hover,
+.uk-card-primary.uk-card-body .utility-fab__primary:hover,
+.uk-card-primary.uk-card-body .utility-fab__item:hover,
+.uk-card-primary > :not([class*='uk-card-media']) .utility-fab__primary:hover,
+.uk-card-primary > :not([class*='uk-card-media']) .utility-fab__item:hover,
+.uk-card-secondary.uk-card-body .utility-fab__primary:hover,
+.uk-card-secondary.uk-card-body .utility-fab__item:hover,
+.uk-card-secondary > :not([class*='uk-card-media']) .utility-fab__primary:hover,
+.uk-card-secondary > :not([class*='uk-card-media']) .utility-fab__item:hover,
+.uk-overlay-primary .utility-fab__primary:hover,
+.uk-overlay-primary .utility-fab__item:hover,
+.uk-offcanvas-bar .utility-fab__primary:hover,
+.uk-offcanvas-bar .utility-fab__item:hover {
+  background: #E8845F;
+  color: #fff;
+  border-color: #E8845F;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+.uk-light .utility-fab__primary:focus-visible,
+.uk-light .utility-fab__item:focus-visible,
+.uk-section-primary:not(.uk-preserve-color) .utility-fab__primary:focus-visible,
+.uk-section-primary:not(.uk-preserve-color) .utility-fab__item:focus-visible,
+.uk-section-secondary:not(.uk-preserve-color) .utility-fab__primary:focus-visible,
+.uk-section-secondary:not(.uk-preserve-color) .utility-fab__item:focus-visible,
+.uk-tile-primary:not(.uk-preserve-color) .utility-fab__primary:focus-visible,
+.uk-tile-primary:not(.uk-preserve-color) .utility-fab__item:focus-visible,
+.uk-tile-secondary:not(.uk-preserve-color) .utility-fab__primary:focus-visible,
+.uk-tile-secondary:not(.uk-preserve-color) .utility-fab__item:focus-visible,
+.uk-card-primary.uk-card-body .utility-fab__primary:focus-visible,
+.uk-card-primary.uk-card-body .utility-fab__item:focus-visible,
+.uk-card-primary > :not([class*='uk-card-media']) .utility-fab__primary:focus-visible,
+.uk-card-primary > :not([class*='uk-card-media']) .utility-fab__item:focus-visible,
+.uk-card-secondary.uk-card-body .utility-fab__primary:focus-visible,
+.uk-card-secondary.uk-card-body .utility-fab__item:focus-visible,
+.uk-card-secondary > :not([class*='uk-card-media']) .utility-fab__primary:focus-visible,
+.uk-card-secondary > :not([class*='uk-card-media']) .utility-fab__item:focus-visible,
+.uk-overlay-primary .utility-fab__primary:focus-visible,
+.uk-overlay-primary .utility-fab__item:focus-visible,
+.uk-offcanvas-bar .utility-fab__primary:focus-visible,
+.uk-offcanvas-bar .utility-fab__item:focus-visible {
+  outline-color: #E8845F;
+}
+.uk-light .utility-fab.is-open .utility-fab__primary,
+.uk-section-primary:not(.uk-preserve-color) .utility-fab.is-open .utility-fab__primary,
+.uk-section-secondary:not(.uk-preserve-color) .utility-fab.is-open .utility-fab__primary,
+.uk-tile-primary:not(.uk-preserve-color) .utility-fab.is-open .utility-fab__primary,
+.uk-tile-secondary:not(.uk-preserve-color) .utility-fab.is-open .utility-fab__primary,
+.uk-card-primary.uk-card-body .utility-fab.is-open .utility-fab__primary,
+.uk-card-primary > :not([class*='uk-card-media']) .utility-fab.is-open .utility-fab__primary,
+.uk-card-secondary.uk-card-body .utility-fab.is-open .utility-fab__primary,
+.uk-card-secondary > :not([class*='uk-card-media']) .utility-fab.is-open .utility-fab__primary,
+.uk-overlay-primary .utility-fab.is-open .utility-fab__primary,
+.uk-offcanvas-bar .utility-fab.is-open .utility-fab__primary {
+  background: #E8845F;
+  color: #fff;
+  border-color: #E8845F;
+}
+@media (prefers-reduced-motion: reduce) {
+  .utility-fab__primary,
+  .utility-fab__item {
+    transition: none;
+  }
 }
 .uk-alert-close {
   color: black !important;

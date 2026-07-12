@@ -577,6 +577,41 @@ body.comic-theme-dark .comic-card .comic-progress-badge {
   z-index: 2;
   box-shadow: 2px 2px 0 #000000;
 }
+body.comic-theme .comic-card .card-progress-bar,
+body.comic-theme-dark .comic-card .card-progress-bar {
+  height: 5px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 2px solid #000000;
+  border-radius: 0;
+  margin: 0;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  overflow: hidden;
+}
+body.comic-theme .comic-card .card-progress-fill,
+body.comic-theme-dark .comic-card .card-progress-fill {
+  height: 100%;
+  border-radius: 0;
+  background: repeating-linear-gradient(45deg, #E23636, #E23636 8px, #c81d1d 8px, #c81d1d 16px);
+  transition: width 0.5s ease;
+}
+body.comic-theme .comic-card .card-progress-percent,
+body.comic-theme-dark .comic-card .card-progress-percent {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #FFD700;
+  color: #000000;
+  font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  z-index: 2;
+  box-shadow: 2px 2px 0 #000000;
+}
 body.comic-theme .comic-hero,
 body.comic-theme-dark .comic-hero {
   position: relative;
@@ -1106,9 +1141,191 @@ body.comic-theme-dark .comic-alert::before {
   margin-right: 10px;
   font-size: 1.2em;
 }
+body.comic-theme #select-bar,
+body.comic-theme-dark #select-bar {
+  border: 3px solid #000000 !important;
+  border-radius: 4px !important;
+  background: #FFFEF0 !important;
+  box-shadow: 4px 4px 0 #000000 !important;
+}
+body.comic-theme #select-bar p,
+body.comic-theme-dark #select-bar p {
+  font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
+  font-weight: 700;
+  color: #000000;
+}
+body.comic-theme #select-bar #select-bar-controls a,
+body.comic-theme-dark #select-bar #select-bar-controls a {
+  color: #000000;
+}
+body.comic-theme #select-bar #select-bar-controls a:hover,
+body.comic-theme-dark #select-bar #select-bar-controls a:hover {
+  color: #E23636;
+}
+body.comic-theme .mango-navbar,
+body.comic-theme-dark .mango-navbar {
+  background: #FFFEF0 !important;
+  border-bottom: 4px solid #000000 !important;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12) !important;
+}
+body.comic-theme .mango-navbar .uk-navbar-toggle,
+body.comic-theme-dark .mango-navbar .uk-navbar-toggle {
+  color: #000000 !important;
+}
+body.comic-theme .mango-navbar .uk-navbar-toggle:hover,
+body.comic-theme-dark .mango-navbar .uk-navbar-toggle:hover {
+  color: #E23636 !important;
+}
+body.comic-theme .mango-navbar .uk-logo img,
+body.comic-theme-dark .mango-navbar .uk-logo img {
+  border: 2px solid #000000 !important;
+  border-radius: 4px !important;
+  box-shadow: 2px 2px 0 #E23636 !important;
+}
+body.comic-theme #mobile-nav .uk-offcanvas-bar,
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar {
+  background: #FFFEF0 !important;
+  border-right: 4px solid #000000 !important;
+  box-shadow: 6px 0 0 rgba(0, 0, 0, 0.1) !important;
+}
+body.comic-theme #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li > a,
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li > a {
+  font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: #000000 !important;
+  border: 2px solid transparent !important;
+  border-radius: 4px !important;
+}
+body.comic-theme #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li > a:hover,
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li > a:hover {
+  background: #FFD700 !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+body.comic-theme #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li.uk-active > a,
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li.uk-active > a {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+  border-color: #000000 !important;
+  box-shadow: 2px 2px 0 #000000;
+}
+body.comic-theme #mobile-nav .uk-offcanvas-bar .uk-close,
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-close {
+  color: #000000 !important;
+}
+body.comic-theme #mobile-nav .uk-offcanvas-bar .uk-close:hover,
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-close:hover {
+  color: #E23636 !important;
+}
+body.comic-theme .select2-container--default .select2-selection--multiple,
+body.comic-theme-dark .select2-container--default .select2-selection--multiple {
+  border: 3px solid #000000 !important;
+  border-radius: 4px !important;
+  box-shadow: 3px 3px 0 #000000 !important;
+  background: #FFFEF0 !important;
+  min-height: 40px;
+}
+body.comic-theme .select2-container--default .select2-selection--multiple .select2-selection__choice,
+body.comic-theme-dark .select2-container--default .select2-selection--multiple .select2-selection__choice,
+body.comic-theme .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+body.comic-theme-dark .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+body.comic-theme .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover,
+body.comic-theme-dark .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+  background: #FFD700 !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+  border-radius: 4px !important;
+  font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+body.comic-theme .select2-container--default.select2-container--focus .select2-selection--multiple,
+body.comic-theme-dark .select2-container--default.select2-container--focus .select2-selection--multiple {
+  border-color: #E23636 !important;
+  box-shadow: 3px 3px 0 #E23636 !important;
+}
+body.comic-theme .select2-container--default .select2-dropdown,
+body.comic-theme-dark .select2-container--default .select2-dropdown {
+  border: 3px solid #000000 !important;
+  border-radius: 4px !important;
+  box-shadow: 4px 4px 0 #000000 !important;
+  overflow: hidden;
+}
+body.comic-theme .select2-container--default .select2-dropdown .select2-results__option--highlighted.select2-results__option--selectable,
+body.comic-theme-dark .select2-container--default .select2-dropdown .select2-results__option--highlighted.select2-results__option--selectable {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+}
+body.comic-theme .select2-container--default .select2-dropdown .select2-results__option--selected:not(.select2-results__option--highlighted),
+body.comic-theme-dark .select2-container--default .select2-dropdown .select2-results__option--selected:not(.select2-results__option--highlighted) {
+  background: #ffe766 !important;
+  color: #000000 !important;
+}
 body.comic-theme .app-sidebar,
 body.comic-theme-dark .app-sidebar {
   z-index: 100;
+}
+body.comic-theme .utility-fab__primary,
+body.comic-theme-dark .utility-fab__primary,
+body.comic-theme .utility-fab__item,
+body.comic-theme-dark .utility-fab__item {
+  border-radius: 6px !important;
+  background: #FFFEF0 !important;
+  color: #000000 !important;
+  border: 3px solid #000000 !important;
+  box-shadow: 3px 3px 0 #000000 !important;
+  transition: all 0.15s ease !important;
+}
+body.comic-theme .utility-fab__primary:hover,
+body.comic-theme-dark .utility-fab__primary:hover,
+body.comic-theme .utility-fab__item:hover,
+body.comic-theme-dark .utility-fab__item:hover {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+  border-color: #000000 !important;
+  transform: translate(-2px, -2px) scale(1.05);
+  box-shadow: 5px 5px 0 #000000 !important;
+  text-decoration: none;
+}
+body.comic-theme .utility-fab__primary:active,
+body.comic-theme-dark .utility-fab__primary:active,
+body.comic-theme .utility-fab__item:active,
+body.comic-theme-dark .utility-fab__item:active {
+  transform: translate(1px, 1px) scale(1);
+  box-shadow: 1px 1px 0 #000000 !important;
+}
+body.comic-theme .utility-fab__primary:focus-visible,
+body.comic-theme-dark .utility-fab__primary:focus-visible,
+body.comic-theme .utility-fab__item:focus-visible,
+body.comic-theme-dark .utility-fab__item:focus-visible {
+  outline: 2px solid #FFD700 !important;
+  outline-offset: 2px;
+}
+body.comic-theme .utility-fab.is-open .utility-fab__primary,
+body.comic-theme-dark .utility-fab.is-open .utility-fab__primary {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+}
+body.comic-theme-dark .utility-fab__primary,
+body.comic-theme-dark .utility-fab__item {
+  background: #4b4b4b !important;
+  color: #FFFEF0 !important;
+  border-color: #FFD700 !important;
+  box-shadow: 3px 3px 0 #000000 !important;
+}
+body.comic-theme-dark .utility-fab__primary:hover,
+body.comic-theme-dark .utility-fab__item:hover {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+  border-color: #000000 !important;
+  box-shadow: 5px 5px 0 #000000 !important;
+}
+body.comic-theme-dark .utility-fab.is-open .utility-fab__primary {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+  border-color: #000000 !important;
 }
 body.comic-theme .comic-sidebar,
 body.comic-theme-dark .comic-sidebar {
@@ -1118,10 +1335,12 @@ body.comic-theme-dark .comic-sidebar {
 }
 body.comic-theme .comic-sidebar .sidebar-logo,
 body.comic-theme-dark .comic-sidebar .sidebar-logo {
-  padding: 24px 10px 20px !important;
+  padding: 0 !important;
 }
 body.comic-theme .comic-sidebar .sidebar-logo img,
 body.comic-theme-dark .comic-sidebar .sidebar-logo img {
+  width: 42px !important;
+  height: 42px !important;
   border-radius: 50% !important;
   border: 3px solid #000000 !important;
   box-shadow: 3px 3px 0 #E23636 !important;
@@ -1129,7 +1348,12 @@ body.comic-theme-dark .comic-sidebar .sidebar-logo img {
 }
 body.comic-theme .comic-sidebar .sidebar-logo img:hover,
 body.comic-theme-dark .comic-sidebar .sidebar-logo img:hover {
-  transform: rotate(-5deg) scale(1.1);
+  transform: rotate(-5deg) scale(1.08);
+}
+body.comic-theme .comic-sidebar .sidebar-header,
+body.comic-theme-dark .comic-sidebar .sidebar-header {
+  min-height: 80px;
+  padding: 18px 12px 14px;
 }
 body.comic-theme .comic-sidebar .sidebar-nav a,
 body.comic-theme-dark .comic-sidebar .sidebar-nav a {
@@ -1168,24 +1392,13 @@ body.comic-theme-dark .comic-sidebar .sidebar-toggle button {
   border-radius: 4px !important;
   background: #FFD700 !important;
   color: #000000 !important;
+  box-shadow: 2px 2px 0 #000000 !important;
   transition: all 0.2s ease;
 }
 body.comic-theme .comic-sidebar .sidebar-toggle button:hover,
 body.comic-theme-dark .comic-sidebar .sidebar-toggle button:hover {
   background: #E23636 !important;
   color: #FFFEF0 !important;
-}
-body.comic-theme .comic-sidebar .sidebar-footer a,
-body.comic-theme-dark .comic-sidebar .sidebar-footer a {
-  border: 2px solid transparent !important;
-  border-radius: 4px !important;
-  transition: all 0.2s ease;
-}
-body.comic-theme .comic-sidebar .sidebar-footer a:hover,
-body.comic-theme-dark .comic-sidebar .sidebar-footer a:hover {
-  background: #1E90FF !important;
-  color: #FFFEF0 !important;
-  border-color: #000000 !important;
 }
 body.comic-theme-dark .comic-sidebar {
   background: #2C2C2C !important;
@@ -1201,6 +1414,86 @@ body.comic-theme-dark .comic-sidebar .sidebar-nav a:hover {
 body.comic-theme-dark .comic-sidebar .sidebar-nav a.active {
   background: #E23636 !important;
   border-color: #000000 !important;
+}
+body.comic-theme-dark .comic-sidebar .sidebar-toggle button {
+  background: #FFD700 !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+body.comic-theme-dark .comic-form-label {
+  color: #FFFEF0 !important;
+}
+body.comic-theme-dark .comic-input {
+  color: #FFFEF0 !important;
+  background: #404040 !important;
+  border-color: #FFD700 !important;
+  box-shadow: 3px 3px 0 #000000 !important;
+}
+body.comic-theme-dark .comic-input:focus {
+  border-color: #E23636 !important;
+  box-shadow: 3px 3px 0 #E23636 !important;
+}
+body.comic-theme-dark .mango-navbar {
+  background: #2C2C2C !important;
+  border-bottom-color: #FFD700 !important;
+}
+body.comic-theme-dark .mango-navbar .uk-navbar-toggle {
+  color: #FFFEF0 !important;
+}
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar {
+  background: #2C2C2C !important;
+  border-right-color: #FFD700 !important;
+}
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li > a {
+  color: #FFFEF0 !important;
+}
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li > a:hover {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+  border-color: #FFD700 !important;
+}
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-nav-primary > li.uk-active > a {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+}
+body.comic-theme-dark #mobile-nav .uk-offcanvas-bar .uk-close {
+  color: #FFFEF0 !important;
+}
+body.comic-theme-dark #select-bar {
+  background: #393939 !important;
+  border-color: #FFD700 !important;
+}
+body.comic-theme-dark #select-bar p {
+  color: #FFFEF0;
+}
+body.comic-theme-dark #select-bar #select-bar-controls a {
+  color: #FFFEF0;
+}
+body.comic-theme-dark #select-bar #select-bar-controls a:hover {
+  color: #FFD700;
+}
+body.comic-theme-dark .select2-container--default .select2-selection--multiple {
+  background: #393939 !important;
+  border-color: #FFD700 !important;
+}
+body.comic-theme-dark .select2-container--default .select2-selection--multiple .select2-selection__choice,
+body.comic-theme-dark .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+body.comic-theme-dark .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+  border-color: #000000 !important;
+}
+body.comic-theme-dark .select2-container--default .select2-selection--multiple .select2-search__field {
+  color: #FFFEF0 !important;
+}
+body.comic-theme-dark .select2-container--default .select2-dropdown {
+  background: #393939 !important;
+  border-color: #FFD700 !important;
+  color: #FFFEF0;
+}
+body.comic-theme-dark .comic-card .card-progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #FFD700;
 }
 body.comic-theme-dark .comic-btn.comic-btn-active-toggle {
   background: #2ECC40 !important;
@@ -1293,6 +1586,41 @@ body.comic-theme-dark .comic-admin-card .comic-admin-icon {
 }
 .comic-login-page .comic-login-card .comic-login-form {
   padding: 28px 32px;
+}
+body.comic-theme-dark.comic-login-page,
+body.comic-theme-dark .comic-login-page {
+  background: #2C2C2C !important;
+}
+body.comic-theme-dark.comic-login-page .comic-login-card,
+body.comic-theme-dark .comic-login-page .comic-login-card {
+  background: #393939 !important;
+  border-color: #FFD700 !important;
+  box-shadow: 12px 12px 0 #000000 !important;
+}
+body.comic-theme-dark.comic-login-page .comic-login-card .comic-login-header,
+body.comic-theme-dark .comic-login-page .comic-login-card .comic-login-header {
+  background: #E23636;
+  border-bottom-color: #000000;
+}
+body.comic-theme-dark.comic-login-page .comic-login-card .comic-login-header .comic-login-title,
+body.comic-theme-dark .comic-login-page .comic-login-card .comic-login-header .comic-login-title {
+  color: #FFFEF0;
+}
+body.comic-theme-dark.comic-login-page .comic-login-card .login-subtitle,
+body.comic-theme-dark .comic-login-page .comic-login-card .login-subtitle,
+body.comic-theme-dark.comic-login-page .comic-login-card .login-label,
+body.comic-theme-dark .comic-login-page .comic-login-card .login-label {
+  color: #CCC !important;
+}
+body.comic-theme-dark.comic-login-page .comic-login-card .login-input,
+body.comic-theme-dark .comic-login-page .comic-login-card .login-input {
+  background: #404040 !important;
+  color: #FFFEF0 !important;
+  border-color: #5f5f5f !important;
+}
+body.comic-theme-dark.comic-login-page .login-footer p,
+body.comic-theme-dark .comic-login-page .login-footer p {
+  color: #AAA !important;
 }
 body.comic-theme .reader-page,
 body.comic-theme-dark .reader-page {
@@ -1746,6 +2074,12 @@ body:not(.comic-theme):not(.comic-theme-dark) .comic-empty-state p {
 }
 body:not(.comic-theme):not(.comic-theme-dark) .comic-login-page {
   background: #E8DDD3 !important;
+}
+body.uk-light:not(.comic-theme):not(.comic-theme-dark) {
+  background-color: #121212;
+}
+body.uk-light:not(.comic-theme):not(.comic-theme-dark) .comic-login-page {
+  background: #121212 !important;
 }
 body.uk-light:not(.comic-theme):not(.comic-theme-dark) .comic-btn.comic-btn-outline {
   border-color: #E8845F !important;

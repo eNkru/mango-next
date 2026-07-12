@@ -26,19 +26,21 @@
           {{if .IsAdmin}}
             <li><a href="{{.BaseURL}}admin" data-i18n="admin">管理员</a></li>
           {{end}}
-          <hr uk-divider>
-          <li><a onclick="cycleLanguage()" class="lang-toggle" data-i18n-title="language" title="语言"><span class="lang-toggle-label">简</span></a></li>
-          <li><a onclick="toggleTheme()" data-i18n="theme_toggle" data-i18n-title="theme_toggle"><i class="fas fa-adjust"></i></a></li>
-          <li><a onclick="toggleUIStyle()" data-i18n="ui_style_toggle" data-i18n-title="ui_style_toggle" title="切换UI风格"><i class="fas fa-paint-brush"></i></a></li>
-          <li><a href="{{.BaseURL}}logout" data-i18n="logout">登出</a></li>
         </ul>
       </div>
     </div>
 
     <!-- Desktop sidebar (hidden on mobile) -->
     <nav class="app-sidebar comic-sidebar uk-visible@m">
-      <div class="sidebar-logo">
-        <a href="{{.BaseURL}}"><img src="{{.BaseURL}}img/icons/icon.png" alt="Mango"></a>
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <a href="{{.BaseURL}}"><img src="{{.BaseURL}}img/icons/icon.png" alt="Mango"></a>
+        </div>
+        <div class="sidebar-toggle">
+          <button type="button" onclick="toggleSidebar()" data-i18n-title="collapse_sidebar" title="收起/展开侧栏">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        </div>
       </div>
       <ul class="sidebar-nav">
         <li><a href="{{.BaseURL}}" data-i18n="home" data-i18n-title="home" title="主页"><i class="fas fa-home"></i><span data-i18n="home">主页</span></a></li>
@@ -46,21 +48,45 @@
         <li><a href="{{.BaseURL}}tags" data-i18n="tags" data-i18n-title="tags" title="标签"><i class="fas fa-tags"></i><span data-i18n="tags">标签</span></a></li>
         {{if .IsAdmin}}
           <li><a href="{{.BaseURL}}admin" data-i18n="admin" data-i18n-title="admin" title="管理员"><i class="fas fa-cog"></i><span data-i18n="admin">管理员</span></a></li>
-
+          <li class="sidebar-divider"></li>
         {{end}}
       </ul>
-      <div class="sidebar-toggle">
-        <button onclick="toggleSidebar()" data-i18n-title="collapse_sidebar" title="收起/展开侧栏">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-      </div>
-      <div class="sidebar-footer">
-        <a onclick="cycleLanguage()" class="lang-toggle" data-i18n-title="language" title="语言"><span class="lang-toggle-label">简</span></a>
-        <a onclick="toggleTheme()" data-i18n-title="theme_toggle" title="切换主题"><i class="fas fa-adjust"></i></a>
-        <a onclick="toggleUIStyle()" data-i18n-title="ui_style_toggle" title="切换UI风格"><i class="fas fa-paint-brush"></i></a>
-        <a href="{{.BaseURL}}logout" data-i18n-title="logout" title="登出"><i class="fas fa-sign-out-alt"></i></a>
-      </div>
     </nav>
+
+    <!-- Floating utility speed-dial -->
+    <div class="utility-fab" id="utility-fab">
+      <button type="button" class="utility-fab__primary" id="utility-fab-primary" aria-expanded="false" aria-controls="utility-fab-menu" data-i18n-title="utility_menu" data-i18n-aria-label="utility_menu" title="工具菜单" aria-label="工具菜单">
+        <i class="fas fa-sliders-h utility-fab__icon-rest" aria-hidden="true"></i>
+        <i class="fas fa-times utility-fab__icon-open" aria-hidden="true"></i>
+      </button>
+      <ul id="utility-fab-menu" class="utility-fab__menu" hidden>
+        <li>
+          <button type="button" class="utility-fab__item lang-toggle" data-utility-action="language" data-i18n-title="language" data-i18n-aria-label="language" title="语言" aria-label="语言">
+            <span class="lang-toggle-label">简</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="utility-fab__item" data-utility-action="theme" data-i18n-title="theme_toggle" data-i18n-aria-label="theme_toggle" title="切换主题" aria-label="切换主题">
+            <i class="fas fa-adjust" aria-hidden="true"></i>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="utility-fab__item" data-utility-action="ui-style" data-i18n-title="ui_style_toggle" data-i18n-aria-label="ui_style_toggle" title="切换UI风格" aria-label="切换UI风格">
+            <i class="fas fa-paint-brush" aria-hidden="true"></i>
+          </button>
+        </li>
+        <li>
+          <a class="utility-fab__item" href="https://github.com/eNkru/mango-next" target="_blank" rel="noopener noreferrer" data-utility-action="github" data-i18n-title="view_on_github" data-i18n-aria-label="view_on_github" title="在 GitHub 上查看" aria-label="在 GitHub 上查看">
+            <i class="fab fa-github" aria-hidden="true"></i>
+          </a>
+        </li>
+        <li>
+          <a class="utility-fab__item" href="{{.BaseURL}}logout" data-utility-action="logout" data-i18n-title="logout" data-i18n-aria-label="logout" title="登出" aria-label="登出">
+            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
 
     <!-- Main content (single render, responsive) -->
     <div class="app-content">
