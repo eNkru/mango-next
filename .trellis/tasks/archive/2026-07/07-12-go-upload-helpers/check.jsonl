@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "build/vet/test gate and server package conventions"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Verify cover URL path consistency across middleware and API"}
