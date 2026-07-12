@@ -1,10 +1,7 @@
 package library
 
 import (
-	"encoding/binary"
 	"fmt"
-	"hash/fnv"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -80,41 +77,6 @@ func isSupportedImageFile(filename string) bool {
 		return true
 	}
 	return false
-}
-
-// ---------------------------------------------------------------------------
-// Signature helpers (matching Crystal src/util/signature.cr)
-// ---------------------------------------------------------------------------
-
-// fileSignature computes a uint64 signature for a regular file, using a hash
-// of path + modtime + size as a practical substitute for inode number (which
-// is platform-specific in Go).
-func fileSignature(path string, fi os.FileInfo) uint64 {
-	h := fnv.New64a()
-	h.Write([]byte(filepath.ToSlash(path)))
-	binary.Write(h, binary.LittleEndian, fi.ModTime().UnixNano())
-	binary.Write(h, binary.LittleEndian, fi.Size())
-	return h.Sum64()
-}
-
-// dirSignature walks the directory tree and computes a uint64 hash from
-// relative filenames + modtimes, matching the spirit of Crystal's
-// Dir.signature (CRC32 of sorted inode numbers).
-func dirSignature(dirname string) uint64 {
-	h := fnv.New64a()
-	filepath.WalkDir(dirname, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return filepath.SkipDir
-		}
-		rel, _ := filepath.Rel(dirname, path)
-		h.Write([]byte(filepath.ToSlash(rel)))
-		info, iErr := d.Info()
-		if iErr == nil {
-			binary.Write(h, binary.LittleEndian, info.ModTime().UnixNano())
-		}
-		return nil
-	})
-	return h.Sum64()
 }
 
 // isValidDirEntry returns true if the directory contains at least one
@@ -357,20 +319,6 @@ func NewDirEntry(absPath string, book *Title, st *storage.Storage) *DirEntry {
 	return e
 }
 
-// dirEntrySignature computes a hash of the sorted file signatures.
-func dirEntrySignature(files []string) uint64 {
-	h := fnv.New64a()
-	for _, f := range files {
-		fi, err := os.Stat(f)
-		if err != nil {
-			continue
-		}
-		binary.Write(h, binary.LittleEndian, fi.ModTime().UnixNano())
-		binary.Write(h, binary.LittleEndian, fi.Size())
-	}
-	return h.Sum64()
-}
-
 func (e *DirEntry) ReadPage(n int) (*storage.Image, error) {
 	if e.err != nil {
 		return nil, fmt.Errorf("unreadable directory entry: %w", e.err)
@@ -411,12 +359,15 @@ type Title struct {
 	Dir      string
 	ParentID string
 	ID       string
-	// Signature is the dir signature for change detection.
+	// Signature is the dir signature for change detection (FNV; see signature.go).
 	Signature uint64
-	Name      string
-	TitleIDs  []string
-	Entries   []Entry
-	Mtime     time.Time
+	// ContentsSig is SHA1 of supported content names; used for rescan checks.
+	// mirrors Crystal Title @contents_signature
+	ContentsSig string
+	Name        string
+	TitleIDs    []string
+	Entries     []Entry
+	Mtime       time.Time
 }
 
 // NewTitle creates a Title for the given directory, scanning its contents
@@ -428,7 +379,10 @@ func NewTitle(absPath, parentID string, st *storage.Storage) *Title {
 		Name:     filepath.Base(absPath),
 	}
 
-	t.Signature = dirSignature(absPath)
+	t.Signature = DirSignature(absPath)
+	if cs, err := ContentsSignature(absPath, nil); err == nil {
+		t.ContentsSig = cs
+	}
 
 	id, err := st.GetOrCreateTitleID(absPath, t.Signature)
 	if err != nil {
