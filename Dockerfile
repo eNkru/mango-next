@@ -1,15 +1,22 @@
-FROM crystallang/crystal:1.20.0-alpine AS builder
+# syntax=docker/dockerfile:1
+# Multi-arch Go build for Mango.
+# Build: docker buildx build --platform linux/amd64,linux/arm64 -t mango .
+# Or:    docker build -t mango -f go/Dockerfile go/
 
-WORKDIR /Mango
+FROM golang:1.26-alpine AS builder
 
-COPY . .
-RUN apk add --no-cache ca-certificates yarn make wget gcc musl-dev gmp-static yaml-static sqlite-static sqlite-dev libarchive-dev libarchive-static acl-static expat-static zstd-static lz4-static bzip2-static libjpeg-turbo-dev libpng-dev tiff-dev libwebp-dev libwebp-static
-RUN make static || make static
+RUN apk add --no-cache ca-certificates tzdata
 
-FROM library/alpine
+WORKDIR /src
+COPY go/ ./
 
-WORKDIR /
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /mango ./cmd/mango/
 
-COPY --from=builder /Mango/mango .
+FROM scratch
 
-CMD ["./mango"]
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /mango /mango
+
+EXPOSE 9000
+ENTRYPOINT ["/mango"]

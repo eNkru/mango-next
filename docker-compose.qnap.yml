@@ -7,26 +7,19 @@ services:
     build:
       context: /share/Container/mango-src
       dockerfile: Dockerfile
-    image: mango_cn:local   # Tag for convenience after first build
+    image: mango_cn:local
     container_name: mango
     restart: unless-stopped
     ports:
       - "9000:9000"
     volumes:
-      # --- QNAP share paths (adjust volume name if needed) ---
-      # Manga library: point this to the share folder containing your .cbz/.cbr/.zip/.rar files
       - /share/Multimedia/Manga:/root/mango/library
-      # Mango data (database, cache, uploads, plugins, queue)
       - /share/Container/mango/data:/root/mango
-      # Mango config (config.yml will be auto-generated on first run)
       - /share/Container/mango/config:/root/.config/mango
     environment:
       - PORT=9000
-      # DB_PATH must be inside the persisted volume, otherwise the database
-      # is lost on container recreation (default is ~/mango.db → /root/mango.db,
-      # which is outside the /root/mango volume mount)
       - DB_PATH=/root/mango/mango.db
-      # Optional: override any config option via env vars (see src/config.cr for full list)
+      # Optional: override via env (see go/internal/config/config.go)
       # - LIBRARY_PATH=/root/mango/library
       # - SCAN_INTERVAL_MINUTES=10
       # - DISABLE_LOGIN=false

@@ -1,20 +1,16 @@
 # Backend Development Guidelines
 
-> Project-specific backend contracts for Crystal routes, storage, and service code.
-> Also covers the Go binary under `go/`.
+> Project-specific backend contracts for the Go server under `go/`.
 
 ---
 
 ## Overview
 
-Backend code lives in two locations:
-
 | Location | Language | Status |
 |----------|----------|--------|
-| `src/` | Crystal (original) | Production |
-| `go/` | Go (migration) | Complete (Phase 0-5) |
+| `go/` | Go | Sole implementation (Crystal removed) |
 
-The Go migration phases 0–5 are complete. See `.trellis/tasks/07-08-migrate-crystal-to-go/`.
+Historical migration notes: archived Trellis tasks under `.trellis/tasks/archive/2026-07/07-08-migrate-crystal-to-go/` etc.
 
 ---
 

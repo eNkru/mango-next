@@ -1,11 +1,12 @@
 version: '3'
 
+# Alias of docker-compose.yml (Go-only). Prefer: docker compose up -d
 services:
   mango:
     container_name: mango
     build:
-      context: ./go
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: Dockerfile
     expose:
       - ${PORT}
     ports:
