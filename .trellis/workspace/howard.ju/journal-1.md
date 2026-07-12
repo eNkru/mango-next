@@ -100,3 +100,36 @@ Implement Phase 4 (HTTP routes, API handlers, templates, OPDS, progress DB) and 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Remove Crystal, Go-only tree
+
+**Date**: 2026-07-13
+**Task**: Remove Crystal, Go-only tree
+**Branch**: `main`
+
+### Summary
+
+Archived remove-crystal after Crystal source/build/docs cleanup merged (5a88df4). Repo is Go-only; working tree clean on main.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5a88df4` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
