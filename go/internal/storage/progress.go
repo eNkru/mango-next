@@ -136,6 +136,20 @@ func (s *Storage) BulkMarkTitleUnread(username, titleID string) error {
 	return err
 }
 
+// UserHasProgress reports whether the user has any non-zero reading progress.
+// Used for home NewUser (Crystal: any title load_percentage > 0).
+func (s *Storage) UserHasProgress(username string) (bool, error) {
+	var n int
+	err := s.db.QueryRow(
+		`SELECT COUNT(*) FROM progress WHERE username = ? AND page != 0`,
+		username,
+	).Scan(&n)
+	if err != nil {
+		return false, err
+	}
+	return n > 0, nil
+}
+
 func (s *Storage) GetContinueReading(username string) ([]ContinueReadingItem, error) {
 	rows, err := s.db.Query(
 		`SELECT p.title_id, p.entry_id, p.page, p.updated_at

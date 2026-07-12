@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/hkalexling/mango-go/internal/library"
+	"github.com/hkalexling/mango-go/internal/storage"
 )
 
 func (s *Server) handleLoginPage(w http.ResponseWriter, r *http.Request) {
@@ -44,19 +46,157 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", http.StatusFound)
 }
 
+// handleHome mirrors Crystal GET / (src/routes/main.cr):
+//   new_user = !titles.any? { load_percentage(username) > 0 }
+//   empty_library = titles.size == 0
+//   plus continue_reading / start_reading / recently_added sections.
 func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
+	username := GetUsername(r)
+	base := s.Deps.Config.BaseURL
+	lib := s.Deps.Library
+	st := s.Deps.Storage
+
+	lib.RLock()
+	titleCount := len(lib.TitleIDs)
+	lib.RUnlock()
+	emptyLibrary := titleCount == 0
+
+	// Crystal: new_user if no title has load_percentage > 0 for this user.
+	hasProgress, err := st.UserHasProgress(username)
+	if err != nil {
+		log.Printf("home UserHasProgress: %v", err)
+	}
+	newUser := !hasProgress
+
+	continueReading, err := st.GetContinueReading(username)
+	if err != nil {
+		log.Printf("home GetContinueReading: %v", err)
+		continueReading = nil
+	}
+	continueReading = s.enrichContinueReading(base, continueReading)
+
+	startReading, err := st.GetStartReading(username)
+	if err != nil {
+		log.Printf("home GetStartReading: %v", err)
+		startReading = nil
+	}
+	startReading = s.enrichStartReading(base, startReading)
+
+	recentlyAdded, err := st.GetRecentlyAdded(username)
+	if err != nil {
+		log.Printf("home GetRecentlyAdded: %v", err)
+		recentlyAdded = nil
+	}
+	recentlyAdded = s.enrichRecentlyAdded(base, recentlyAdded)
+
+	// Cap sections (Crystal ENTRIES_IN_HOME_SECTIONS = 8)
+	const homeLimit = 8
+	if len(continueReading) > homeLimit {
+		continueReading = continueReading[:homeLimit]
+	}
+	if len(startReading) > homeLimit {
+		startReading = startReading[:homeLimit]
+	}
+	if len(recentlyAdded) > homeLimit {
+		recentlyAdded = recentlyAdded[:homeLimit]
+	}
+
 	data := HomePageData{
 		LayoutData: LayoutData{
-			BaseURL:             s.Deps.Config.BaseURL,
-			IsAdmin:             GetIsAdmin(r),
-			PageName:            "home",
-			Version:             "0.1.0",
+			BaseURL:  base,
+			IsAdmin:  GetIsAdmin(r),
+			PageName: "home",
+			Version:  "0.1.0",
 		},
-		ConfigLibraryPath:  s.Deps.Config.LibraryPath,
-		ConfigPath:         s.Deps.Config.DBPath,
+		ContinueReading:     continueReading,
+		StartReading:        startReading,
+		RecentlyAdded:       recentlyAdded,
+		NewUser:             newUser,
+		EmptyLibrary:        emptyLibrary,
+		ConfigLibraryPath:   s.Deps.Config.LibraryPath,
+		ConfigPath:          s.Deps.Config.DBPath,
 		ScanIntervalMinutes: s.Deps.Config.ScanIntervalMinutes,
 	}
 	s.renderLayout(w, "home", data)
+}
+
+func (s *Server) enrichContinueReading(base string, items []storage.ContinueReadingItem) []storage.ContinueReadingItem {
+	lib := s.Deps.Library
+	out := make([]storage.ContinueReadingItem, 0, len(items))
+	for _, it := range items {
+		lib.RLock()
+		t, ok := lib.TitleHash[it.TitleID]
+		lib.RUnlock()
+		if !ok || t == nil {
+			continue
+		}
+		it.TitleName = t.Name
+		coverEID := firstEntryID(t)
+		if it.EntryID != "" {
+			if e := library.EntryByID(t, it.EntryID); e != nil {
+				it.EntryName = e.Name()
+				coverEID = e.ID()
+				if pages := e.PageCount(); pages > 0 && it.Page > 0 {
+					pct := float64(it.Page) / float64(pages) * 100
+					if pct > 100 {
+						pct = 100
+					}
+					it.Percentage = pct
+				}
+			}
+		}
+		if it.EntryName == "" {
+			it.EntryName = t.Name
+		}
+		if coverEID != "" {
+			it.CoverURL = fmt.Sprintf("%sapi/cover/%s/%s", base, t.ID, coverEID)
+		}
+		out = append(out, it)
+	}
+	return out
+}
+
+func (s *Server) enrichStartReading(base string, items []storage.StartReadingItem) []storage.StartReadingItem {
+	lib := s.Deps.Library
+	out := make([]storage.StartReadingItem, 0, len(items))
+	for _, it := range items {
+		lib.RLock()
+		t, ok := lib.TitleHash[it.TitleID]
+		lib.RUnlock()
+		if !ok || t == nil {
+			continue
+		}
+		it.TitleName = t.Name
+		if eid := firstEntryID(t); eid != "" {
+			it.CoverURL = fmt.Sprintf("%sapi/cover/%s/%s", base, t.ID, eid)
+		}
+		out = append(out, it)
+	}
+	return out
+}
+
+func (s *Server) enrichRecentlyAdded(base string, items []storage.RecentlyAddedItem) []storage.RecentlyAddedItem {
+	lib := s.Deps.Library
+	out := make([]storage.RecentlyAddedItem, 0, len(items))
+	for _, it := range items {
+		lib.RLock()
+		t, ok := lib.TitleHash[it.TitleID]
+		lib.RUnlock()
+		if !ok || t == nil {
+			continue
+		}
+		it.TitleName = t.Name
+		it.EntryName = t.Name
+		if len(t.Entries) > 0 {
+			it.EntryID = t.Entries[0].ID()
+			it.EntryName = t.Entries[0].Name()
+		}
+		if eid := firstEntryID(t); eid != "" {
+			it.CoverURL = fmt.Sprintf("%sapi/cover/%s/%s", base, t.ID, eid)
+		}
+		out = append(out, it)
+	}
+	return out
 }
 
 func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
