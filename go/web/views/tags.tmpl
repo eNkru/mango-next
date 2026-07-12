@@ -1,0 +1,12 @@
+{{template "views/top" .}}
+<h2 class="page-heading-comic" data-i18n="tags_heading">标签</h2>
+<p class="page-subtitle">{{len .Tags}} <span data-i18n="tags_count">标签找到</span></p>
+
+<div>
+  {{range $tag := .Tags}}
+    <span class="tag-pill comic-tag-pill">
+      <a class="uk-link-reset" href="{{$.BaseURL}}tags/{{$tag.EncodedTag}}">{{$tag.Tag}} <small>({{$tag.Count}})</small></a>
+    </span>
+  {{end}}
+</div>
+{{template "views/bottom" .}}

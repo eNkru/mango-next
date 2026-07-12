@@ -1,0 +1,47 @@
+{{template "views/top" .}}
+<div class="admin-sub-page" x-data="component()" x-init="load()" x-cloak x-show="!loading">
+  <div x-show="empty" class="comic-empty-state">
+    <div class="comic-empty-icon"><i class="fas fa-check-circle"></i></div>
+    <h2 data-i18n="no_missing_entries">没有找到丢失的条目</h2>
+    <p data-i18n="all_entries_normal">所有条目均正常</p>
+  </div>
+  <div x-show="!empty">
+    <p class="uk-margin-bottom" style="color: #888; font-size: 0.92rem; line-height: 1.6;" data-i18n="missing_items_description">以下项目存在于您的资料库中，但现在我们找不到它们了。 如果您错误地删除了它们，请尝试恢复文件或文件夹，将它们放回原来的位置，然后重新扫描资料库。 除此之外，您可以使用下面的按钮安全地删除它们和相关的元数据以释放数据库空间。</p>
+    <div class="action-bar">
+      <button class="uk-button comic-btn comic-btn-sm comic-btn-danger" @click="rmAll()"><i class="fas fa-trash uk-margin-small-right"></i> <span data-i18n="delete_all">删除全部</span></button>
+    </div>
+    <table class="uk-table comic-table uk-overflow-auto">
+      <thead>
+        <tr>
+          <th data-i18n="missing_type_th">类型</th>
+          <th data-i18n="relative_path_th">相对路径</th>
+          <th data-i18n="id_label">ID</th>
+          <th data-i18n="operation_th">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="title in titles" :key="title">
+          <tr :id="`title-${title.id}`">
+            <td><span class="status-label comic-status comic-status-warning" data-i18n="title_label">标题</span></td>
+            <td x-text="title.path"></td>
+            <td x-text="title.id"></td>
+            <td><a @click="rm($event)" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><span uk-icon="trash"></span></a></td>
+          </tr>
+        </template>
+        <template x-for="entry in entries" :key="entry">
+          <tr :id="`entry-${entry.id}`">
+            <td><span class="status-label comic-status comic-status-pending" data-i18n="path_label">路径</span></td>
+            <td x-text="entry.path"></td>
+            <td x-text="entry.id"></td>
+            <td><a @click="rm($event)" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><span uk-icon="trash"></span></a></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+  <script src="{{.BaseURL}}js/alert.js"></script>
+  <script src="{{.BaseURL}}js/missing-items.js"></script>
+{{template "views/bottom" .}}

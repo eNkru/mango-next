@@ -8,7 +8,11 @@ describe Storage do
   end
 
   it "deletes user" do
-    with_storage &.delete_user "admin"
+    with_storage do |storage|
+      storage.new_user "delete", "123456", false
+      storage.delete_user "delete"
+      storage.username_exists("delete").should be_false
+    end
   end
 
   it "creates new user" do
@@ -35,6 +39,41 @@ describe Storage do
         "UNIQUE constraint failed: users.username" do
         storage.new_user "admin", "123456", true
       end
+    end
+  end
+
+  it "rejects deleting the last admin" do
+    with_storage do |storage|
+      expect_raises Exception, "Cannot remove the last admin user" do
+        storage.delete_user "admin"
+      end
+      storage.username_exists("admin").should be_true
+    end
+  end
+
+  it "allows deleting an admin when another admin remains" do
+    with_storage do |storage|
+      storage.new_user "admin2", "123456", true
+      storage.delete_user "admin2"
+      storage.username_exists("admin2").should be_false
+    end
+  end
+
+  it "rejects demoting the last admin" do
+    with_storage do |storage|
+      expect_raises Exception, "Cannot remove the last admin user" do
+        storage.update_user "admin", "admin", "", false
+      end
+      storage.username_is_admin("admin").should be_true
+    end
+  end
+
+  it "allows demoting an admin when another admin remains" do
+    with_storage do |storage|
+      storage.new_user "admin2", "123456", true
+      storage.update_user "admin2", "admin2", "", false
+      storage.username_is_admin("admin2").should be_false
+      storage.delete_user "admin2"
     end
   end
 

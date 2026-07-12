@@ -1,0 +1,88 @@
+{{template "views/top" .}}
+<div class="library-page comic-card-entrance">
+  <h2 class="page-heading-comic" data-i18n="library_heading">资料库 <span class="comic-section-count">{{len .Titles}} <span data-i18n="files_count">文件</span></span></h2>
+
+  <div class="library-toolbar">
+    <form class="search-bar comic-search" role="search">
+      <span class="search-icon comic-search-icon" uk-search-icon></span>
+      <input class="uk-search-input search-input comic-search-input" type="search" placeholder="查找漫画..." data-i18n-placeholder="search_manga" aria-label="查找漫画">
+    </form>
+    <div class="sort-form-wrapper">
+      <div class="uk-form-horizontal">
+        <select class="uk-select sort-select comic-select" id="sort-select">
+          <option id="auto-up" data-i18n="sort_auto">▲ 自动</option>
+          <option id="auto-down" data-i18n="sort_auto">▼ 自动</option>
+          <option id="title-up" data-i18n="sort_title">▲ 名称</option>
+          <option id="title-down" data-i18n="sort_title">▼ 名称</option>
+          <option id="time_modified-up" data-i18n="sort_time_modified">▲ 修改日期</option>
+          <option id="time_modified-down" data-i18n="sort_time_modified">▼ 修改日期</option>
+          <option id="progress-up" data-i18n="sort_progress">▲ 进度</option>
+          <option id="progress-down" data-i18n="sort_progress">▼ 进度</option>
+        </select>
+      </div>
+    </div>
+    {{if .IsAdmin}}
+      <a href="#" onclick="toggleShowHidden({{if .ShowHidden}}0{{else}}1{{end}}); return false;" class="comic-btn comic-btn-sm {{if .ShowHidden}}comic-btn-active-toggle{{else}}comic-btn-outline{{end}} hide-toggle-btn" title="{{if .ShowHidden}}隐藏已隐藏{{else}}显示隐藏{{end}}" data-i18n-title="{{if .ShowHidden}}hide_hidden{{else}}show_hidden{{end}}">
+        <i class="fas {{if .ShowHidden}}fa-eye{{else}}fa-eye-slash{{end}}"></i>
+        <span data-i18n="{{if .ShowHidden}}hide_hidden{{else}}show_hidden{{end}}">{{if .ShowHidden}}隐藏已隐藏{{else}}显示隐藏{{end}}</span>
+      </a>
+    {{end}}
+  </div>
+
+  <div class="no-results" id="no-results">
+    <div class="no-results-icon"><i class="fas fa-search"></i></div>
+    <h3 data-i18n="no_results">未找到结果</h3>
+    <p data-i18n="try_different_keywords">尝试使用不同的关键词搜索</p>
+  </div>
+
+  <div class="library-card-grid">
+    {{range $i, $item := .Titles}}
+      <div class="item{{if and $item.Hidden $.ShowHidden}} is_hidden{{end}}"
+        data-title-id="{{$item.ID}}">
+        <div class="acard" onclick="location='{{$.BaseURL}}book/{{$item.ID}}'">
+          <div class="uk-card uk-card-default comic-card">
+            <div class="uk-card-media-top uk-inline comic-card-media">
+              <img data-src="{{$item.CoverURL}}" alt="" uk-img>
+              {{if gt (len $.Percentage) $i}}
+                {{if and (ge (index $.Percentage $i) 0.0) (le (index $.Percentage $i) 100.0)}}
+                  <div class="card-progress-bar">
+                    <div class="card-progress-fill" style="width: {{printf "%.1f" (index $.Percentage $i)}}%"></div>
+                  </div>
+                  <span class="card-progress-percent">{{printf "%.0f" (index $.Percentage $i)}}%</span>
+                {{end}}
+              {{end}}
+              {{if $.IsAdmin}}
+                <div class="card-hover-actions">
+                  {{if $item.Hidden}}
+                    <button class="card-action-btn card-unhide-btn" onclick="event.stopPropagation();toggleHidden('{{$item.ID}}', 0)" title="显示此书" data-i18n-title="show_book">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  {{else}}
+                    <button class="card-action-btn card-hide-btn" onclick="event.stopPropagation();toggleHidden('{{$item.ID}}', 1)" title="隐藏此书" data-i18n-title="hide_book">
+                      <i class="fas fa-eye-slash"></i>
+                    </button>
+                  {{end}}
+                </div>
+              {{end}}
+            </div>
+            {{if and $item.Hidden $.ShowHidden}}
+              <div class="hidden-badge"><i class="fas fa-eye-slash"></i> <span data-i18n="hidden_badge_card">已隐藏</span></div>
+            {{end}}
+            <div class="uk-card-body comic-card-body">
+              <h3 class="uk-card-title break-word comic-card-title" data-title="{{$item.Name}}">{{$item.Name}}</h3>
+              <p class="uk-text-meta">{{$item.EntryCount}} <span data-i18n="entries">项</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{end}}
+  </div>
+</div>
+
+
+  {{template "dots" .}}
+  <script src="{{.BaseURL}}js/alert.js"></script>
+  <script src="{{.BaseURL}}js/title.js"></script>
+  <script src="{{.BaseURL}}js/search.js"></script>
+  <script src="{{.BaseURL}}js/sort-items.js"></script>
+{{template "views/bottom" .}}

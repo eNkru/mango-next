@@ -1,0 +1,39 @@
+{{template "views/top" .}}
+<div class="admin-sub-page">
+  <table class="uk-table comic-table uk-table-middle">
+    <thead>
+      <tr>
+        <th data-i18n="username_th">用户名</th>
+        <th data-i18n="admin_access_th">管理员权限</th>
+        <th data-i18n="action_th">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range $u := .Users}}
+        <tr>
+          <td><strong>{{index $u 0}}</strong></td>
+          <td>
+            {{if eq (index $u 1) "1"}}
+              <span class="status-label comic-status comic-status-success" data-i18n="yes">是</span>
+            {{else}}
+              <span class="status-label comic-status comic-status-pending" data-i18n="no">否</span>
+            {{end}}
+          </td>
+          <td>
+            <a href="{{$.BaseURL}}admin/user/edit?username={{index $u 0}}&admin={{index $u 1}}" class="table-action" aria-label="编辑用户" uk-tooltip="编辑" data-i18n-aria-label="edit_user" data-i18n-tooltip="edit_user"><span uk-icon="file-edit"></span></a>
+            {{if ne (index $u 0) $.Username}}
+              <a href="#" onclick="remove('{{index $u 0}}');return false;" class="table-action table-action-danger" aria-label="删除用户" uk-tooltip="删除" data-i18n-aria-label="delete_user" data-i18n-tooltip="delete_user"><span uk-icon="trash"></span></a>
+            {{end}}
+          </td>
+        </tr>
+      {{end}}
+    </tbody>
+  </table>
+
+  <a href="{{.BaseURL}}admin/user/edit" class="uk-button comic-btn comic-btn-primary comic-btn-sm"><i class="fas fa-plus uk-margin-small-right"></i> <span data-i18n="new_user">新用户</span></a>
+</div>
+
+
+  <script src="{{.BaseURL}}js/alert.js"></script>
+  <script src="{{.BaseURL}}js/user.js"></script>
+{{template "views/bottom" .}}

@@ -1,0 +1,30 @@
+{{template "views/top" .}}
+<div id="modal" class="uk-flex-top error-modal" uk-modal>
+  <div class="uk-modal-dialog uk-margin-auto-vertical">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+      <div>
+        <h3 class="uk-modal-title uk-margin-remove-top"><i class="fas fa-exclamation-circle"></i> <span data-i18n="error_title">错误</span></h3>
+      </div>
+      <p class="uk-text-meta uk-margin-remove-bottom break-word">{{.EntryName}}</p>
+      <p class="uk-text-meta uk-margin-remove-top">{{.EntryError}}</p>
+    </div>
+    <div class="uk-modal-body">
+      <div class="error-actions">
+      {{if .NextEntryURL}}
+        <a class="uk-button uk-button-default comic-btn comic-btn-outline" href="{{.NextEntryURL}}" data-i18n="next">下一个</a>
+      {{end}}
+      <a class="uk-button uk-button-primary comic-btn comic-btn-primary" href="{{.ExitURL}}" data-i18n="back_to_title">回到标题</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script>
+    UIkit.modal('#modal').show();
+    UIkit.util.on('#modal', 'hide', function() {
+      location.href = "{{.ExitURL}}";
+    });
+  </script>
+{{template "views/bottom" .}}

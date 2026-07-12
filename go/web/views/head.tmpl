@@ -1,0 +1,22 @@
+{{define "head"}}
+<head>
+  <meta charset="utf-8">
+  <meta name="X-UA-Compatible" content="IE=edge">
+  <title>Mango - {{.PageName}}</title>
+  <meta name="description" content="Mango - 漫画服务器和网络阅读器">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{.BaseURL}}css/mango.css" />
+  <link rel="stylesheet" href="{{.BaseURL}}css/comic-theme.css" />
+  <link rel="icon" href="{{.BaseURL}}favicon.ico">
+  <link rel="manifest" href="{{.BaseURL}}manifest.json">
+
+  <script src="{{.BaseURL}}js/jquery.min.js"></script>
+  <script type="module" src="{{.BaseURL}}js/alpine.min.js"></script>
+  <script nomodule src="{{.BaseURL}}js/alpine-ie11.min.js" defer></script>
+  <script src="{{.BaseURL}}js/i18n.js"></script>
+  <script src="{{.BaseURL}}js/common.js"></script>
+</head>
+{{end}}

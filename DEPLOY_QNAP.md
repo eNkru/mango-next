@@ -50,7 +50,7 @@ Build the Docker image on your dev machine (which has plenty of RAM/CPU), then t
 
 ```bash
 # On your dev machine (macOS/Linux):
-cd /Users/hju/sources/Mango_cn
+cd /path/to/mango-next
 
 # Build for the NAS architecture.
 # Most QNAP NAS are linux/amd64.
@@ -61,7 +61,7 @@ docker build --platform linux/amd64 -t mango_cn:local .
 # docker build -t mango_cn:local .
 ```
 
-> ⏱️ The build compiles Crystal from source — expect 2–5 minutes on a modern machine (vs 10–20+ min on a NAS).
+> ⏱️ The build compiles the Go binary — usually under a few minutes on a modern machine.
 
 #### 2A-2. Export the image to a compressed tar
 
@@ -137,19 +137,19 @@ Choose **one** method:
 **SCP (simple):**
 ```bash
 # From your dev machine:
-scp -r /Users/hju/sources/Mango_cn admin@<NAS-IP>:/share/Container/mango-src
+scp -r /path/to/mango-next admin@<NAS-IP>:/share/Container/mango-src
 ```
 
 **Rsync (faster for re-deploys — only transfers changed files):**
 ```bash
 # From your dev machine:
-rsync -avz --exclude 'node_modules' --exclude '.git' \
-  /Users/hju/sources/Mango_cn/ admin@<NAS-IP>:/share/Container/mango-src/
+rsync -avz --exclude '.git' --exclude 'mango' \
+  /path/to/mango-next/ admin@<NAS-IP>:/share/Container/mango-src/
 ```
 
 **File Station:** Zip the project, upload via File Station, extract on the NAS via SSH.
 
-> **Tip:** Exclude `node_modules`, `.git`, and `lib/` to save transfer time — the Docker build will regenerate them.
+> **Tip:** Exclude `.git` and local binaries to save transfer time. Docker only needs the `go/` tree + root `Dockerfile`.
 
 #### 2B-2. Create the compose file and build
 
@@ -179,7 +179,7 @@ services:
 EOF
 
 cd /share/Container/mango
-docker compose build    # ⚠️ Takes 10–20 min on first run (compiles Crystal)
+docker compose build    # first run downloads Go toolchain image and compiles
 docker compose up -d
 ```
 
@@ -222,7 +222,7 @@ docker compose up -d
 # === On your dev machine ===
 
 # 1. Rebuild the image with your latest changes
-cd /Users/hju/sources/Mango_cn
+cd /path/to/mango-next
 #   Apple Silicon Macs must specify --platform linux/amd64:
 docker build --platform linux/amd64 -t mango_cn:local .
 
@@ -248,8 +248,8 @@ rm /share/Container/mango_cn-local.tar.gz
 
 ```bash
 # 1. Sync updated source to the NAS (from your dev machine)
-rsync -avz --exclude 'node_modules' --exclude '.git' \
-  /Users/hju/sources/Mango_cn/ admin@<NAS-IP>:/share/Container/mango-src/
+rsync -avz --exclude '.git' --exclude 'mango' \
+  /path/to/mango-next/ admin@<NAS-IP>:/share/Container/mango-src/
 
 # 2. Rebuild and restart on the NAS (SSH into the NAS)
 ssh admin@<NAS-IP>
@@ -283,7 +283,7 @@ cache_size_mbs: 50
 > docker restart mango
 > ```
 
-All config options can also be overridden via **environment variables** (uppercase name), e.g. `SCAN_INTERVAL_MINUTES=10`. See `src/config.cr` in this repo for the full list.
+All config options can also be overridden via **environment variables** (uppercase name), e.g. `SCAN_INTERVAL_MINUTES=10`. See `go/internal/config/config.go` for the full list.
 
 ---
 
@@ -358,8 +358,7 @@ If Mango can't read your manga files or fails to write its database:
 │   └── mango-src/                   # Source code (Method B only — not needed for Method A)
 │       ├── Dockerfile
 │       ├── Makefile
-│       ├── shard.yml
-│       └── src/ ...
+│       └── go/ ...
 └── Multimedia/Manga/               # Your manga library
     ├── Title A/
     │   └── Vol 01.cbz
@@ -374,7 +373,7 @@ If Mango can't read your manga files or fails to write its database:
 
 ```bash
 # === On your dev machine ===
-cd /Users/hju/sources/Mango_cn
+cd /path/to/mango-next
 docker build --platform linux/amd64 -t mango_cn:local .
 docker save mango_cn:local | gzip > mango_cn-local.tar.gz
 scp mango_cn-local.tar.gz admin@<NAS-IP>:/share/Container/
@@ -398,8 +397,8 @@ docker logs mango | head -20
 
 ```bash
 # === On your dev machine ===
-rsync -avz --exclude 'node_modules' --exclude '.git' \
-  /Users/hju/sources/Mango_cn/ admin@<NAS-IP>:/share/Container/mango-src/
+rsync -avz --exclude '.git' --exclude 'mango' \
+  /path/to/mango-next/ admin@<NAS-IP>:/share/Container/mango-src/
 
 # === On the QNAP (SSH) ===
 ssh admin@<NAS-IP>

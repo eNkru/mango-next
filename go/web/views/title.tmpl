@@ -1,0 +1,200 @@
+{{template "views/top" .}}
+<div>
+  <div id="select-bar" class="uk-card uk-card-body uk-card-default uk-margin-bottom" uk-sticky="offset:10" x-data="{count: 0}" @add.window="count++; $dispatch('count', {count: count})" @remove.window="count--; $dispatch('count', {count: count})" x-show="count > 0" x-cloak data-id="{{.Title.ID}}">
+    <div class="uk-child-width-1-3" uk-grid>
+      <div>
+        <p x-text="count + ' ' + I18N.get('items_selected', loadLanguageSetting())" style="color:orange"></p>
+      </div>
+      <div class="uk-text-center" id="select-bar-controls">
+        <a class="uk-icon uk-margin-right" uk-tooltip="title: 标记为已读" href="" @click.prevent="bulkProgress('read', $el)" data-i18n-tooltip="mark_read">
+          <i class="fas fa-check-circle"></i>
+        </a>
+        <a class="uk-icon" uk-tooltip="title: 标记为未读" href="" @click.prevent="bulkProgress('unread', $el)" data-i18n-tooltip="mark_unread">
+          <i class="fas fa-times-circle"></i>
+        </a>
+      </div>
+      <div class="uk-text-right">
+        <a @click="selectAll()" uk-tooltip="title: 全选" data-i18n-tooltip="select_all"><i class="fas fa-check-double uk-margin-small-right"></i></a>
+        <a @click="deselectAll();" uk-tooltip="title: 取消全选" data-i18n-tooltip="deselect_all"><i class="fas fa-times"></i></a>
+      </div>
+    </div>
+  </div>
+  <h2 class="title-heading comic-heading" data-file-title="{{.Title.Name}}" data-sort-title="">
+    <span>{{.Title.Name}}</span>
+    {{if .IsHidden}}
+      <span class="hidden-title-badge"><i class="fas fa-eye-slash"></i> <span data-i18n="hidden_badge">已隐藏</span></span>
+    {{end}}
+    {{if .IsAdmin}}
+      <a onclick="toggleHidden('{{.Title.ID}}', {{if .IsHidden}}0{{else}}1{{end}})" class="uk-icon-button" title="{{if .IsHidden}}显示此书{{else}}隐藏此书{{end}}" aria-label="{{if .IsHidden}}显示此书{{else}}隐藏此书{{end}}" data-i18n-title="{{if .IsHidden}}show_book{{else}}hide_book{{end}}" data-i18n-aria-label="{{if .IsHidden}}show_book{{else}}hide_book{{end}}">
+        <i class="fas {{if .IsHidden}}fa-eye{{else}}fa-eye-slash{{end}}"></i>
+      </a>
+      <a onclick="edit()" class="uk-icon-button" uk-icon="icon:pencil" aria-label="编辑" data-i18n-aria-label="edit"></a>
+    {{end}}
+  </h2>
+</div>
+<div class="breadcrumb-nav">
+  <ul class="uk-breadcrumb">
+    <li><a href="{{.BaseURL}}library" data-i18n="library">资料库</a></li>
+    {{range $t := .Title.ParentIDs}}
+      <li><a href="{{$.BaseURL}}book/{{$t}}">{{$t}}</a></li>
+    {{end}}
+    <li class="uk-disabled"><a>{{.Title.Name}}</a></li>
+  </ul>
+</div>  <p class="page-subtitle">{{len .Entries}} <span data-i18n="found_label">找到</span></p>
+
+<div class="tag-select-wrapper uk-margin" x-data="tagsComponent()" x-cloak x-init="load({{.IsAdmin}})" x-show="!loading">
+  <select class="tag-select" multiple="multiple" style="width:100%">
+  </select>
+</div>
+
+<div class="uk-grid-small" uk-grid>
+  <div class="uk-margin-bottom uk-width-3-4@s">
+    <form class="search-bar comic-search" role="search">
+      <span class="search-icon comic-search-icon" uk-search-icon></span>
+      <input class="uk-search-input search-input comic-search-input" type="search" placeholder="查找漫画..." data-i18n-placeholder="search_manga" aria-label="查找漫画">
+    </form>
+  </div>
+  <div class="uk-margin-bottom uk-width-1-4@s">
+    <div class="uk-form-horizontal">
+      <select class="uk-select sort-select comic-select" id="sort-select">
+        <option id="auto-up" data-i18n="sort_auto">▲ 自动</option>
+        <option id="auto-down" data-i18n="sort_auto">▼ 自动</option>
+        <option id="title-up" data-i18n="sort_title">▲ 名称</option>
+        <option id="title-down" data-i18n="sort_title">▼ 名称</option>
+        <option id="time_modified-up" data-i18n="sort_time_modified">▲ 修改日期</option>
+        <option id="time_modified-down" data-i18n="sort_time_modified">▼ 修改日期</option>
+        <option id="time_added-up" data-i18n="sort_time_added">▲ 添加日期</option>
+        <option id="time_added-down" data-i18n="sort_time_added">▼ 添加日期</option>
+        <option id="progress-up" data-i18n="sort_progress">▲ 进度</option>
+        <option id="progress-down" data-i18n="sort_progress">▼ 进度</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="library-card-grid title-card-grid">
+  {{range $i, $item := .SortedTitles}}
+    <div class="item" data-title-id="{{$item.ID}}">
+      <div class="acard" onclick="location='{{$.BaseURL}}book/{{$item.ID}}'">
+        <div class="uk-card uk-card-default comic-card">
+          <div class="uk-card-media-top uk-inline comic-card-media">
+            <img data-src="{{$item.CoverURL}}" alt="" uk-img>
+            {{if lt $i (len $.TitlePercentage)}}
+              {{if and (ge (index $.TitlePercentage $i) 0.0) (le (index $.TitlePercentage $i) 100.0)}}
+                <div class="card-progress-bar">
+                  <div class="card-progress-fill" style="width: {{printf "%.1f" (index $.TitlePercentage $i)}}%"></div>
+                </div>
+                <span class="card-progress-percent">{{printf "%.0f" (index $.TitlePercentage $i)}}%</span>
+              {{end}}
+            {{end}}
+          </div>
+          <div class="uk-card-body comic-card-body">
+            <h3 class="uk-card-title break-word comic-card-title" data-title="{{$item.Name}}">{{$item.Name}}</h3>
+            <p class="uk-text-meta">{{$item.Hidden}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{end}}
+</div>
+<div class="library-card-grid title-card-grid">
+  {{range $i, $item := .Entries}}
+    <div class="item" id="{{$item.ID}}">
+      <div class="acard is_entry"
+        data-encoded-path="{{$item.ID}}"
+        data-pages="{{$item.PageCount}}"
+        data-progress="{{if lt $i (len $.Percentage)}}{{printf "%.1f" (index $.Percentage $i)}}{{else}}0{{end}}"
+        data-encoded-book-title="{{$.Title.Name}}"
+        data-encoded-title="{{$item.Name}}"
+        data-book-id="{{$.Title.ID}}"
+        data-id="{{$item.ID}}">
+        <div class="uk-card uk-card-default comic-card">
+          <div class="uk-card-media-top uk-inline comic-card-media">
+            <img data-src="{{$item.CoverURL}}" alt="" uk-img>
+            {{if lt $i (len $.Percentage)}}
+              {{if and (ge (index $.Percentage $i) 0.0) (le (index $.Percentage $i) 100.0)}}
+                <div class="card-progress-bar">
+                  <div class="card-progress-fill" style="width: {{printf "%.1f" (index $.Percentage $i)}}%"></div>
+                </div>
+                <span class="card-progress-percent">{{printf "%.0f" (index $.Percentage $i)}}%</span>
+              {{end}}
+            {{end}}
+          </div>
+          <div class="uk-card-body comic-card-body">
+            <h3 class="uk-card-title break-word comic-card-title">{{$item.Name}}</h3>
+            <p class="uk-text-meta">{{$item.PageCount}} <span data-i18n="pages">页</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{end}}
+</div>
+
+{{template "entry-modal" .}}
+
+<div id="edit-modal" class="uk-flex-top mango-modal comic-modal" uk-modal>
+  <div class="uk-modal-dialog uk-margin-auto-vertical">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+      <div>
+        <h3 class="uk-modal-title break-word" data-i18n="edit">编辑</h3>
+      </div>
+    </div>
+    <div class="uk-modal-body">
+      <div class="uk-margin">
+        <label class="uk-form-label" for="display-name" data-i18n="display_name">显示名称</label>
+        <div class="uk-inline uk-width-1-1">
+          <a class="uk-form-icon uk-form-icon-flip" uk-icon="icon:check"></a>
+          <input class="uk-input" type="text" name="display-name" id="display-name-field">
+        </div>
+      </div>
+      <div class="uk-margin">
+        <label class="uk-form-label" for="sort-title" data-i18n="sort_title_label">排序标题</label>
+        <div class="uk-inline uk-width-1-1">
+          <a class="uk-form-icon uk-form-icon-flip" uk-icon="icon:check"></a>
+          <input class="uk-input" type="text" name="sort-title" id="sort-title-field">
+        </div>
+      </div>
+      <div class="uk-margin">
+        <label class="uk-form-label" data-i18n="cover_image">封面图片</label>
+        <div class="uk-grid">
+          <div class="uk-width-1-2@s">
+            <img id="cover" data-title-cover="{{.Title.CoverURL}}" alt="" data-width data-height uk-img>
+          </div>
+          <div class="uk-width-1-2@s">
+            <div id="cover-upload" class="upload-field uk-placeholder uk-text-center uk-flex uk-flex-middle" data-title-id="{{.Title.ID}}">
+              <div>
+                <span uk-icon="icon: cloud-upload"></span>
+                <span class="uk-text-middle" data-i18n="upload_cover_drag">上传封面图片，将其拖放到此处或</span>
+                <div uk-form-custom>
+                  <input type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/apng,image/svg+xml,image/jxl">
+                  <span class="uk-link" data-i18n="choose_one">选择一个</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <progress id="upload-progress" class="uk-progress" value="0" max="100" hidden></progress>
+      </div>
+      <div id="title-progress-control" hidden>
+        <label class="uk-form-label" data-i18n="progress">进度</label>
+        <p class="uk-margin-remove-vertical">
+        <button id="read-btn" class="uk-button uk-button-default" onclick="updateProgress('{{.Title.ID}}', null, 1)" data-i18n="mark_all_read">全部标记为已读 (100%)</button>
+        <button id="unread-btn" class="uk-button uk-button-default" onclick="updateProgress('{{.Title.ID}}', null, 0)" data-i18n="mark_all_unread">全部标记为未读 (0%)</button>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  {{template "dots" .}}
+  <link href="{{.BaseURL}}css/select2.min.css" rel="stylesheet" />
+  <link href="{{.BaseURL}}css/tags.css" rel="stylesheet" />
+  <script src="{{.BaseURL}}js/select2.min.js"></script>
+  <script src="{{.BaseURL}}js/alert.js"></script>
+  <script src="{{.BaseURL}}js/title.js"></script>
+  <script src="{{.BaseURL}}js/search.js"></script>
+  <script src="{{.BaseURL}}js/sort-items.js"></script>
+{{template "views/bottom" .}}

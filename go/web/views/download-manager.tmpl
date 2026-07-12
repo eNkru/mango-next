@@ -1,0 +1,67 @@
+{{template "views/top" .}}
+<div class="admin-sub-page" x-data="component()" x-init="init()">
+  <h2 class="page-heading-comic" data-i18n="download_manager_heading">下载管理器</h2>
+  <p class="page-subtitle" data-i18n="download_manager_subtitle">管理和监控下载队列</p>
+  <div class="action-bar">
+    <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="jobAction('delete')"><i class="fas fa-trash-alt uk-margin-small-right"></i> <span data-i18n="delete_completed">删除已完成的任务</span></button>
+    <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="jobAction('retry')"><i class="fas fa-redo uk-margin-small-right"></i> <span data-i18n="retry_failed">重试失败的任务</span></button>
+    <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="load()" :disabled="loading"><i class="fas fa-sync-alt uk-margin-small-right"></i> <span data-i18n="refresh_queue">刷新队列</span></button>
+    <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" x-show="paused !== undefined" x-text="paused ? I18N.get('resume_download', loadLanguageSetting()) : I18N.get('pause_download', loadLanguageSetting())" @click="toggle()" :disabled="toggling"></button>
+  </div>
+  <div class="uk-overflow-auto">
+    <table class="uk-table comic-table">
+      <thead>
+        <tr>
+          <th data-i18n="chapter_th">章节</th>
+          <th data-i18n="manga_th">漫画</th>
+          <th data-i18n="progress_th">进度</th>
+          <th data-i18n="time_th">时间</th>
+          <th data-i18n="status_th">状态</th>
+          <th data-i18n="plugin_th">插件</th>
+          <th data-i18n="operation_th">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="job in jobs" :key="job">
+          <tr :id="`chapter-${job.id}`">
+
+            <template x-if="job.plugin_id">
+              <td x-text="job.title"></td>
+            </template>
+
+            <template x-if="job.plugin_id">
+              <td x-text="job.manga_title"></td>
+            </template>
+
+            <td x-text="`${job.success_count}/${job.pages}`"></td>
+            <td x-text="`${moment(job.time).fromNow()}`"></td>
+
+            <td>
+              <span :class="statusLabelClass(job.status)" x-text="job.status"></span>
+              <template x-if="job.status_message.length > 0">
+                <span class="uk-inline">
+                  <span class="info-toggle info-toggle-sm" uk-icon="icon:info"></span>
+                  <div uk-dropdown x-text="job.status_message" style="white-space: pre-line;"></div>
+                </span>
+              </template>
+            </td>
+
+            <td x-text="`${job.plugin_id || ''}`"></td>
+            <td>
+              <a @click="jobAction('delete', $event)" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><span uk-icon="trash"></span></a>
+              <template x-if="job.status_message.length > 0">
+                <a @click="jobAction('retry', $event)" class="table-action table-action-success" aria-label="重试" uk-tooltip="重试" data-i18n-aria-label="retry_action" data-i18n-tooltip="retry_action"><span uk-icon="refresh"></span></a>
+              </template>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+  {{template "moment" .}}
+  <script src="{{.BaseURL}}js/alert.js"></script>
+  <script src="{{.BaseURL}}js/download-manager.js"></script>
+{{template "views/bottom" .}}
