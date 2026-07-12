@@ -32,8 +32,12 @@ func NewDownloader(q *queue.Queue, libraryPath, pluginDir string) *Downloader {
 		queue:       q,
 		libraryPath: libraryPath,
 		pluginDir:   pluginDir,
+		// mirrors Crystal src/util/proxy.cr: respect HTTP(S)_PROXY / NO_PROXY
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
+			Transport: &http.Transport{
+				Proxy: http.ProxyFromEnvironment,
+			},
 		},
 	}
 }

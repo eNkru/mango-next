@@ -31,11 +31,16 @@ func NewSandbox(storagePath, infoDir string) (*Sandbox, error) {
 	if err != nil {
 		return nil, fmt.Errorf("init plugin store: %w", err)
 	}
+	// mirrors Crystal src/util/proxy.cr: respect HTTP(S)_PROXY / NO_PROXY
 	s := &Sandbox{
-		vm:         goja.New(),
-		httpClient: http.DefaultClient,
-		store:      store,
-		infoDir:    infoDir,
+		vm: goja.New(),
+		httpClient: &http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyFromEnvironment,
+			},
+		},
+		store:   store,
+		infoDir: infoDir,
 	}
 	if err := s.installMango(); err != nil {
 		return nil, err
