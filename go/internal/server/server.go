@@ -73,6 +73,8 @@ func (s *Server) RegisterRoutes() {
 	r.Get("/login", s.handleLoginPage)
 	r.Post("/login", s.handleLogin)
 	r.Get("/logout", s.handleLogout)
+	// Crystal POST /api/login is unauthenticated (session/token mint).
+	r.Post("/api/login", s.apiLogin)
 
 	r.Group(func(r chi.Router) {
 		r.Use(func(next http.Handler) http.Handler {
@@ -92,10 +94,9 @@ func (s *Server) RegisterRoutes() {
 		r.Get("/opds", s.handleOPDSIndex)
 		r.Get("/opds/book/{title_id}", s.handleOPDSTitle)
 
-		// DISABLED: plugin downloads
-		// if deps.Config.PluginPath != "" {
-		// 	r.Get("/download/plugins", s.handlePluginDownload)
-		// }
+		if deps.Config.PluginPath != "" {
+			r.Get("/download/plugins", s.handlePluginDownload)
+		}
 
 		r.Route("/admin", func(r chi.Router) {
 			r.Use(AdminMiddleware)
@@ -104,13 +105,13 @@ func (s *Server) RegisterRoutes() {
 			r.Get("/user/edit", s.handleUserEdit)
 			r.Post("/user/edit", s.handleUserEditPost)
 			r.Post("/user/edit/{original_username}", s.handleUserEditPost)
-			// DISABLED: download/subscription manager
-			// r.Get("/downloads", s.handleDownloadManager)
-			// r.Get("/subscriptions", s.handleSubscriptionManager)
+			r.Get("/downloads", s.handleDownloadManager)
+			r.Get("/subscriptions", s.handleSubscriptionManager)
 			r.Get("/missing", s.handleMissingItems)
 		})
 
 		r.Route("/api", func(r chi.Router) {
+			// POST /api/login is registered outside AuthMiddleware (below).
 			r.Get("/library", s.apiLibrary)
 			r.Get("/library/continue_reading", s.apiContinueReading)
 			r.Get("/library/start_reading", s.apiStartReading)
@@ -136,18 +137,17 @@ func (s *Server) RegisterRoutes() {
 				r.Put("/display_name/{tid}/{name}", s.apiAdminSetDisplayName)
 				r.Put("/sort_title/{tid}", s.apiAdminSetSortTitle)
 				r.Post("/upload/{target}", s.apiAdminUpload)
-				// DISABLED: plugin and queue management
-				// r.Get("/plugin", s.apiAdminListPlugins)
-				// r.Get("/plugin/info", s.apiAdminPluginInfo)
-				// r.Get("/plugin/search", s.apiAdminPluginSearch)
-				// r.Post("/plugin/subscriptions", s.apiAdminCreateSubscription)
-				// r.Get("/plugin/subscriptions", s.apiAdminListSubscriptions)
-				// r.Delete("/plugin/subscriptions", s.apiAdminDeleteSubscription)
-				// r.Post("/plugin/subscriptions/update", s.apiAdminUpdateSubscription)
-				// r.Get("/plugin/list", s.apiAdminPluginList)
-				// r.Post("/plugin/download", s.apiAdminPluginDownload)
-				// r.Get("/queue", s.apiAdminQueue)
-				// r.Post("/queue/{action}", s.apiAdminQueueAction)
+				r.Get("/plugin", s.apiAdminListPlugins)
+				r.Get("/plugin/info", s.apiAdminPluginInfo)
+				r.Get("/plugin/search", s.apiAdminPluginSearch)
+				r.Post("/plugin/subscriptions", s.apiAdminCreateSubscription)
+				r.Get("/plugin/subscriptions", s.apiAdminListSubscriptions)
+				r.Delete("/plugin/subscriptions", s.apiAdminDeleteSubscription)
+				r.Post("/plugin/subscriptions/update", s.apiAdminUpdateSubscription)
+				r.Get("/plugin/list", s.apiAdminPluginList)
+				r.Post("/plugin/download", s.apiAdminPluginDownload)
+				r.Get("/queue", s.apiAdminQueue)
+				r.Post("/queue/{action}", s.apiAdminQueueAction)
 				r.Put("/tags/{tid}/{tag}", s.apiAdminAddTag)
 				r.Delete("/tags/{tid}/{tag}", s.apiAdminDeleteTag)
 				r.Get("/titles/missing", s.apiAdminMissingTitles)

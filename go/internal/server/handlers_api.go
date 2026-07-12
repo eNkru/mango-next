@@ -19,6 +19,37 @@ import (
 	"github.com/hkalexling/mango-go/internal/upload"
 )
 
+// apiLogin mirrors Crystal POST /api/login (src/routes/api.cr).
+// Unauthenticated; returns token as session_id and sets auth cookie.
+func (s *Server) apiLogin(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		w.WriteHeader(http.StatusForbidden)
+		sendJSON(w, map[string]any{"success": false, "error": "invalid request"})
+		return
+	}
+	token, err := s.Deps.Storage.VerifyUser(body.Username, body.Password)
+	if err != nil || token == "" {
+		w.WriteHeader(http.StatusForbidden)
+		msg := "login failed"
+		if err != nil {
+			msg = err.Error()
+		}
+		sendJSON(w, map[string]any{"success": false, "error": msg})
+		return
+	}
+	SetAuthTokenCookie(w, s.Deps.Config, token)
+	isAdmin, _ := s.Deps.Storage.UsernameIsAdmin(body.Username)
+	sendJSON(w, map[string]any{
+		"success":    true,
+		"session_id": token,
+		"is_admin":   isAdmin,
+	})
+}
+
 func (s *Server) apiLibrary(w http.ResponseWriter, r *http.Request) {
 	username := GetUsername(r)
 	lib := s.Deps.Library
