@@ -43,7 +43,7 @@ func defaults() *Config {
 		SessionSecret:                    "",
 		LibraryPath:                      "~/mango/library",
 		LibraryCachePath:                 "~/mango/library.yml.gz",
-		DBPath:                           "~/mango.db",
+		DBPath:                           "~/mango/mango.db",
 		QueueDBPath:                      "~/mango/queue.db",
 		ScanIntervalMinutes:              5,
 		ThumbnailGenerationIntervalHours: 24,
