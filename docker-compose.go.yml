@@ -1,6 +1,6 @@
 version: '3'
 
-# Alias of docker-compose.yml (Go-only). Prefer: docker compose up -d
+# Alias of docker-compose.yml. Prefer: docker compose up -d
 services:
   mango:
     container_name: mango

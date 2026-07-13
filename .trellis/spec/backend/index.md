@@ -83,6 +83,19 @@ Total: ~68 routes (46 API + 8 admin pages + 10 main pages + 2 reader + 2 OPDS)
 
 ---
 
+## Docker / Deployment
+
+### Scratch image convention
+`Dockerfile` uses `FROM scratch` and **must** set `ENV HOME=/root` after `FROM scratch`.
+Without it `os.UserHomeDir()` returns `/` causing `~/mango/...` defaults to expand to `/mango/...`
+which collides with the binary at `/mango`.
+
+### Volume mount paths
+docker-compose mounts data at `/root/mango` and config at `/root/.config/mango`.
+Default config paths (`~/mango/library`, `~/mango.db`, etc.) expand to `/root/mango/...` when `HOME=/root`.
+
+---
+
 ## Guidelines Index
 
 | Guide | Description | Status |
