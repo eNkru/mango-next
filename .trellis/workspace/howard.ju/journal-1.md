@@ -133,3 +133,36 @@ Archived remove-crystal after Crystal source/build/docs cleanup merged (5a88df4)
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: Non-blocking library scan
+
+**Date**: 2026-07-13
+**Task**: Non-blocking library scan
+**Branch**: `fix/nonblocking-library-scan`
+
+### Summary
+
+Scan no longer holds RWMutex during disk walk; short lock swap only. Pushed fix/nonblocking-library-scan (9e45824). Archived task 07-13-nonblocking-library-scan.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9e45824` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
