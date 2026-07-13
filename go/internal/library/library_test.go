@@ -580,8 +580,11 @@ func TestLoadFromCacheCorruptIsError(t *testing.T) {
 	}
 	defer st.Close()
 	lib := NewLibrary(libDir, st, cachePath)
-	if err := lib.LoadFromCache(); err == nil {
-		t.Fatal("expected error for corrupt cache")
+	if err := lib.LoadFromCache(); err != nil {
+		t.Fatalf("expected no error for corrupt cache, got: %v", err)
+	}
+	if _, err := os.Stat(cachePath); !os.IsNotExist(err) {
+		t.Fatal("expected corrupt cache file to be removed")
 	}
 }
 

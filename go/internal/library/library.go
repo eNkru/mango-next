@@ -3,6 +3,7 @@ package library
 import (
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"sync"
 	"time"
@@ -83,7 +84,11 @@ func (lib *Library) LoadFromCache() error {
 	}
 	cf, err := readLibraryCache(lib.CachePath)
 	if err != nil {
-		return err
+		log.Printf("Library cache corrupt or missing (%v); removing and continuing", err)
+		if rmErr := os.Remove(lib.CachePath); rmErr != nil && !os.IsNotExist(rmErr) {
+			log.Printf("Failed to remove corrupt cache: %v", rmErr)
+		}
+		return nil
 	}
 	want, err := filepath.Abs(lib.Dir)
 	if err != nil {
