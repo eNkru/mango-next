@@ -19,6 +19,7 @@ type Library struct {
 	St        *storage.Storage
 
 	mu           sync.RWMutex
+	scanMu       sync.Mutex // serializes Scan() so only one disk walk runs
 	thumbnailCtx ThumbnailContext
 }
 
@@ -70,26 +71,34 @@ func NewLibrary(libraryPath string, st *storage.Storage) *Library {
 	}
 }
 
-// Scan performs a full in-memory scan, then persists IDs to the database and
-// marks stale entries as unavailable. This mirrors Crystal Library#scan.
+// Scan performs a full library scan without holding the read/write lock during
+// the disk walk. HTTP handlers use RLock() on TitleHash; holding mu for the
+// entire ScanLibrary (minutes on large NAS libraries) starved the UI.
+// Disk work runs unlocked; only the TitleIDs/TitleHash swap takes a short Lock.
 func (lib *Library) Scan() (*ScanResult, error) {
-	lib.mu.Lock()
-	defer lib.mu.Unlock()
+	lib.scanMu.Lock()
+	defer lib.scanMu.Unlock()
 
+	// Heavy work: no lib.mu — readers can serve the previous (or empty) tree.
 	result, err := ScanLibrary(lib.Dir, lib.St)
 	if err != nil {
 		return nil, fmt.Errorf("scan library: %w", err)
 	}
 
-	// Rebuild in-memory state
-	lib.TitleIDs = make([]string, 0, len(result.Titles))
-	lib.TitleHash = make(map[string]*Title, len(result.Titles))
+	ids := make([]string, 0, len(result.Titles))
+	hash := make(map[string]*Title, len(result.Titles))
 	for _, t := range result.Titles {
-		lib.TitleIDs = append(lib.TitleIDs, t.ID)
-		lib.TitleHash[t.ID] = t
+		ids = append(ids, t.ID)
+		hash[t.ID] = t
 	}
 
-	log.Printf("Scanned %d titles", len(lib.TitleIDs))
+	lib.mu.Lock()
+	lib.TitleIDs = ids
+	lib.TitleHash = hash
+	n := len(lib.TitleIDs)
+	lib.mu.Unlock()
+
+	log.Printf("Scanned %d titles", n)
 	return result, nil
 }
 

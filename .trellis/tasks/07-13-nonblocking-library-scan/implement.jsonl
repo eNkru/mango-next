@@ -1,0 +1,4 @@
+{"file": ".trellis/tasks/07-13-nonblocking-library-scan/prd.md", "reason": "AC and scope"}
+{"file": ".trellis/tasks/07-13-nonblocking-library-scan/design.md", "reason": "Lock-scope design"}
+{"file": ".trellis/tasks/07-13-nonblocking-library-scan/implement.md", "reason": "Execution checklist"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend verify commands"}
