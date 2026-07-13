@@ -1,8 +1,8 @@
 .env
 .idea/
 *.dwarf
-mango
-mango-go
+/mango
+/mango-go
 
 .agents/
 .claude/

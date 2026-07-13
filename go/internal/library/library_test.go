@@ -165,7 +165,7 @@ func TestScanFreshLibrary(t *testing.T) {
 	defer st.Close()
 
 	// Scan
-	result, err := ScanLibrary(libDir, st)
+	result, err := ScanLibrary(libDir, st, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -302,7 +302,7 @@ func TestScanEmptyLibrary(t *testing.T) {
 	}
 	defer st.Close()
 
-	result, err := ScanLibrary(libDir, st)
+	result, err := ScanLibrary(libDir, st, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -323,7 +323,7 @@ func TestScanNoLibraryDir(t *testing.T) {
 	}
 	defer st.Close()
 
-	result, err := ScanLibrary(libDir, st)
+	result, err := ScanLibrary(libDir, st, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -347,7 +347,7 @@ func TestLibraryScan(t *testing.T) {
 	}
 	defer st.Close()
 
-	lib := NewLibrary(libDir, st)
+	lib := NewLibrary(libDir, st, "")
 	result, err := lib.Scan()
 	if err != nil {
 		t.Fatal(err)
@@ -391,13 +391,17 @@ func TestScanIdempotent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	result1, err := ScanLibrary(libDir, st)
+	result1, err := ScanLibrary(libDir, st, nil)
 	if err != nil {
 		st.Close()
 		t.Fatal(err)
 	}
 
-	result2, err := ScanLibrary(libDir, st)
+	prev := map[string]*Title{}
+	for _, t := range result1.Titles {
+		prev[t.Dir] = t
+	}
+	result2, err := ScanLibrary(libDir, st, prev)
 	if err != nil {
 		st.Close()
 		t.Fatal(err)
@@ -502,6 +506,85 @@ func TestSplitByAlphaNumeric(t *testing.T) {
 	}
 }
 
+func TestLibraryCacheRoundTripAndIncrementalSkip(t *testing.T) {
+	libDir := setupTestLibrary(t)
+	dbPath := filepath.Join(t.TempDir(), "mango.db")
+	cachePath := filepath.Join(t.TempDir(), "library.yml.gz")
+
+	st, err := storage.Open(dbPath, libDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+
+	lib := NewLibrary(libDir, st, cachePath)
+	r1, err := lib.Scan()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if r1.TitleCount != 3 {
+		t.Fatalf("first scan titles = %d, want 3", r1.TitleCount)
+	}
+	if r1.Rebuilt < 1 {
+		t.Fatalf("first scan should rebuild titles, rebuilt=%d", r1.Rebuilt)
+	}
+
+	// Fresh process: load cache before scan → titles present immediately.
+	lib2 := NewLibrary(libDir, st, cachePath)
+	if err := lib2.LoadFromCache(); err != nil {
+		t.Fatalf("LoadFromCache: %v", err)
+	}
+	lib2.RLock()
+	n := len(lib2.TitleIDs)
+	lib2.RUnlock()
+	if n != 3 {
+		t.Fatalf("after LoadFromCache TitleIDs = %d, want 3", n)
+	}
+
+	r2, err := lib2.Scan()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if r2.Reused != 3 {
+		t.Errorf("unchanged rescan reused = %d, want 3 (rebuilt=%d)", r2.Reused, r2.Rebuilt)
+	}
+	if r2.Rebuilt != 0 {
+		t.Errorf("unchanged rescan rebuilt = %d, want 0", r2.Rebuilt)
+	}
+
+	// Mutate one title → that title rebuilds, others reuse.
+	title1 := filepath.Join(libDir, "Manga Title 1")
+	createFakeCBZ(t, filepath.Join(title1, "ch99.cbz"), 2)
+	r3, err := lib2.Scan()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if r3.Reused < 1 {
+		t.Errorf("after one change, expected some reuse, reused=%d rebuilt=%d", r3.Reused, r3.Rebuilt)
+	}
+	if r3.Rebuilt < 1 {
+		t.Errorf("after one change, expected rebuild >= 1, rebuilt=%d", r3.Rebuilt)
+	}
+}
+
+func TestLoadFromCacheCorruptIsError(t *testing.T) {
+	libDir := t.TempDir()
+	cachePath := filepath.Join(t.TempDir(), "bad.yml.gz")
+	if err := os.WriteFile(cachePath, []byte("not-gzip"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	dbPath := filepath.Join(t.TempDir(), "mango.db")
+	st, err := storage.Open(dbPath, libDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+	lib := NewLibrary(libDir, st, cachePath)
+	if err := lib.LoadFromCache(); err == nil {
+		t.Fatal("expected error for corrupt cache")
+	}
+}
+
 // TestScanDoesNotBlockReaders ensures Scan's disk work does not hold mu for the
 // whole walk: concurrent RLock readers keep making progress while Scan runs.
 func TestScanDoesNotBlockReaders(t *testing.T) {
@@ -513,7 +596,7 @@ func TestScanDoesNotBlockReaders(t *testing.T) {
 	}
 	defer st.Close()
 
-	lib := NewLibrary(libDir, st)
+	lib := NewLibrary(libDir, st, "")
 
 	// Seed a previous tree so RLock has something to observe mid-scan.
 	if _, err := lib.Scan(); err != nil {

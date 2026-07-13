@@ -3,6 +3,7 @@ package library
 import (
 	"fmt"
 	"log"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -17,6 +18,7 @@ type Library struct {
 	TitleIDs  []string
 	TitleHash map[string]*Title
 	St        *storage.Storage
+	CachePath string // gzip JSON cache; empty disables load/save
 
 	mu           sync.RWMutex
 	scanMu       sync.Mutex // serializes Scan() so only one disk walk runs
@@ -56,50 +58,107 @@ func (lib *Library) ThumbnailProgress() float64 {
 	return lib.thumbnailCtx.Progress()
 }
 
-// NewLibrary creates a Library instance bound to the given storage.
-func (lib *Library) Lock()     { lib.mu.Lock() }
-func (lib *Library) Unlock()   { lib.mu.Unlock() }
-func (lib *Library) RLock()    { lib.mu.RLock() }
-func (lib *Library) RUnlock()  { lib.mu.RUnlock() }
+func (lib *Library) Lock()    { lib.mu.Lock() }
+func (lib *Library) Unlock()  { lib.mu.Unlock() }
+func (lib *Library) RLock()   { lib.mu.RLock() }
+func (lib *Library) RUnlock() { lib.mu.RUnlock() }
 
-func NewLibrary(libraryPath string, st *storage.Storage) *Library {
+// NewLibrary creates a Library bound to storage. cachePath is the gzip JSON
+// library cache (config library_cache_path); empty string disables cache I/O.
+func NewLibrary(libraryPath string, st *storage.Storage, cachePath string) *Library {
 	return &Library{
 		Dir:       libraryPath,
 		TitleIDs:  make([]string, 0),
 		TitleHash: make(map[string]*Title),
 		St:        st,
+		CachePath: cachePath,
 	}
 }
 
-// Scan performs a full library scan without holding the read/write lock during
-// the disk walk. HTTP handlers use RLock() on TitleHash; holding mu for the
-// entire ScanLibrary (minutes on large NAS libraries) starved the UI.
-// Disk work runs unlocked; only the TitleIDs/TitleHash swap takes a short Lock.
+// LoadFromCache loads a previously saved library tree so the UI can show books
+// before the background scan finishes. Invalid/missing cache is a no-op.
+func (lib *Library) LoadFromCache() error {
+	if lib.CachePath == "" {
+		return nil
+	}
+	cf, err := readLibraryCache(lib.CachePath)
+	if err != nil {
+		return err
+	}
+	want, err := filepath.Abs(lib.Dir)
+	if err != nil {
+		want = lib.Dir
+	}
+	got, err := filepath.Abs(cf.LibraryPath)
+	if err != nil {
+		got = cf.LibraryPath
+	}
+	if got != "" && want != "" && filepath.Clean(got) != filepath.Clean(want) {
+		return fmt.Errorf("library cache path mismatch: cache=%q library=%q", cf.LibraryPath, lib.Dir)
+	}
+	titles, err := titlesFromCache(cf)
+	if err != nil {
+		return err
+	}
+	lib.applyTitles(titles)
+	log.Printf("Loaded library cache: %d titles from %s", len(titles), lib.CachePath)
+	return nil
+}
+
+// Scan performs an incremental library scan without holding the RWMutex during
+// disk work. Unchanged top-level titles (matching DirSignature) are reused from
+// the previous in-memory tree; only new/changed titles call NewTitle.
 func (lib *Library) Scan() (*ScanResult, error) {
 	lib.scanMu.Lock()
 	defer lib.scanMu.Unlock()
 
-	// Heavy work: no lib.mu — readers can serve the previous (or empty) tree.
-	result, err := ScanLibrary(lib.Dir, lib.St)
+	previous := lib.snapshotByDir()
+
+	result, err := ScanLibrary(lib.Dir, lib.St, previous)
 	if err != nil {
 		return nil, fmt.Errorf("scan library: %w", err)
 	}
 
-	ids := make([]string, 0, len(result.Titles))
-	hash := make(map[string]*Title, len(result.Titles))
-	for _, t := range result.Titles {
+	lib.applyTitles(result.Titles)
+
+	if err := lib.saveCacheLocked(result.Titles); err != nil {
+		log.Printf("Failed to save library cache: %v", err)
+	}
+
+	log.Printf("Scanned %d titles (reused %d, rebuilt %d)", len(result.Titles), result.Reused, result.Rebuilt)
+	return result, nil
+}
+
+func (lib *Library) snapshotByDir() map[string]*Title {
+	lib.mu.RLock()
+	defer lib.mu.RUnlock()
+	out := make(map[string]*Title, len(lib.TitleHash))
+	for _, t := range lib.TitleHash {
+		if t != nil && t.Dir != "" {
+			out[t.Dir] = t
+		}
+	}
+	return out
+}
+
+func (lib *Library) applyTitles(titles []*Title) {
+	ids := make([]string, 0, len(titles))
+	hash := make(map[string]*Title, len(titles))
+	for _, t := range titles {
 		ids = append(ids, t.ID)
 		hash[t.ID] = t
 	}
-
 	lib.mu.Lock()
 	lib.TitleIDs = ids
 	lib.TitleHash = hash
-	n := len(lib.TitleIDs)
 	lib.mu.Unlock()
+}
 
-	log.Printf("Scanned %d titles", n)
-	return result, nil
+func (lib *Library) saveCacheLocked(titles []*Title) error {
+	if lib.CachePath == "" {
+		return nil
+	}
+	return writeLibraryCache(lib.CachePath, titlesToCache(lib.Dir, titles))
 }
 
 // GenerateThumbnails iterates over all entries and generates thumbnails for
@@ -113,7 +172,6 @@ func (lib *Library) GenerateThumbnails() error {
 		return nil
 	}
 
-	// Collect all entries
 	var allEntries []Entry
 	for _, t := range lib.TitleHash {
 		allEntries = append(allEntries, t.DeepEntries()...)
@@ -134,14 +192,12 @@ func (lib *Library) GenerateThumbnails() error {
 			continue
 		}
 
-		// Check if thumbnail already exists
 		existing, err := lib.St.GetThumbnail(e.ID())
 		if err == nil && existing != nil {
 			lib.thumbnailCtx.Increment()
 			continue
 		}
 
-		// Read first page
 		img, err := e.ReadPage(1)
 		if err != nil {
 			log.Printf("Failed to read page 1 of %s: %v", e.Path(), err)
@@ -149,7 +205,6 @@ func (lib *Library) GenerateThumbnails() error {
 			continue
 		}
 
-		// Generate thumbnail using the existing thumbnail package
 		thumb, err := thumbnail.Generate(img.Data, img.Filename)
 		if err != nil {
 			log.Printf("Failed to generate thumbnail for %s: %v", e.Path(), err)
@@ -157,7 +212,6 @@ func (lib *Library) GenerateThumbnails() error {
 			continue
 		}
 
-		// Convert thumbnail.Image -> storage.Image
 		stImg := &storage.Image{
 			Data:     thumb.Data,
 			Filename: thumb.Filename,
@@ -169,7 +223,7 @@ func (lib *Library) GenerateThumbnails() error {
 			log.Printf("Failed to save thumbnail for %s: %v", e.Path(), err)
 		}
 
-		time.Sleep(100 * time.Millisecond) // minimize disk/CPU impact
+		time.Sleep(100 * time.Millisecond)
 		lib.thumbnailCtx.Increment()
 	}
 

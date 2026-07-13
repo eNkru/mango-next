@@ -1,0 +1,4 @@
+{"file": ".trellis/tasks/07-13-library-cache-incremental-scan/prd.md", "reason": "AC"}
+{"file": ".trellis/tasks/07-13-library-cache-incremental-scan/design.md", "reason": "Cache + incremental design"}
+{"file": ".trellis/tasks/07-13-library-cache-incremental-scan/implement.md", "reason": "Steps"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend baseline"}
