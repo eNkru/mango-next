@@ -1,0 +1,3 @@
+{"file": ".trellis/tasks/07-13-nonblocking-library-scan/prd.md", "reason": "Acceptance criteria"}
+{"file": ".trellis/tasks/07-13-nonblocking-library-scan/design.md", "reason": "Concurrency design"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Go verify"}

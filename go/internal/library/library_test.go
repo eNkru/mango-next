@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/hkalexling/mango-go/internal/storage"
 )
@@ -498,5 +499,68 @@ func TestSplitByAlphaNumeric(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// TestScanDoesNotBlockReaders ensures Scan's disk work does not hold mu for the
+// whole walk: concurrent RLock readers keep making progress while Scan runs.
+func TestScanDoesNotBlockReaders(t *testing.T) {
+	libDir := setupTestLibrary(t)
+	dbPath := filepath.Join(t.TempDir(), "mango.db")
+	st, err := storage.Open(dbPath, libDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+
+	lib := NewLibrary(libDir, st)
+
+	// Seed a previous tree so RLock has something to observe mid-scan.
+	if _, err := lib.Scan(); err != nil {
+		t.Fatal(err)
+	}
+
+	doneScan := make(chan error, 1)
+	go func() {
+		_, err := lib.Scan()
+		doneScan <- err
+	}()
+
+	// While scan may be running, readers must not stall for the full walk.
+	deadline := time.After(2 * time.Second)
+	reads := 0
+	for reads < 50 {
+		select {
+		case err := <-doneScan:
+			if err != nil {
+				t.Fatalf("scan: %v", err)
+			}
+			// Scan finished early; still require some successful reads.
+			if reads == 0 {
+				// One more read after scan to ensure API still works.
+				lib.RLock()
+				_ = len(lib.TitleIDs)
+				lib.RUnlock()
+			}
+			goto after
+		case <-deadline:
+			t.Fatalf("timed out after %d successful RLock reads; scan may be holding mu too long", reads)
+		default:
+			lib.RLock()
+			_ = len(lib.TitleIDs)
+			lib.RUnlock()
+			reads++
+			time.Sleep(time.Millisecond)
+		}
+	}
+	if err := <-doneScan; err != nil {
+		t.Fatalf("scan: %v", err)
+	}
+after:
+	lib.RLock()
+	n := len(lib.TitleIDs)
+	lib.RUnlock()
+	if n != 3 {
+		t.Errorf("TitleIDs after scan = %d, want 3", n)
 	}
 }
