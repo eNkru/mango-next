@@ -166,3 +166,36 @@ Scan no longer holds RWMutex during disk walk; short lock swap only. Pushed fix/
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: Fix scratch Docker HOME, unify Dockerfile
+
+**Date**: 2026-07-13
+**Task**: Fix scratch Docker HOME, unify Dockerfile
+**Branch**: `main`
+
+### Summary
+
+Added ENV HOME=/root to scratch Dockerfile so ~ expands correctly. Removed redundant go/Dockerfile, unified to single root Dockerfile. Updated spec with Docker conventions.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `30ffddd` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

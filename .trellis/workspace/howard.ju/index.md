@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 3
+- **Total Sessions**: 4
 - **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~168 | Active |
+| `journal-1.md` | ~201 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 4 | 2026-07-13 | Fix scratch Docker HOME, unify Dockerfile | `30ffddd` | `main` |
 | 3 | 2026-07-13 | Non-blocking library scan | `9e45824` | `fix/nonblocking-library-scan` |
 | 2 | 2026-07-13 | Remove Crystal, Go-only tree | `5a88df4` | `main` |
 | 1 | 2026-07-09 | Complete Go Migration Phase 4-5 | `f9efaa8` | `migrate-to-go` |
