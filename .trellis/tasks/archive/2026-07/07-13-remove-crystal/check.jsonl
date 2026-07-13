@@ -1,0 +1,3 @@
+{"file": ".trellis/tasks/07-13-remove-crystal/prd.md", "reason": "Acceptance criteria for cleanup"}
+{"file": ".trellis/tasks/07-13-remove-crystal/design.md", "reason": "Inventory completeness"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Go verify commands"}

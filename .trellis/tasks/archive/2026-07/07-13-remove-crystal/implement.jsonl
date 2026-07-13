@@ -1,0 +1,5 @@
+{"file": ".trellis/tasks/07-13-remove-crystal/prd.md", "reason": "Acceptance criteria and delete scope"}
+{"file": ".trellis/tasks/07-13-remove-crystal/design.md", "reason": "Delete/rewrite inventory"}
+{"file": ".trellis/tasks/07-13-remove-crystal/implement.md", "reason": "Ordered execution checklist"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend baseline verify commands"}
+{"file": ".trellis/spec/guides/index.md", "reason": "Shared guides index"}

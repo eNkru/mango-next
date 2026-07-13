@@ -106,7 +106,7 @@ func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
 			BaseURL:  base,
 			IsAdmin:  GetIsAdmin(r),
 			PageName: "home",
-			Version:  "0.1.0",
+			Version:  "2.0.0",
 		},
 		ContinueReading:     continueReading,
 		StartReading:        startReading,
@@ -231,7 +231,7 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 			BaseURL:             s.Deps.Config.BaseURL,
 			IsAdmin:             isAdmin,
 			PageName:            "library",
-			Version:             "0.1.0",
+			Version:             "2.0.0",
 		},
 		Titles:     titles,
 		Percentage: make([]float64, len(titles)),
@@ -319,7 +319,7 @@ func (s *Server) handleTitle(w http.ResponseWriter, r *http.Request) {
 			BaseURL:  s.Deps.Config.BaseURL,
 			IsAdmin:  GetIsAdmin(r),
 			PageName: "title",
-			Version:  "0.1.0",
+			Version:  "2.0.0",
 		},
 		Title: TitleDetail{
 			ID:        t.ID,
@@ -365,7 +365,7 @@ func (s *Server) handleTags(w http.ResponseWriter, r *http.Request) {
 			BaseURL:             s.Deps.Config.BaseURL,
 			IsAdmin:             isAdmin,
 			PageName:            "tags",
-			Version:             "0.1.0",
+			Version:             "2.0.0",
 		},
 		Tags: tagList,
 	}
@@ -405,7 +405,7 @@ func (s *Server) handleTag(w http.ResponseWriter, r *http.Request) {
 			BaseURL:  s.Deps.Config.BaseURL,
 			IsAdmin:  GetIsAdmin(r),
 			PageName: "tag",
-			Version:  "0.1.0",
+			Version:  "2.0.0",
 		},
 		Tag:        tag,
 		Titles:     titles,
@@ -420,7 +420,7 @@ func (s *Server) handleAPIDocs(w http.ResponseWriter, r *http.Request) {
 		BaseURL:  s.Deps.Config.BaseURL,
 		IsAdmin:  GetIsAdmin(r),
 		PageName: "api",
-		Version:  "0.1.0",
+		Version:  "2.0.0",
 	}
 	s.renderPage(w, "views/api", ld)
 }
@@ -494,7 +494,7 @@ func (s *Server) handleReader(w http.ResponseWriter, r *http.Request) {
 		ExitURL:          fmt.Sprintf("/book/%s", titleID),
 		NextEntryURL:     nextEntryURL,
 		PreviousEntryURL: prevEntryURL,
-		Version:          "0.1.0",
+		Version:          "2.0.0",
 	}
 
 	s.renderPage(w, "views/reader", data)
@@ -505,7 +505,7 @@ func (s *Server) handlePluginDownload(w http.ResponseWriter, r *http.Request) {
 		BaseURL:             s.Deps.Config.BaseURL,
 		IsAdmin:             GetIsAdmin(r),
 		PageName:            "plugin-download",
-		Version:             "0.1.0",
+		Version:             "2.0.0",
 		PluginPath:          s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "plugin-download", ld)
@@ -517,7 +517,7 @@ func (s *Server) handleAdmin(w http.ResponseWriter, r *http.Request) {
 			BaseURL:             s.Deps.Config.BaseURL,
 			IsAdmin:             true,
 			PageName:            "admin",
-			Version:             "0.1.0",
+			Version:             "2.0.0",
 		},
 	}
 	s.renderLayout(w, "admin", ld)
@@ -544,7 +544,7 @@ func (s *Server) handleUserList(w http.ResponseWriter, r *http.Request) {
 			BaseURL:             s.Deps.Config.BaseURL,
 			IsAdmin:             true,
 			PageName:            "user",
-			Version:             "0.1.0",
+			Version:             "2.0.0",
 		},
 		Users:    userPairs,
 		Username: GetUsername(r),
@@ -561,7 +561,7 @@ func (s *Server) handleUserEdit(w http.ResponseWriter, r *http.Request) {
 			BaseURL:             s.Deps.Config.BaseURL,
 			IsAdmin:             true,
 			PageName:            "user-edit",
-			Version:             "0.1.0",
+			Version:             "2.0.0",
 		},
 		NewUser:  username == "",
 		Username: username,
@@ -604,7 +604,7 @@ func (s *Server) handleDownloadManager(w http.ResponseWriter, r *http.Request) {
 		BaseURL:             s.Deps.Config.BaseURL,
 		IsAdmin:             true,
 		PageName:            "download-manager",
-		Version:             "0.1.0",
+		Version:             "2.0.0",
 		PluginPath:          s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "download-manager", ld)
@@ -615,7 +615,7 @@ func (s *Server) handleSubscriptionManager(w http.ResponseWriter, r *http.Reques
 		BaseURL:             s.Deps.Config.BaseURL,
 		IsAdmin:             true,
 		PageName:            "subscription-manager",
-		Version:             "0.1.0",
+		Version:             "2.0.0",
 		PluginPath:          s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "subscription-manager", ld)
@@ -626,7 +626,7 @@ func (s *Server) handleMissingItems(w http.ResponseWriter, r *http.Request) {
 		BaseURL:             s.Deps.Config.BaseURL,
 		IsAdmin:             true,
 		PageName:            "missing-items",
-		Version:             "0.1.0",
+		Version:             "2.0.0",
 	}
 	s.renderLayout(w, "missing-items", ld)
 }

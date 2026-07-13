@@ -8,5 +8,11 @@ mango-go
 .claude/
 .codex/
 .opencode/
-.trellis/
 AGENTS.md
+
+# Trellis: track tasks/specs/workspace; ignore local runtime noise
+.trellis/.backup-*
+.trellis/worktrees/
+.trellis/.template-hashes.json
+.trellis/.runtime/
+.trellis/.cache/

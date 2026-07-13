@@ -1,0 +1,33 @@
+{
+  "id": "crystal-go-migration",
+  "name": "crystal-go-migration",
+  "title": "Crystal to Go migration - copy missing functions",
+  "description": "",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "howard.ju",
+  "assignee": "howard.ju",
+  "createdAt": "2026-07-12",
+  "completedAt": "2026-07-13",
+  "branch": null,
+  "base_branch": "migrate-to-go",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-12-go-routes-coverage",
+    "07-12-go-rename-dsl",
+    "07-12-go-util-completion",
+    "07-12-go-signature",
+    "07-12-go-gap-regression",
+    "07-12-go-upload-helpers"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}
