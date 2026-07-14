@@ -20,9 +20,9 @@
       </div>
     </div>
     {{if .IsAdmin}}
-      <a href="#" onclick="toggleShowHidden(0); return false;" class="comic-btn comic-btn-sm comic-btn-outline hide-toggle-btn" title="显示隐藏" data-i18n-title="show_hidden">
-        <i class="fas fa-eye-slash"></i>
-        <span data-i18n="show_hidden">显示隐藏</span>
+      <a href="#" onclick="toggleShowHidden({{if .ShowHidden}}0{{else}}1{{end}}); return false;" class="comic-btn comic-btn-sm {{if .ShowHidden}}comic-btn-active-toggle{{else}}comic-btn-outline{{end}} hide-toggle-btn" title="{{if .ShowHidden}}隐藏已隐藏{{else}}显示隐藏{{end}}" data-i18n-title="{{if .ShowHidden}}hide_hidden{{else}}show_hidden{{end}}">
+        <i class="fas {{if .ShowHidden}}fa-eye{{else}}fa-eye-slash{{end}}"></i>
+        <span data-i18n="{{if .ShowHidden}}hide_hidden{{else}}show_hidden{{end}}">{{if .ShowHidden}}隐藏已隐藏{{else}}显示隐藏{{end}}</span>
       </a>
     {{end}}
   </div>
@@ -35,12 +35,28 @@
 
   <div class="uk-child-width-1-4@m uk-child-width-1-2" uk-grid>
     {{range $i, $item := .Titles}}
-      <div class="item" data-title-id="{{$item.ID}}">
+      <div class="item{{if and $item.Hidden $.ShowHidden}} is_hidden{{end}}" data-title-id="{{$item.ID}}">
         <div class="acard" onclick="location='{{$.BaseURL}}book/{{$item.ID}}'">
           <div class="uk-card uk-card-default comic-card">
             <div class="uk-card-media-top uk-inline comic-card-media">
               <img data-src="{{$item.CoverURL}}" alt="" uk-img>
+              {{if $.IsAdmin}}
+                <div class="card-hover-actions">
+                  {{if $item.Hidden}}
+                    <button class="card-action-btn card-unhide-btn" onclick="event.stopPropagation();toggleHidden('{{$item.ID}}', 0)" title="显示此书" data-i18n-title="show_book">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  {{else}}
+                    <button class="card-action-btn card-hide-btn" onclick="event.stopPropagation();toggleHidden('{{$item.ID}}', 1)" title="隐藏此书" data-i18n-title="hide_book">
+                      <i class="fas fa-eye-slash"></i>
+                    </button>
+                  {{end}}
+                </div>
+              {{end}}
             </div>
+            {{if and $item.Hidden $.ShowHidden}}
+              <div class="hidden-badge"><i class="fas fa-eye-slash"></i> <span data-i18n="hidden_badge_card">已隐藏</span></div>
+            {{end}}
             <div class="uk-card-body comic-card-body">
               <h3 class="uk-card-title break-word comic-card-title" data-title="{{$item.Name}}">{{$item.Name}}</h3>
               <p class="uk-text-meta">{{$item.EntryCount}} <span data-i18n="entries">项</span></p>
