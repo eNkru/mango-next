@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/hkalexling/mango-go/internal/library"
-	"github.com/hkalexling/mango-go/internal/plugin"
-	"github.com/hkalexling/mango-go/internal/queue"
+	"github.com/eNkru/mango-next/internal/library"
+	"github.com/eNkru/mango-next/internal/plugin"
+	"github.com/eNkru/mango-next/internal/queue"
 )
 
 // Runner manages all background tasks: library scanning, thumbnail generation,
@@ -21,10 +21,10 @@ type Runner struct {
 	thumbnailIntervalHours int
 
 	// Plugin tasks
-	queue                      *queue.Queue
-	pluginDir                  string
-	pluginUpdateIntervalHours  int
-	libraryPath                string
+	queue                     *queue.Queue
+	pluginDir                 string
+	pluginUpdateIntervalHours int
+	libraryPath               string
 }
 
 // NewRunner creates a Runner attached to the given Library and plugin system.
@@ -48,11 +48,11 @@ func (r *Runner) SetPluginTasks(q *queue.Queue, pluginDir, libraryPath string, p
 // Start launches all background goroutines. Blocks until ctx is cancelled.
 func (r *Runner) Start(ctx context.Context) {
 	// --- Library scanner ---
-	if r.scanIntervalMinutes < 1 {
+	initialScanDone := make(chan struct{})
+	go func() {
 		r.runScan()
-	} else {
-		go func() {
-			r.runScan()
+		close(initialScanDone)
+		if r.scanIntervalMinutes >= 1 {
 			ticker := time.NewTicker(time.Duration(r.scanIntervalMinutes) * time.Minute)
 			defer ticker.Stop()
 			for {
@@ -63,13 +63,17 @@ func (r *Runner) Start(ctx context.Context) {
 					return
 				}
 			}
-		}()
-	}
+		}
+	}()
 
 	// --- Thumbnail generator ---
 	if r.thumbnailIntervalHours >= 1 {
 		go func() {
-			time.Sleep(30 * time.Second)
+			select {
+			case <-initialScanDone:
+			case <-ctx.Done():
+				return
+			}
 			r.runThumbnails()
 			ticker := time.NewTicker(time.Duration(r.thumbnailIntervalHours) * time.Hour)
 			defer ticker.Stop()

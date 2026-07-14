@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hkalexling/mango-go/internal/storage"
+	"github.com/eNkru/mango-next/internal/storage"
 )
 
 type TemplateManager struct {
@@ -16,12 +16,18 @@ type TemplateManager struct {
 func NewTemplateManager(viewsFS fs.FS) (*TemplateManager, error) {
 	funcMap := template.FuncMap{
 		"slice": func(items []any) []any { return items },
-		"seq":   func(n int) []int { s := make([]int, n); for i := range s { s[i] = i }; return s },
-		"add":   func(a, b int) int { return a + b },
-		"sub":   func(a, b int) int { return a - b },
-		"html":  func(s string) template.HTML { return template.HTML(s) },
-		"url":   func(s string) template.URL { return template.URL(s) },
-		"js":    func(s string) template.JS { return template.JS(s) },
+		"seq": func(n int) []int {
+			s := make([]int, n)
+			for i := range s {
+				s[i] = i
+			}
+			return s
+		},
+		"add":  func(a, b int) int { return a + b },
+		"sub":  func(a, b int) int { return a - b },
+		"html": func(s string) template.HTML { return template.HTML(s) },
+		"url":  func(s string) template.URL { return template.URL(s) },
+		"js":   func(s string) template.JS { return template.JS(s) },
 	}
 
 	tmpl := template.New("").Funcs(funcMap)
@@ -67,13 +73,13 @@ type LayoutData struct {
 
 type HomePageData struct {
 	LayoutData
-	ContinueReading   []storage.ContinueReadingItem
-	RecentlyAdded     []storage.RecentlyAddedItem
-	StartReading      []storage.StartReadingItem
-	NewUser           bool
-	EmptyLibrary      bool
-	ConfigLibraryPath string
-	ConfigPath        string
+	ContinueReading     []storage.ContinueReadingItem
+	RecentlyAdded       []storage.RecentlyAddedItem
+	StartReading        []storage.StartReadingItem
+	NewUser             bool
+	EmptyLibrary        bool
+	ConfigLibraryPath   string
+	ConfigPath          string
 	ScanIntervalMinutes int
 }
 
@@ -85,37 +91,37 @@ type LibraryPageData struct {
 }
 
 type LibraryTitle struct {
-	ID           string
-	Name         string
-	CoverURL     string
-	EntryCount   int
-	Hidden       bool
+	ID         string
+	Name       string
+	CoverURL   string
+	EntryCount int
+	Hidden     bool
 }
 
 type TitlePageData struct {
 	LayoutData
-	Title            TitleDetail
-	SortedTitles     []TitleDetail
-	Entries          []EntryDetail
-	Percentage       []float64
-	TitlePercentage  []float64
-	IsHidden         bool
+	Title           TitleDetail
+	SortedTitles    []TitleDetail
+	Entries         []EntryDetail
+	Percentage      []float64
+	TitlePercentage []float64
+	IsHidden        bool
 }
 
 type TitleDetail struct {
-	ID          string
-	Name        string
-	CoverURL    string
-	ParentIDs   []string
-	Hidden      bool
+	ID        string
+	Name      string
+	CoverURL  string
+	ParentIDs []string
+	Hidden    bool
 }
 
 type EntryDetail struct {
-	ID       string
-	Name     string
+	ID        string
+	Name      string
 	PageCount int
-	CoverURL string
-	MimeType string
+	CoverURL  string
+	MimeType  string
 }
 
 type ReaderPageData struct {
@@ -162,8 +168,8 @@ type UserEditPageData struct {
 
 type TagPageData struct {
 	LayoutData
-	Tag      string
-	Titles   []LibraryTitle
+	Tag        string
+	Titles     []LibraryTitle
 	ShowHidden bool
 }
 
@@ -189,8 +195,8 @@ type OPDSIndexPageData struct {
 }
 
 type OPDSTitlePageData struct {
-	BaseURL    string
-	Title      TitleDetail
-	SubTitles  []TitleDetail
-	Entries    []EntryDetail
+	BaseURL   string
+	Title     TitleDetail
+	SubTitles []TitleDetail
+	Entries   []EntryDetail
 }

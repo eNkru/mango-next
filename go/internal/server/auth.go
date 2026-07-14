@@ -10,17 +10,17 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hkalexling/mango-go/internal/config"
-	"github.com/hkalexling/mango-go/internal/storage"
+	"github.com/eNkru/mango-next/internal/config"
+	"github.com/eNkru/mango-next/internal/storage"
 )
 
 // Context keys for storing auth info in the request context.
 type contextKey string
 
 const (
-	contextKeyUsername    contextKey = "username"
-	contextKeyIsAdmin     contextKey = "is_admin"
-	contextKeyAuthMethod  contextKey = "auth_method" // "cookie", "bearer", "proxy", "disabled_login"
+	contextKeyUsername   contextKey = "username"
+	contextKeyIsAdmin    contextKey = "is_admin"
+	contextKeyAuthMethod contextKey = "auth_method" // "cookie", "bearer", "proxy", "disabled_login"
 	cookieNamePrefix                = "mango-token-"
 )
 
@@ -140,10 +140,10 @@ func SetAuthTokenCookie(w http.ResponseWriter, cfg *config.Config, token string)
 func ClearAuthTokenCookie(w http.ResponseWriter, cfg *config.Config) {
 	cookieName := cookieNamePrefix + fmt.Sprintf("%d", cfg.Port)
 	http.SetCookie(w, &http.Cookie{
-		Name:    cookieName,
-		Value:   "",
-		Path:    cfg.BaseURL,
-		MaxAge:  -1,
+		Name:   cookieName,
+		Value:  "",
+		Path:   cfg.BaseURL,
+		MaxAge: -1,
 	})
 }
 

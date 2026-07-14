@@ -1,12 +1,14 @@
 package library
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
-	"github.com/hkalexling/mango-go/internal/storage"
+	"github.com/eNkru/mango-next/internal/storage"
 )
 
 // setupTestLibrary creates a synthetic manga library in a temp directory.
@@ -585,6 +587,153 @@ func TestLoadFromCacheCorruptIsError(t *testing.T) {
 	}
 	if _, err := os.Stat(cachePath); !os.IsNotExist(err) {
 		t.Fatal("expected corrupt cache file to be removed")
+	}
+}
+
+func TestLoadFromCacheRejectsDifferentDatabaseWithoutWriting(t *testing.T) {
+	libDir := setupTestLibrary(t)
+	cachePath := filepath.Join(t.TempDir(), "library.yml.gz")
+
+	st1, err := storage.Open(filepath.Join(t.TempDir(), "first.db"), libDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	lib1 := NewLibrary(libDir, st1, cachePath)
+	if _, err := lib1.Scan(); err != nil {
+		st1.Close()
+		t.Fatal(err)
+	}
+	if err := st1.Close(); err != nil {
+		t.Fatal(err)
+	}
+
+	st2, err := storage.Open(filepath.Join(t.TempDir(), "second.db"), libDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st2.Close()
+
+	lib2 := NewLibrary(libDir, st2, cachePath)
+	if err := lib2.LoadFromCache(); err != nil {
+		t.Fatalf("LoadFromCache: %v", err)
+	}
+	if _, err := os.Stat(cachePath); !os.IsNotExist(err) {
+		t.Fatalf("stale cache was not removed: %v", err)
+	}
+	lib2.RLock()
+	titleCount := len(lib2.TitleIDs)
+	lib2.RUnlock()
+	if titleCount != 0 {
+		t.Fatalf("loaded %d stale cached titles", titleCount)
+	}
+
+	var dbTitles, dbEntries int
+	if err := st2.DB().QueryRow("SELECT COUNT(*) FROM titles").Scan(&dbTitles); err != nil {
+		t.Fatal(err)
+	}
+	if err := st2.DB().QueryRow("SELECT COUNT(*) FROM ids").Scan(&dbEntries); err != nil {
+		t.Fatal(err)
+	}
+	if dbTitles != 0 || dbEntries != 0 {
+		t.Fatalf("cache validation wrote identities: titles=%d entries=%d", dbTitles, dbEntries)
+	}
+}
+
+type blockingThumbnailEntry struct {
+	started chan struct{}
+	release chan struct{}
+	once    sync.Once
+}
+
+func (e *blockingThumbnailEntry) ReadPage(int) (*storage.Image, error) {
+	e.once.Do(func() { close(e.started) })
+	<-e.release
+	return nil, errors.New("test read failure")
+}
+
+func (e *blockingThumbnailEntry) PageCount() int    { return 1 }
+func (e *blockingThumbnailEntry) ID() string        { return "blocking-entry" }
+func (e *blockingThumbnailEntry) Name() string      { return "blocking-entry" }
+func (e *blockingThumbnailEntry) Path() string      { return "blocking-entry" }
+func (e *blockingThumbnailEntry) Mtime() time.Time  { return time.Time{} }
+func (e *blockingThumbnailEntry) Err() error        { return nil }
+func (e *blockingThumbnailEntry) Signature() uint64 { return 1 }
+func (e *blockingThumbnailEntry) Book() *Title      { return nil }
+
+func TestGenerateThumbnailsDoesNotBlockLibraryAndRejectsDuplicate(t *testing.T) {
+	libDir := t.TempDir()
+	st, err := storage.Open(filepath.Join(t.TempDir(), "mango.db"), libDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+
+	entry := &blockingThumbnailEntry{
+		started: make(chan struct{}),
+		release: make(chan struct{}),
+	}
+	lib := NewLibrary(libDir, st, "")
+	lib.applyTitles([]*Title{{
+		ID:      "title",
+		Dir:     filepath.Join(libDir, "title"),
+		Entries: []Entry{entry},
+	}})
+
+	generationDone := make(chan error, 1)
+	go func() { generationDone <- lib.GenerateThumbnails() }()
+	select {
+	case <-entry.started:
+	case <-time.After(time.Second):
+		t.Fatal("thumbnail generation did not reach entry read")
+	}
+
+	progress, running := lib.ThumbnailStatus()
+	if !running || progress != 0 {
+		t.Fatalf("status while blocked = (%v, %v), want (0, true)", progress, running)
+	}
+
+	writerDone := make(chan struct{})
+	go func() {
+		lib.Lock()
+		lib.Unlock()
+		close(writerDone)
+	}()
+	select {
+	case <-writerDone:
+	case <-time.After(250 * time.Millisecond):
+		t.Fatal("thumbnail generation blocked a library writer")
+	}
+
+	readerDone := make(chan struct{})
+	go func() {
+		lib.RLock()
+		lib.RUnlock()
+		close(readerDone)
+	}()
+	select {
+	case <-readerDone:
+	case <-time.After(250 * time.Millisecond):
+		t.Fatal("thumbnail generation blocked a library reader")
+	}
+
+	duplicateDone := make(chan error, 1)
+	go func() { duplicateDone <- lib.GenerateThumbnails() }()
+	select {
+	case err := <-duplicateDone:
+		if err != nil {
+			t.Fatalf("duplicate generation: %v", err)
+		}
+	case <-time.After(250 * time.Millisecond):
+		t.Fatal("duplicate thumbnail generation did not return promptly")
+	}
+
+	close(entry.release)
+	if err := <-generationDone; err != nil {
+		t.Fatal(err)
+	}
+	progress, running = lib.ThumbnailStatus()
+	if running || progress != 0 {
+		t.Fatalf("status after finish = (%v, %v), want (0, false)", progress, running)
 	}
 }
 

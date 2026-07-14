@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hkalexling/mango-go/internal/storage"
-	"github.com/hkalexling/mango-go/internal/thumbnail"
+	"github.com/eNkru/mango-next/internal/storage"
+	"github.com/eNkru/mango-next/internal/thumbnail"
 )
 
 // Library mirrors Crystal's Library class. It manages the title tree and
@@ -30,33 +30,49 @@ type Library struct {
 type ThumbnailContext struct {
 	Current int
 	Total   int
+	running bool
 	mu      sync.Mutex
 }
 
-func (tc *ThumbnailContext) Progress() float64 {
+func (tc *ThumbnailContext) Start(total int) bool {
+	tc.mu.Lock()
+	defer tc.mu.Unlock()
+	if tc.running || total <= 0 {
+		return false
+	}
+	tc.Current = 0
+	tc.Total = total
+	tc.running = true
+	return true
+}
+
+func (tc *ThumbnailContext) Status() (float64, bool) {
 	tc.mu.Lock()
 	defer tc.mu.Unlock()
 	if tc.Total == 0 {
-		return 0
+		return 0, tc.running
 	}
-	return float64(tc.Current) / float64(tc.Total)
+	return float64(tc.Current) / float64(tc.Total), tc.running
 }
 
-func (tc *ThumbnailContext) Reset() {
+func (tc *ThumbnailContext) Finish() {
 	tc.mu.Lock()
 	defer tc.mu.Unlock()
 	tc.Current = 0
 	tc.Total = 0
+	tc.running = false
 }
 
 func (tc *ThumbnailContext) Increment() {
 	tc.mu.Lock()
 	defer tc.mu.Unlock()
-	tc.Current++
+	if tc.running && tc.Current < tc.Total {
+		tc.Current++
+	}
 }
 
-func (lib *Library) ThumbnailProgress() float64 {
-	return lib.thumbnailCtx.Progress()
+func (lib *Library) ThumbnailStatus() (float64, bool) {
+	return lib.thumbnailCtx.Status()
 }
 
 func (lib *Library) Lock()    { lib.mu.Lock() }
@@ -84,10 +100,7 @@ func (lib *Library) LoadFromCache() error {
 	}
 	cf, err := readLibraryCache(lib.CachePath)
 	if err != nil {
-		log.Printf("Library cache corrupt or missing (%v); removing and continuing", err)
-		if rmErr := os.Remove(lib.CachePath); rmErr != nil && !os.IsNotExist(rmErr) {
-			log.Printf("Failed to remove corrupt cache: %v", rmErr)
-		}
+		lib.discardCache(fmt.Sprintf("corrupt or missing: %v", err))
 		return nil
 	}
 	want, err := filepath.Abs(lib.Dir)
@@ -101,6 +114,14 @@ func (lib *Library) LoadFromCache() error {
 	if got != "" && want != "" && filepath.Clean(got) != filepath.Clean(want) {
 		return fmt.Errorf("library cache path mismatch: cache=%q library=%q", cf.LibraryPath, lib.Dir)
 	}
+	valid, err := cacheIdentitiesValid(cf, lib.St)
+	if err != nil {
+		return fmt.Errorf("validate library cache identities: %w", err)
+	}
+	if !valid {
+		lib.discardCache("database identities are stale or incomplete")
+		return nil
+	}
 	titles, err := titlesFromCache(cf)
 	if err != nil {
 		return err
@@ -108,6 +129,13 @@ func (lib *Library) LoadFromCache() error {
 	lib.applyTitles(titles)
 	log.Printf("Loaded library cache: %d titles from %s", len(titles), lib.CachePath)
 	return nil
+}
+
+func (lib *Library) discardCache(reason string) {
+	log.Printf("Library cache invalid (%s); removing and continuing", reason)
+	if err := os.Remove(lib.CachePath); err != nil && !os.IsNotExist(err) {
+		log.Printf("Failed to remove invalid library cache: %v", err)
+	}
 }
 
 // Scan performs an incremental library scan without holding the RWMutex during
@@ -170,26 +198,29 @@ func (lib *Library) saveCacheLocked(titles []*Title) error {
 // those that don't already have one. Matches Crystal Library#generate_thumbnails.
 func (lib *Library) GenerateThumbnails() error {
 	lib.mu.RLock()
-	defer lib.mu.RUnlock()
-
-	if lib.thumbnailCtx.Current > 0 {
-		log.Println("Thumbnail generation already in progress")
-		return nil
+	titles := make([]*Title, 0, len(lib.TitleHash))
+	for _, t := range lib.TitleHash {
+		if t != nil {
+			titles = append(titles, t)
+		}
 	}
+	lib.mu.RUnlock()
 
 	var allEntries []Entry
-	for _, t := range lib.TitleHash {
+	for _, t := range titles {
 		allEntries = append(allEntries, t.DeepEntries()...)
 	}
 
-	lib.thumbnailCtx.Total = len(allEntries)
-	lib.thumbnailCtx.Current = 0
-
-	if lib.thumbnailCtx.Total == 0 {
+	if len(allEntries) == 0 {
 		return nil
 	}
+	if !lib.thumbnailCtx.Start(len(allEntries)) {
+		log.Println("Thumbnail generation already in progress")
+		return nil
+	}
+	defer lib.thumbnailCtx.Finish()
 
-	log.Printf("Starting thumbnail generation for %d entries", lib.thumbnailCtx.Total)
+	log.Printf("Starting thumbnail generation for %d entries", len(allEntries))
 
 	for _, e := range allEntries {
 		if e.Err() != nil {
@@ -233,6 +264,5 @@ func (lib *Library) GenerateThumbnails() error {
 	}
 
 	log.Println("Thumbnail generation finished")
-	lib.thumbnailCtx.Reset()
 	return nil
 }

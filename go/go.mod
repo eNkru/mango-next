@@ -1,4 +1,4 @@
-module github.com/hkalexling/mango-go
+module github.com/eNkru/mango-next
 
 go 1.26.3
 

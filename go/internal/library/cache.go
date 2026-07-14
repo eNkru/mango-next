@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/eNkru/mango-next/internal/storage"
 )
 
 const libraryCacheVersion = 1
@@ -20,15 +22,15 @@ type libraryCacheFile struct {
 }
 
 type cachedTitle struct {
-	Dir         string         `json:"dir"`
-	ParentID    string         `json:"parent_id"`
-	ID          string         `json:"id"`
-	Signature   uint64         `json:"signature"`
-	ContentsSig string         `json:"contents_sig"`
-	Name        string         `json:"name"`
-	TitleIDs    []string       `json:"title_ids"`
-	MtimeUnix   int64          `json:"mtime_unix"`
-	Entries     []cachedEntry  `json:"entries"`
+	Dir         string        `json:"dir"`
+	ParentID    string        `json:"parent_id"`
+	ID          string        `json:"id"`
+	Signature   uint64        `json:"signature"`
+	ContentsSig string        `json:"contents_sig"`
+	Name        string        `json:"name"`
+	TitleIDs    []string      `json:"title_ids"`
+	MtimeUnix   int64         `json:"mtime_unix"`
+	Entries     []cachedEntry `json:"entries"`
 }
 
 type cachedEntry struct {
@@ -105,6 +107,28 @@ func titlesFromCache(cf libraryCacheFile) ([]*Title, error) {
 		titles = append(titles, t)
 	}
 	return titles, nil
+}
+
+func cacheIdentitiesValid(cf libraryCacheFile, st *storage.Storage) (bool, error) {
+	for _, ct := range cf.Titles {
+		matches, err := st.TitleIdentityMatches(ct.ID, ct.Dir)
+		if err != nil || !matches {
+			return matches, err
+		}
+		for _, id := range ct.TitleIDs {
+			exists, err := st.TitleIDExists(id)
+			if err != nil || !exists {
+				return exists, err
+			}
+		}
+		for _, ce := range ct.Entries {
+			matches, err := st.EntryIdentityMatches(ce.ID, ce.Path)
+			if err != nil || !matches {
+				return matches, err
+			}
+		}
+	}
+	return true, nil
 }
 
 func titleFromCached(ct cachedTitle) (*Title, error) {

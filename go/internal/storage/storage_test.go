@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hkalexling/mango-go/internal/storage/migration"
+	"github.com/eNkru/mango-next/internal/storage/migration"
 )
 
 func TestMigrateFreshDB(t *testing.T) {
@@ -486,6 +486,65 @@ func TestSaveGetThumbnail(t *testing.T) {
 	}
 	if got.Size != img.Size {
 		t.Errorf("size = %d, want %d", got.Size, img.Size)
+	}
+}
+
+func TestLibraryIdentityChecksAreReadOnlyAndPathAware(t *testing.T) {
+	dir := t.TempDir()
+	libraryDir := filepath.Join(dir, "library")
+	st, err := Open(filepath.Join(dir, "mango.db"), libraryDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+
+	titlePath := filepath.Join(libraryDir, "Title")
+	entryPath := filepath.Join(titlePath, "chapter.cbz")
+	titleID, err := st.GetOrCreateTitleID(titlePath, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entryID, err := st.GetOrCreateEntryID(entryPath, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assertMatch := func(name string, got bool, err error, want bool) {
+		t.Helper()
+		if err != nil {
+			t.Fatalf("%s: %v", name, err)
+		}
+		if got != want {
+			t.Fatalf("%s = %v, want %v", name, got, want)
+		}
+	}
+
+	got, err := st.TitleIdentityMatches(titleID, titlePath)
+	assertMatch("matching title", got, err, true)
+	got, err = st.TitleIdentityMatches(titleID, filepath.Join(libraryDir, "Other"))
+	assertMatch("wrong title path", got, err, false)
+	got, err = st.EntryIdentityMatches(entryID, entryPath)
+	assertMatch("matching entry", got, err, true)
+	got, err = st.EntryIdentityMatches(entryID, filepath.Join(titlePath, "other.cbz"))
+	assertMatch("wrong entry path", got, err, false)
+	got, err = st.TitleIDExists(titleID)
+	assertMatch("existing title ID", got, err, true)
+
+	if _, err := st.DB().Exec("UPDATE ids SET unavailable = 1 WHERE id = ?", entryID); err != nil {
+		t.Fatal(err)
+	}
+	got, err = st.EntryIdentityMatches(entryID, entryPath)
+	assertMatch("unavailable entry", got, err, false)
+
+	var titleCount, entryCount int
+	if err := st.DB().QueryRow("SELECT COUNT(*) FROM titles").Scan(&titleCount); err != nil {
+		t.Fatal(err)
+	}
+	if err := st.DB().QueryRow("SELECT COUNT(*) FROM ids").Scan(&entryCount); err != nil {
+		t.Fatal(err)
+	}
+	if titleCount != 1 || entryCount != 1 {
+		t.Fatalf("identity checks changed row counts: titles=%d entries=%d", titleCount, entryCount)
 	}
 }
 

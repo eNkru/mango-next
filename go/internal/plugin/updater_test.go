@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hkalexling/mango-go/internal/queue"
+	"github.com/eNkru/mango-next/internal/queue"
 )
 
 func TestListPluginIDs(t *testing.T) {

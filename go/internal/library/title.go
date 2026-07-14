@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hkalexling/mango-go/internal/archive"
-	"github.com/hkalexling/mango-go/internal/storage"
+	"github.com/eNkru/mango-next/internal/archive"
+	"github.com/eNkru/mango-next/internal/storage"
 )
 
 // ---------------------------------------------------------------------------

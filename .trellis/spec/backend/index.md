@@ -17,7 +17,7 @@ Historical migration notes: archived Trellis tasks under `.trellis/tasks/archive
 ## Go Migration Architecture
 
 ### Module
-`github.com/hkalexling/mango-go` under `go/` directory.
+`github.com/eNkru/mango-next` under `go/` directory.
 
 ### Key Dependencies
 - Web: `github.com/go-chi/chi/v5` — router with path params
@@ -101,6 +101,7 @@ Default config paths (`~/mango/library`, `~/mango.db`, etc.) expand to `/root/ma
 | Guide | Description | Status |
 |-------|-------------|--------|
 | [User Management](./user-management.md) | Admin/user storage and API invariants | Active |
+| [Library Background Jobs](./library-background-jobs.md) | Cache identity, thumbnail locking, progress, and startup ordering | Active |
 
 ---
 
