@@ -12,7 +12,7 @@
 
     <div x-show="plugins.length > 0" style="width:100%">
       <h2 class="page-heading-comic" data-i18n="download_with_plugin">使用插件下载
-        <span x-show="searching" uk-spinner class="uk-margin-left"></span>
+        <i x-show="searching" class="fas fa-circle-notch fa-spin uk-margin-left"></i>
       </h2>
 
       <template x-if="info !== undefined">
@@ -42,7 +42,7 @@
               <div class="uk-margin">
                 <label class="uk-form-label">&nbsp;</label>
                 <div class="uk-form-controls" style="padding-top: 10px;">
-                  <span class="info-toggle" uk-icon="icon:info" uk-toggle="target: #toggle"></span>
+                  <span class="info-toggle" uk-toggle="target: #toggle"><i class="fas fa-info-circle"></i></span>
                 </div>
               </div>
             </div>
@@ -62,7 +62,7 @@
         <p x-show="manga.length === 0" style="color: #888;" data-i18n="no_matching_manga">没有找到匹配的漫画.</p>
         <p x-show="manga.length > 0">
         <span x-text="`${manga.length} ` + I18N.get('manga_found', loadLanguageSetting())" style="font-weight: 600;"></span>
-          <span :uk-icon="listManga ? 'chevron-down' : 'chevron-right'" @click="listManga = !listManga" style="cursor: pointer;"></span>
+          <i :class="listManga ? 'fas fa-chevron-down' : 'fas fa-chevron-right'" @click="listManga = !listManga" style="cursor: pointer;"></i>
           </p>
 
           <div class="uk-child-width-1-4@m uk-child-width-1-2" uk-grid x-show="listManga">
@@ -92,9 +92,9 @@
           <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="selectAll()"><i class="fas fa-check-double uk-margin-small-right"></i> <span data-i18n="select_all">全选</span></button>
           <button class="uk-button comic-btn comic-btn-sm comic-btn-outline" @click="clearSelection()"><i class="fas fa-times uk-margin-small-right"></i> <span data-i18n="clear_selection">清空</span></button>
           <button class="uk-button comic-btn comic-btn-sm comic-btn-primary" @click="download()"><i class="fas fa-download uk-margin-small-right"></i> <span data-i18n="download_selected">下载已选</span></button>
-            <span class="info-toggle" uk-icon="icon:settings" @click="showFilters = !showFilters" style="vertical-align: middle;"></span>
+            <span class="info-toggle" @click="showFilters = !showFilters" style="vertical-align: middle;"><i class="fas fa-cog"></i></span>
           </div>
-          <div uk-spinner class="uk-margin-left" x-show="adding"></div>
+          <i class="fas fa-circle-notch fa-spin uk-margin-left" x-show="adding"></i>
         </div>
 
         <form x-show="showFilters || (chapters && chapters.length > chaptersLimit)" class="filter-form uk-form-stacked uk-margin-bottom" id="filter-form">

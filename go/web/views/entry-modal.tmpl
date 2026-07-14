@@ -1,16 +1,16 @@
 {{define "entry-modal"}}
 <div id="modal" class="uk-flex-top mango-modal comic-modal" uk-modal>
   <div class="uk-modal-dialog uk-margin-auto-vertical">
-    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <button class="uk-modal-close-default" type="button"><i class="fas fa-times"></i></button>
     <div class="uk-modal-header">
       <div>
         <h3 class="uk-modal-title break-word uk-margin-remove-top" id="modal-entry-title"><span></span>
           {{if ne .PageName "home"}}
             {{if .IsAdmin}}
-              <a id="modal-edit-btn" class="uk-icon-button" uk-icon="icon:pencil" aria-label="编辑条目" data-i18n-aria-label="edit_entry"></a>
+              <a id="modal-edit-btn" class="uk-icon-button" aria-label="编辑条目" data-i18n-aria-label="edit_entry"><i class="fas fa-pen"></i></a>
             {{end}}
           {{end}}
-          <a id="modal-download-btn" class="uk-icon-button" uk-icon="icon:download" aria-label="下载条目" data-i18n-aria-label="download_entry"></a>
+          <a id="modal-download-btn" class="uk-icon-button" aria-label="下载条目" data-i18n-aria-label="download_entry"><i class="fas fa-download"></i></a>
         </h3>
       </div>
       <p class="uk-text-meta uk-margin-remove-bottom break-word" id="path-text"></p>
