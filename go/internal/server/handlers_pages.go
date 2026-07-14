@@ -200,15 +200,26 @@ func (s *Server) enrichRecentlyAdded(base string, items []storage.RecentlyAddedI
 	return out
 }
 
-func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
-	isAdmin := GetIsAdmin(r)
+// buildLibraryPageData assembles library page data with hidden-title filtering.
+// showHidden is only effective for admins.
+func (s *Server) buildLibraryPageData(isAdmin bool, showHidden bool) LibraryPageData {
+	showHidden = isAdmin && showHidden
 
-	// Build library title list
 	lib := s.Deps.Library
 	lib.RLock()
 	titleIDs := make([]string, len(lib.TitleIDs))
 	copy(titleIDs, lib.TitleIDs)
 	lib.RUnlock()
+
+	hiddenIDs, err := s.Deps.Storage.GetHiddenTitleIDs()
+	if err != nil {
+		log.Printf("library GetHiddenTitleIDs: %v", err)
+		hiddenIDs = nil
+	}
+	hiddenSet := make(map[string]bool, len(hiddenIDs))
+	for _, id := range hiddenIDs {
+		hiddenSet[id] = true
+	}
 
 	var titles []LibraryTitle
 	for _, id := range titleIDs {
@@ -218,16 +229,20 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 		if !ok {
 			continue
 		}
+		isHidden := hiddenSet[t.ID]
+		if isHidden && !showHidden {
+			continue
+		}
 		titles = append(titles, LibraryTitle{
 			ID:         t.ID,
 			Name:       t.Name,
 			CoverURL:   fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, firstEntryID(t)),
 			EntryCount: len(t.DeepEntries()),
-			Hidden:     false, // needs storage lookup
+			Hidden:     isHidden,
 		})
 	}
 
-	data := LibraryPageData{
+	return LibraryPageData{
 		LayoutData: LayoutData{
 			BaseURL:  s.Deps.Config.BaseURL,
 			IsAdmin:  isAdmin,
@@ -236,9 +251,14 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 		},
 		Titles:     titles,
 		Percentage: make([]float64, len(titles)),
-		ShowHidden: false,
+		ShowHidden: showHidden,
 	}
-	s.renderLayout(w, "library", data)
+}
+
+func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
+	isAdmin := GetIsAdmin(r)
+	showHidden := r.URL.Query().Get("show_hidden") == "1"
+	s.renderLayout(w, "library", s.buildLibraryPageData(isAdmin, showHidden))
 }
 
 func (s *Server) handleTitle(w http.ResponseWriter, r *http.Request) {
@@ -374,14 +394,24 @@ func (s *Server) handleTags(w http.ResponseWriter, r *http.Request) {
 	s.renderLayout(w, "tags", data)
 }
 
-func (s *Server) handleTag(w http.ResponseWriter, r *http.Request) {
-	tag := chi.URLParam(r, "tag")
-	showHidden := r.URL.Query().Get("show_hidden") == "1"
+// buildTagPageData assembles tag page data with hidden-title filtering.
+// Returns false when the tag has no visible titles for the requested mode.
+func (s *Server) buildTagPageData(tag string, isAdmin bool, showHidden bool) (TagPageData, bool) {
+	showHidden = isAdmin && showHidden
 
 	titleIDs, err := s.Deps.Storage.GetTagTitles(tag, showHidden)
 	if err != nil || len(titleIDs) == 0 {
-		http.Error(w, "Tag not found", http.StatusNotFound)
-		return
+		return TagPageData{}, false
+	}
+
+	hiddenIDs, err := s.Deps.Storage.GetHiddenTitleIDs()
+	if err != nil {
+		log.Printf("tag GetHiddenTitleIDs: %v", err)
+		hiddenIDs = nil
+	}
+	hiddenSet := make(map[string]bool, len(hiddenIDs))
+	for _, id := range hiddenIDs {
+		hiddenSet[id] = true
 	}
 
 	lib := s.Deps.Library
@@ -397,22 +427,37 @@ func (s *Server) handleTag(w http.ResponseWriter, r *http.Request) {
 			Name:       t.Name,
 			CoverURL:   fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, firstEntryID(t)),
 			EntryCount: len(t.Entries),
+			Hidden:     hiddenSet[t.ID],
 		})
 	}
 	lib.RUnlock()
 
-	data := TagPageData{
+	if len(titles) == 0 {
+		return TagPageData{}, false
+	}
+
+	return TagPageData{
 		LayoutData: LayoutData{
 			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  GetIsAdmin(r),
+			IsAdmin:  isAdmin,
 			PageName: "tag",
 			Version:  "2.0.0",
 		},
 		Tag:        tag,
 		Titles:     titles,
 		ShowHidden: showHidden,
-	}
+	}, true
+}
 
+func (s *Server) handleTag(w http.ResponseWriter, r *http.Request) {
+	tag := chi.URLParam(r, "tag")
+	isAdmin := GetIsAdmin(r)
+	showHidden := r.URL.Query().Get("show_hidden") == "1"
+	data, ok := s.buildTagPageData(tag, isAdmin, showHidden)
+	if !ok {
+		http.Error(w, "Tag not found", http.StatusNotFound)
+		return
+	}
 	s.renderLayout(w, "tag", data)
 }
 
