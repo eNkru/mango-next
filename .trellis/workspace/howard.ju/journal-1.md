@@ -233,3 +233,36 @@ Archived two completed tasks already merged via PR #29 and #30: cover-refresh-ui
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: Fix hide/show title toggle
+
+**Date**: 2026-07-15
+**Task**: Fix hide/show title toggle
+**Branch**: `main`
+
+### Summary
+
+Fixed hide/show title toggle on library and tag pages: wired GetHiddenTitleIDs filtering, admin show_hidden mode, tag card hide actions, and tests. Committed, pushed, merged via PR #31, archived task.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1d7324f` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

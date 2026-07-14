@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 5
+- **Total Sessions**: 6
 - **Last Active**: 2026-07-15
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~235 | Active |
+| `journal-1.md` | ~268 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 6 | 2026-07-15 | Fix hide/show title toggle | `1d7324f` | `main` |
 | 5 | 2026-07-15 | Archive completed cover refresh and theme CSS tasks | `38a3d40`, `3e4ade2` | `feature/fix-hide-show-toggle` |
 | 4 | 2026-07-13 | Fix scratch Docker HOME, unify Dockerfile | `30ffddd` | `main` |
 | 3 | 2026-07-13 | Non-blocking library scan | `9e45824` | `fix/nonblocking-library-scan` |
