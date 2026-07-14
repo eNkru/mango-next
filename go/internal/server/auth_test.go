@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hkalexling/mango-go/internal/config"
-	"github.com/hkalexling/mango-go/internal/storage"
+	"github.com/eNkru/mango-next/internal/config"
+	"github.com/eNkru/mango-next/internal/storage"
 )
 
 // setupTest creates a temporary config and storage for testing.
@@ -373,5 +373,3 @@ func TestExtractTokenCookiePrecedence(t *testing.T) {
 		t.Errorf("extractToken = %q, want cookie-value (cookie should take precedence)", token)
 	}
 }
-
-

@@ -16,3 +16,7 @@ AGENTS.md
 .trellis/.template-hashes.json
 .trellis/.runtime/
 .trellis/.cache/
+
+# Local build artifacts
+mango-local.tar.gz
+*.tar.gz

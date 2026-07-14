@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hkalexling/mango-go/internal/queue"
+	"github.com/eNkru/mango-next/internal/queue"
 )
 
 // Downloader processes download queue jobs by fetching pages via the plugin's

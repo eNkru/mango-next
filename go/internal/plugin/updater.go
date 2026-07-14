@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/hkalexling/mango-go/internal/queue"
+	"github.com/eNkru/mango-next/internal/queue"
 )
 
 // Updater periodically checks all plugin subscriptions for new chapters and
@@ -153,12 +153,12 @@ func (u *Updater) checkSubscription(plugin *Plugin, sub *Subscription) {
 		jobID := plugin.info.ID + "-" + encodedID
 
 		jobs = append(jobs, queue.Job{
-			ID:              jobID,
-			MangaID:         sub.MangaID,
-			Title:           chTitle,
-			MangaTitle:      sub.MangaTitle,
-			Status:          queue.StatusPending,
-			Time:            time.Now(),
+			ID:         jobID,
+			MangaID:    sub.MangaID,
+			Title:      chTitle,
+			MangaTitle: sub.MangaTitle,
+			Status:     queue.StatusPending,
+			Time:       time.Now(),
 		})
 	}
 

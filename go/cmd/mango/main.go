@@ -7,13 +7,13 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hkalexling/mango-go/internal/config"
-	"github.com/hkalexling/mango-go/internal/library"
-	"github.com/hkalexling/mango-go/internal/queue"
-	"github.com/hkalexling/mango-go/internal/server"
-	"github.com/hkalexling/mango-go/internal/storage"
-	"github.com/hkalexling/mango-go/internal/tasks"
-	"github.com/hkalexling/mango-go/web"
+	"github.com/eNkru/mango-next/internal/config"
+	"github.com/eNkru/mango-next/internal/library"
+	"github.com/eNkru/mango-next/internal/queue"
+	"github.com/eNkru/mango-next/internal/server"
+	"github.com/eNkru/mango-next/internal/storage"
+	"github.com/eNkru/mango-next/internal/tasks"
+	"github.com/eNkru/mango-next/web"
 	"github.com/spf13/cobra"
 )
 

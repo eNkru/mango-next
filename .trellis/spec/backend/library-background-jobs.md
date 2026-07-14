@@ -1,0 +1,93 @@
+# Library Background Jobs
+
+## Scenario: Cache-safe, non-blocking thumbnail generation
+
+### 1. Scope / Trigger
+
+Apply this contract when changing library cache loading, scanning, thumbnail
+generation, task startup ordering, or the admin thumbnail-progress endpoint.
+It prevents stale cache IDs from violating SQLite foreign keys and prevents a
+background job from starving HTTP readers through `sync.RWMutex` writer
+preference.
+
+### 2. Signatures
+
+- `Library.LoadFromCache() error`
+- `Library.GenerateThumbnails() error`
+- `Library.ThumbnailStatus() (progress float64, running bool)`
+- `Storage.TitleIdentityMatches(id, absPath string) (bool, error)`
+- `Storage.EntryIdentityMatches(id, absPath string) (bool, error)`
+- `GET /api/admin/thumbnail_progress`
+
+### 3. Contracts
+
+- Cache identities are checked read-only before the cached tree is published.
+- A confirmed mismatch removes the cache and leaves an empty in-memory tree;
+  the initial scan rebuilds database IDs and a valid cache.
+- A transient database validation error is returned and must not delete cache.
+- `GenerateThumbnails` may hold `Library.mu.RLock` only while copying top-level
+  title pointers. Archive, image, database, sleep, and entry-expansion work runs
+  after unlock.
+- The first scheduled thumbnail run starts after the initial scan attempt.
+- Progress JSON is additive and stable:
+
+```json
+{"success": true, "progress": 0.0, "running": true}
+```
+
+`running`, not `progress > 0`, is the source of truth for job activity.
+
+### 4. Validation & Error Matrix
+
+| Condition | Required behavior |
+|-----------|-------------------|
+| Cache ID/path matches an available DB row | Load cache |
+| Cache ID is missing, unavailable, or mapped to another path | Delete cache, return no error, run full scan |
+| Identity query fails | Return wrapped error, preserve cache |
+| Duplicate thumbnail start | Log and return without starting a second job |
+| One archive read/generate/save fails | Log, advance progress, continue |
+| Job returns after `Start` | Deferred `Finish` clears running/current/total |
+
+### 5. Good/Base/Bad Cases
+
+- Good: warm cache and matching DB load immediately; the incremental scan may
+  reuse unchanged titles.
+- Base: no cache produces an empty responsive UI until the scan publishes data.
+- Bad: a cache from another DB is never exposed and never seeds DB rows.
+- Bad: no disk or database operation occurs while holding `Library.mu`.
+
+### 6. Tests Required
+
+- Build a cache using DB A, load with empty DB B, and assert the cache is
+  removed while DB B row counts remain zero.
+- Block an entry's `ReadPage`, then assert a library writer and a later reader
+  both acquire the lock promptly.
+- Start a duplicate job and assert it returns promptly; release the first job
+  and assert status becomes `(0, false)`.
+- Assert the progress endpoint reports `running=true` at exactly 0%.
+- Assert the initial automatic thumbnail creates data only after scan-created
+  IDs exist.
+
+### 7. Wrong vs Correct
+
+Wrong:
+
+```go
+lib.mu.RLock()
+defer lib.mu.RUnlock()
+for _, entry := range entries {
+    readArchiveAndWriteThumbnail(entry)
+}
+```
+
+Correct:
+
+```go
+lib.mu.RLock()
+titles := snapshotTitles(lib.TitleHash)
+lib.mu.RUnlock()
+
+for _, title := range titles {
+    generateWithoutLibraryLock(title)
+}
+```

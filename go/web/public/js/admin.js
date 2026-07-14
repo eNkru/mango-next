@@ -59,7 +59,7 @@ const component = () => {
 			$.get(`${base_url}api/admin/thumbnail_progress`)
 				.then(data => {
 					this.progress = data.progress;
-					this.generating = data.progress > 0;
+					this.generating = data.running;
 				});
 		},
 	};

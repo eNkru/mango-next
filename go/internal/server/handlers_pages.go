@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/eNkru/mango-next/internal/library"
+	"github.com/eNkru/mango-next/internal/storage"
 	"github.com/go-chi/chi/v5"
-	"github.com/hkalexling/mango-go/internal/library"
-	"github.com/hkalexling/mango-go/internal/storage"
 )
 
 func (s *Server) handleLoginPage(w http.ResponseWriter, r *http.Request) {
@@ -47,9 +47,10 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleHome mirrors Crystal GET / (src/routes/main.cr):
-//   new_user = !titles.any? { load_percentage(username) > 0 }
-//   empty_library = titles.size == 0
-//   plus continue_reading / start_reading / recently_added sections.
+//
+//	new_user = !titles.any? { load_percentage(username) > 0 }
+//	empty_library = titles.size == 0
+//	plus continue_reading / start_reading / recently_added sections.
 func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
 	username := GetUsername(r)
 	base := s.Deps.Config.BaseURL
@@ -228,10 +229,10 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 
 	data := LibraryPageData{
 		LayoutData: LayoutData{
-			BaseURL:             s.Deps.Config.BaseURL,
-			IsAdmin:             isAdmin,
-			PageName:            "library",
-			Version:             "2.0.0",
+			BaseURL:  s.Deps.Config.BaseURL,
+			IsAdmin:  isAdmin,
+			PageName: "library",
+			Version:  "2.0.0",
 		},
 		Titles:     titles,
 		Percentage: make([]float64, len(titles)),
@@ -362,10 +363,10 @@ func (s *Server) handleTags(w http.ResponseWriter, r *http.Request) {
 
 	data := TagsPageData{
 		LayoutData: LayoutData{
-			BaseURL:             s.Deps.Config.BaseURL,
-			IsAdmin:             isAdmin,
-			PageName:            "tags",
-			Version:             "2.0.0",
+			BaseURL:  s.Deps.Config.BaseURL,
+			IsAdmin:  isAdmin,
+			PageName: "tags",
+			Version:  "2.0.0",
 		},
 		Tags: tagList,
 	}
@@ -502,11 +503,11 @@ func (s *Server) handleReader(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handlePluginDownload(w http.ResponseWriter, r *http.Request) {
 	ld := LayoutData{
-		BaseURL:             s.Deps.Config.BaseURL,
-		IsAdmin:             GetIsAdmin(r),
-		PageName:            "plugin-download",
-		Version:             "2.0.0",
-		PluginPath:          s.Deps.Config.PluginPath,
+		BaseURL:    s.Deps.Config.BaseURL,
+		IsAdmin:    GetIsAdmin(r),
+		PageName:   "plugin-download",
+		Version:    "2.0.0",
+		PluginPath: s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "plugin-download", ld)
 }
@@ -514,10 +515,10 @@ func (s *Server) handlePluginDownload(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleAdmin(w http.ResponseWriter, r *http.Request) {
 	ld := AdminPageData{
 		LayoutData: LayoutData{
-			BaseURL:             s.Deps.Config.BaseURL,
-			IsAdmin:             true,
-			PageName:            "admin",
-			Version:             "2.0.0",
+			BaseURL:  s.Deps.Config.BaseURL,
+			IsAdmin:  true,
+			PageName: "admin",
+			Version:  "2.0.0",
 		},
 	}
 	s.renderLayout(w, "admin", ld)
@@ -541,10 +542,10 @@ func (s *Server) handleUserList(w http.ResponseWriter, r *http.Request) {
 
 	data := UserPageData{
 		LayoutData: LayoutData{
-			BaseURL:             s.Deps.Config.BaseURL,
-			IsAdmin:             true,
-			PageName:            "user",
-			Version:             "2.0.0",
+			BaseURL:  s.Deps.Config.BaseURL,
+			IsAdmin:  true,
+			PageName: "user",
+			Version:  "2.0.0",
 		},
 		Users:    userPairs,
 		Username: GetUsername(r),
@@ -558,10 +559,10 @@ func (s *Server) handleUserEdit(w http.ResponseWriter, r *http.Request) {
 
 	data := UserEditPageData{
 		LayoutData: LayoutData{
-			BaseURL:             s.Deps.Config.BaseURL,
-			IsAdmin:             true,
-			PageName:            "user-edit",
-			Version:             "2.0.0",
+			BaseURL:  s.Deps.Config.BaseURL,
+			IsAdmin:  true,
+			PageName: "user-edit",
+			Version:  "2.0.0",
 		},
 		NewUser:  username == "",
 		Username: username,
@@ -601,32 +602,32 @@ func (s *Server) handleUserEditPost(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleDownloadManager(w http.ResponseWriter, r *http.Request) {
 	ld := LayoutData{
-		BaseURL:             s.Deps.Config.BaseURL,
-		IsAdmin:             true,
-		PageName:            "download-manager",
-		Version:             "2.0.0",
-		PluginPath:          s.Deps.Config.PluginPath,
+		BaseURL:    s.Deps.Config.BaseURL,
+		IsAdmin:    true,
+		PageName:   "download-manager",
+		Version:    "2.0.0",
+		PluginPath: s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "download-manager", ld)
 }
 
 func (s *Server) handleSubscriptionManager(w http.ResponseWriter, r *http.Request) {
 	ld := LayoutData{
-		BaseURL:             s.Deps.Config.BaseURL,
-		IsAdmin:             true,
-		PageName:            "subscription-manager",
-		Version:             "2.0.0",
-		PluginPath:          s.Deps.Config.PluginPath,
+		BaseURL:    s.Deps.Config.BaseURL,
+		IsAdmin:    true,
+		PageName:   "subscription-manager",
+		Version:    "2.0.0",
+		PluginPath: s.Deps.Config.PluginPath,
 	}
 	s.renderLayout(w, "subscription-manager", ld)
 }
 
 func (s *Server) handleMissingItems(w http.ResponseWriter, r *http.Request) {
 	ld := LayoutData{
-		BaseURL:             s.Deps.Config.BaseURL,
-		IsAdmin:             true,
-		PageName:            "missing-items",
-		Version:             "2.0.0",
+		BaseURL:  s.Deps.Config.BaseURL,
+		IsAdmin:  true,
+		PageName: "missing-items",
+		Version:  "2.0.0",
 	}
 	s.renderLayout(w, "missing-items", ld)
 }

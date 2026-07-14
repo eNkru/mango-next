@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/eNkru/mango-next/internal/config"
+	"github.com/eNkru/mango-next/internal/library"
+	"github.com/eNkru/mango-next/internal/plugin"
+	"github.com/eNkru/mango-next/internal/queue"
+	"github.com/eNkru/mango-next/internal/storage"
+	"github.com/eNkru/mango-next/internal/tasks"
+	"github.com/eNkru/mango-next/web"
 	"github.com/go-chi/chi/v5"
-	"github.com/hkalexling/mango-go/internal/config"
-	"github.com/hkalexling/mango-go/internal/library"
-	"github.com/hkalexling/mango-go/internal/plugin"
-	"github.com/hkalexling/mango-go/internal/queue"
-	"github.com/hkalexling/mango-go/internal/storage"
-	"github.com/hkalexling/mango-go/internal/tasks"
-	"github.com/hkalexling/mango-go/web"
 )
 
 type Dependencies struct {
@@ -28,9 +28,9 @@ type Dependencies struct {
 }
 
 type Server struct {
-	Router      *chi.Mux
-	Deps        *Dependencies
-	staticFS    http.FileSystem
+	Router   *chi.Mux
+	Deps     *Dependencies
+	staticFS http.FileSystem
 }
 
 func NewServer(deps *Dependencies) *Server {

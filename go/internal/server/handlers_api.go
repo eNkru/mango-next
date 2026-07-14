@@ -10,13 +10,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/eNkru/mango-next/internal/config"
+	"github.com/eNkru/mango-next/internal/library"
+	"github.com/eNkru/mango-next/internal/plugin"
+	"github.com/eNkru/mango-next/internal/queue"
+	"github.com/eNkru/mango-next/internal/thumbnail"
+	"github.com/eNkru/mango-next/internal/upload"
 	"github.com/go-chi/chi/v5"
-	"github.com/hkalexling/mango-go/internal/config"
-	"github.com/hkalexling/mango-go/internal/library"
-	"github.com/hkalexling/mango-go/internal/plugin"
-	"github.com/hkalexling/mango-go/internal/queue"
-	"github.com/hkalexling/mango-go/internal/thumbnail"
-	"github.com/hkalexling/mango-go/internal/upload"
 )
 
 // apiLogin mirrors Crystal POST /api/login (src/routes/api.cr).
@@ -60,13 +60,13 @@ func (s *Server) apiLibrary(w http.ResponseWriter, r *http.Request) {
 	lib.RUnlock()
 
 	type titleResp struct {
-		ID         string   `json:"id"`
-		Name       string   `json:"name"`
-		CoverURL   string   `json:"cover_url"`
-		EntryCount int      `json:"entry_count"`
-		Tags       []string `json:"tags,omitempty"`
-		Hidden     bool     `json:"hidden"`
-		DisplayName string  `json:"display_name"`
+		ID          string   `json:"id"`
+		Name        string   `json:"name"`
+		CoverURL    string   `json:"cover_url"`
+		EntryCount  int      `json:"entry_count"`
+		Tags        []string `json:"tags,omitempty"`
+		Hidden      bool     `json:"hidden"`
+		DisplayName string   `json:"display_name"`
 	}
 
 	var resp []titleResp
@@ -480,9 +480,11 @@ func (s *Server) apiAdminScan(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) apiAdminThumbnailProgress(w http.ResponseWriter, r *http.Request) {
 	lib := s.Deps.Library
+	progress, running := lib.ThumbnailStatus()
 	sendJSON(w, map[string]any{
 		"success":  true,
-		"progress": lib.ThumbnailProgress(),
+		"progress": progress,
+		"running":  running,
 	})
 }
 

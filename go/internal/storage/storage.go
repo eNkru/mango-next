@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/eNkru/mango-next/internal/storage/migration"
 	"github.com/google/uuid"
-	"github.com/hkalexling/mango-go/internal/storage/migration"
 	"golang.org/x/crypto/bcrypt"
 	_ "modernc.org/sqlite"
 )
@@ -847,6 +847,39 @@ func (s *Storage) GetOrCreateEntryID(absPath string, sig uint64) (string, error)
 		id, relPath, sigStr,
 	)
 	return id, err
+}
+
+// TitleIdentityMatches reports whether an available title ID belongs to the
+// expected library path. It is read-only so callers can validate cached data
+// without recreating database identities from stale input.
+func (s *Storage) TitleIdentityMatches(id, absPath string) (bool, error) {
+	return s.identityExists(
+		"SELECT EXISTS(SELECT 1 FROM titles WHERE id = ? AND path = ? AND unavailable = 0)",
+		id, s.relPath(absPath),
+	)
+}
+
+// EntryIdentityMatches is the entry counterpart of TitleIdentityMatches.
+func (s *Storage) EntryIdentityMatches(id, absPath string) (bool, error) {
+	return s.identityExists(
+		"SELECT EXISTS(SELECT 1 FROM ids WHERE id = ? AND path = ? AND unavailable = 0)",
+		id, s.relPath(absPath),
+	)
+}
+
+// TitleIDExists reports whether an available title ID exists. Cache payloads
+// currently retain nested title IDs without their paths, so those references
+// can only be validated by identity.
+func (s *Storage) TitleIDExists(id string) (bool, error) {
+	return s.identityExists(
+		"SELECT EXISTS(SELECT 1 FROM titles WHERE id = ? AND unavailable = 0)", id,
+	)
+}
+
+func (s *Storage) identityExists(query string, args ...any) (bool, error) {
+	var exists bool
+	err := s.db.QueryRow(query, args...).Scan(&exists)
+	return exists, err
 }
 
 // MarkUnavailable sets unavailable=1 on entries and titles whose files no

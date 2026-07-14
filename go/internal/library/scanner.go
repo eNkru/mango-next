@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hkalexling/mango-go/internal/storage"
+	"github.com/eNkru/mango-next/internal/storage"
 )
 
 // ScanResult holds the outcome of a library scan.

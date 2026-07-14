@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hkalexling/mango-go/internal/config"
-	"github.com/hkalexling/mango-go/internal/storage"
+	"github.com/eNkru/mango-next/internal/config"
+	"github.com/eNkru/mango-next/internal/storage"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
