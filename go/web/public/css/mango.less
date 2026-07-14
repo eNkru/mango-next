@@ -13,37 +13,9 @@
 }
 
 // ============================================
-// Flat Design System Variables
-// Warm coral accent — inviting for a comic reader
-// NOTE: @accent is also defined in tags.less (compiled separately).
-//       Keep values in sync when updating.
+// Flat Design System Variables — shared single source of truth
 // ============================================
-@accent: #D96A4B;
-@accent-hover: #C2594A;
-@accent-light: rgba(217, 106, 75, 0.08);
-@accent-lighter: rgba(217, 106, 75, 0.05);
-@accent-border: rgba(217, 106, 75, 0.2);
-@radius-sm: 4px;
-@radius-md: 6px;
-@radius-lg: 8px;
-@shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-@shadow-md: 0 2px 6px rgba(0,0,0,0.08);
-@shadow-lg: 0 4px 10px rgba(0,0,0,0.1);
-@border-color: #E0E0E0;
-@bg-surface: #FAFAFA;
-@text-primary: #2C2C2C;
-@text-secondary: #666666;
-@text-muted: #999999;
-
-// Dark theme accent
-@dark-accent: #E8845F;
-@dark-accent-light: rgba(232, 132, 95, 0.12);
-@dark-accent-border: rgba(232, 132, 95, 0.25);
-@dark-border: #333333;
-@dark-bg-surface: #1A1A1A;
-@dark-bg-base: #121212;
-@dark-text-primary: #E0E0E0;
-@dark-text-secondary: #AAAAAA;
+@import "./_variables.less";
 
 // ============================================
 // Item cards
@@ -3068,7 +3040,7 @@
 // Manga Shelf UI Refresh
 // Dark, compact library surface inspired by media apps.
 // ============================================
-@shelf-bg: #101116;
+@shelf-bg: #121212;
 @shelf-panel: rgba(24, 25, 34, 0.78);
 @shelf-panel-solid: #181922;
 @shelf-panel-strong: #20212b;
@@ -3088,13 +3060,13 @@
 body.mango-app-shell {
   margin: 0;
   min-height: 100vh;
-  background-color: #101116;
+  background-color: #121212;
 }
 
 body.uk-light.mango-app-shell {
   background:
     radial-gradient(circle at 76% 8%, rgba(242, 139, 69, 0.12), transparent 30rem),
-    linear-gradient(135deg, #101116 0%, #15161D 58%, #191820 100%) !important;
+    linear-gradient(135deg, #121212 0%, #15161D 58%, #191820 100%) !important;
   background-attachment: fixed;
   color: @shelf-text;
 }
@@ -3267,7 +3239,7 @@ body.mango-app-shell .hero-banner {
   border-radius: 7px;
   border: 1px solid @shelf-border;
   box-shadow: 0 18px 40px rgba(0,0,0,0.28);
-  background-color: #101116;
+  background-color: #121212;
 }
 
 body.mango-app-shell .hero-banner::before {
