@@ -199,3 +199,37 @@ Added ENV HOME=/root to scratch Dockerfile so ~ expands correctly. Removed redun
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: Archive completed cover refresh and theme CSS tasks
+
+**Date**: 2026-07-15
+**Task**: Archive completed cover refresh and theme CSS tasks
+**Branch**: `feature/fix-hide-show-toggle`
+
+### Summary
+
+Archived two completed tasks already merged via PR #29 and #30: cover-refresh-ui-block and theme-css-consolidation. Left 07-15-fix-hide-show-toggle and its dirty code changes untouched.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `38a3d40` | (see git log) |
+| `3e4ade2` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

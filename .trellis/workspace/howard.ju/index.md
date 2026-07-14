@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 4
-- **Last Active**: 2026-07-13
+- **Total Sessions**: 5
+- **Last Active**: 2026-07-15
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~201 | Active |
+| `journal-1.md` | ~235 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 5 | 2026-07-15 | Archive completed cover refresh and theme CSS tasks | `38a3d40`, `3e4ade2` | `feature/fix-hide-show-toggle` |
 | 4 | 2026-07-13 | Fix scratch Docker HOME, unify Dockerfile | `30ffddd` | `main` |
 | 3 | 2026-07-13 | Non-blocking library scan | `9e45824` | `fix/nonblocking-library-scan` |
 | 2 | 2026-07-13 | Remove Crystal, Go-only tree | `5a88df4` | `main` |
