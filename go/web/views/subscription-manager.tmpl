@@ -49,8 +49,8 @@
                   <td x-text="renderDateCell(sub.created_at)"></td>
                   <td x-text="renderDateCell(sub.last_checked)"></td>
                   <td>
-                    <a @click.prevent.stop="actionHandler($event, 'delete')" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><span uk-icon="trash"></span></a>
-                    <a @click.prevent.stop="actionHandler($event, 'update')" class="table-action table-action-success" aria-label="检查更新" uk-tooltip="检查更新" data-i18n-aria-label="check_updates" data-i18n-tooltip="check_updates" :disabled="loading"><span uk-icon="refresh"></span></a>
+                    <a @click.prevent.stop="actionHandler($event, 'delete')" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><i class="fas fa-trash-alt"></i></a>
+                    <a @click.prevent.stop="actionHandler($event, 'update')" class="table-action table-action-success" aria-label="检查更新" uk-tooltip="检查更新" data-i18n-aria-label="check_updates" data-i18n-tooltip="check_updates" :disabled="loading"><i class="fas fa-sync-alt"></i></a>
                   </td>
                 </tr>
               </template>

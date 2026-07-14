@@ -20,9 +20,9 @@
             {{end}}
           </td>
           <td>
-            <a href="{{$.BaseURL}}admin/user/edit?username={{index $u 0}}&admin={{index $u 1}}" class="table-action" aria-label="编辑用户" uk-tooltip="编辑" data-i18n-aria-label="edit_user" data-i18n-tooltip="edit_user"><span uk-icon="file-edit"></span></a>
+            <a href="{{$.BaseURL}}admin/user/edit?username={{index $u 0}}&admin={{index $u 1}}" class="table-action" aria-label="编辑用户" uk-tooltip="编辑" data-i18n-aria-label="edit_user" data-i18n-tooltip="edit_user"><i class="fas fa-edit"></i></a>
             {{if ne (index $u 0) $.Username}}
-              <a href="#" onclick="remove('{{index $u 0}}');return false;" class="table-action table-action-danger" aria-label="删除用户" uk-tooltip="删除" data-i18n-aria-label="delete_user" data-i18n-tooltip="delete_user"><span uk-icon="trash"></span></a>
+              <a href="#" onclick="remove('{{index $u 0}}');return false;" class="table-action table-action-danger" aria-label="删除用户" uk-tooltip="删除" data-i18n-aria-label="delete_user" data-i18n-tooltip="delete_user"><i class="fas fa-trash-alt"></i></a>
             {{end}}
           </td>
         </tr>

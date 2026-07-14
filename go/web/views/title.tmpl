@@ -28,7 +28,7 @@
       <a onclick="toggleHidden('{{.Title.ID}}', {{if .IsHidden}}0{{else}}1{{end}})" class="uk-icon-button" title="{{if .IsHidden}}显示此书{{else}}隐藏此书{{end}}" aria-label="{{if .IsHidden}}显示此书{{else}}隐藏此书{{end}}" data-i18n-title="{{if .IsHidden}}show_book{{else}}hide_book{{end}}" data-i18n-aria-label="{{if .IsHidden}}show_book{{else}}hide_book{{end}}">
         <i class="fas {{if .IsHidden}}fa-eye{{else}}fa-eye-slash{{end}}"></i>
       </a>
-      <a onclick="edit()" class="uk-icon-button" uk-icon="icon:pencil" aria-label="编辑" data-i18n-aria-label="edit"></a>
+      <a onclick="edit()" class="uk-icon-button" aria-label="编辑" data-i18n-aria-label="edit"><i class="fas fa-pen"></i></a>
     {{end}}
   </h2>
 </div>
@@ -50,7 +50,7 @@
 <div class="uk-grid-small" uk-grid>
   <div class="uk-margin-bottom uk-width-3-4@s">
     <form class="search-bar comic-search" role="search">
-      <span class="search-icon comic-search-icon" uk-search-icon></span>
+      <span class="search-icon comic-search-icon"><i class="fas fa-search"></i></span>
       <input class="uk-search-input search-input comic-search-input" type="search" placeholder="查找漫画..." data-i18n-placeholder="search_manga" aria-label="查找漫画">
     </form>
   </div>
@@ -134,7 +134,7 @@
 
 <div id="edit-modal" class="uk-flex-top mango-modal comic-modal" uk-modal>
   <div class="uk-modal-dialog uk-margin-auto-vertical">
-    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <button class="uk-modal-close-default" type="button"><i class="fas fa-times"></i></button>
     <div class="uk-modal-header">
       <div>
         <h3 class="uk-modal-title break-word" data-i18n="edit">编辑</h3>
@@ -144,14 +144,14 @@
       <div class="uk-margin">
         <label class="uk-form-label" for="display-name" data-i18n="display_name">显示名称</label>
         <div class="uk-inline uk-width-1-1">
-          <a class="uk-form-icon uk-form-icon-flip" uk-icon="icon:check"></a>
+          <a class="uk-form-icon uk-form-icon-flip"><i class="fas fa-check"></i></a>
           <input class="uk-input" type="text" name="display-name" id="display-name-field">
         </div>
       </div>
       <div class="uk-margin">
         <label class="uk-form-label" for="sort-title" data-i18n="sort_title_label">排序标题</label>
         <div class="uk-inline uk-width-1-1">
-          <a class="uk-form-icon uk-form-icon-flip" uk-icon="icon:check"></a>
+          <a class="uk-form-icon uk-form-icon-flip"><i class="fas fa-check"></i></a>
           <input class="uk-input" type="text" name="sort-title" id="sort-title-field">
         </div>
       </div>
@@ -164,7 +164,7 @@
           <div class="uk-width-1-2@s">
             <div id="cover-upload" class="upload-field uk-placeholder uk-text-center uk-flex uk-flex-middle" data-title-id="{{.Title.ID}}">
               <div>
-                <span uk-icon="icon: cloud-upload"></span>
+                <i class="fas fa-cloud-upload-alt"></i>
                 <span class="uk-text-middle" data-i18n="upload_cover_drag">上传封面图片，将其拖放到此处或</span>
                 <div uk-form-custom>
                   <input type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/apng,image/svg+xml,image/jxl">

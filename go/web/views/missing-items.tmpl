@@ -25,7 +25,7 @@
             <td><span class="status-label comic-status comic-status-warning" data-i18n="title_label">标题</span></td>
             <td x-text="title.path"></td>
             <td x-text="title.id"></td>
-            <td><a @click="rm($event)" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><span uk-icon="trash"></span></a></td>
+            <td><a @click="rm($event)" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><i class="fas fa-trash-alt"></i></a></td>
           </tr>
         </template>
         <template x-for="entry in entries" :key="entry">
@@ -33,7 +33,7 @@
             <td><span class="status-label comic-status comic-status-pending" data-i18n="path_label">路径</span></td>
             <td x-text="entry.path"></td>
             <td x-text="entry.id"></td>
-            <td><a @click="rm($event)" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><span uk-icon="trash"></span></a></td>
+            <td><a @click="rm($event)" class="table-action table-action-danger" aria-label="删除" uk-tooltip="删除" data-i18n-aria-label="delete_action" data-i18n-tooltip="delete_action"><i class="fas fa-trash-alt"></i></a></td>
           </tr>
         </template>
       </tbody>

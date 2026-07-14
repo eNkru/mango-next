@@ -6,7 +6,7 @@ const alert = (level, text, options = {}) => {
 		.attr("uk-alert", "");
 	const close = $("<a>")
 		.addClass("uk-alert-close")
-		.attr("uk-close", "");
+		.html('<i class="fas fa-times"></i>');
 
 	if (options.allowHtml === true)
 		content.html(text);
