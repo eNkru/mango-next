@@ -1,15 +1,6 @@
 // Flat design — select2 tag styling using the coral accent
-// NOTE: @accent is also defined in mango.less (compiled separately).
-//       Keep values in sync when updating.
-@accent: #D96A4B;
-@accent-light: rgba(217, 106, 75, 0.08);
-@accent-border: rgba(217, 106, 75, 0.2);
-@border-color: #E0E0E0;
-@dark-accent: #E8845F;
-@dark-accent-light: rgba(232, 132, 95, 0.12);
-@dark-accent-border: rgba(232, 132, 95, 0.25);
-@dark-border: #333333;
-@dark-bg-surface: #1A1A1A;
+// Uses shared variables from _variables.less
+@import "./_variables.less";
 
 .select2-container--default {
 	.select2-selection--multiple {
@@ -45,35 +36,38 @@
 	}
 }
 
-.uk-light {
-	.select2-container--default {
-		.select2-selection {
-			background-color: rgba(255, 255, 255, 0.05);
-		}
-		.select2-selection--multiple {
-			border: 1px solid @dark-border;
-			.select2-selection__choice,
-			.select2-selection__choice__remove,
-			.select2-selection__choice__remove:hover
-			{
-				background-color: @dark-accent-light;
-				color: @dark-accent;
-				border: 1px solid @dark-accent-border;
+// Dark-mode Select2 — scoped to non-comic so comic-theme.less owns its own Select2.
+body:not(.comic-theme):not(.comic-theme-dark) {
+	.uk-light & {
+		.select2-container--default {
+			.select2-selection {
+				background-color: rgba(255, 255, 255, 0.05);
 			}
-			.select2-search__field {
-				color: rgba(255, 255, 255, 0.7);
+			.select2-selection--multiple {
+				border: 1px solid @dark-border;
+				.select2-selection__choice,
+				.select2-selection__choice__remove,
+				.select2-selection__choice__remove:hover
+				{
+					background-color: @dark-accent-light;
+					color: @dark-accent;
+					border: 1px solid @dark-accent-border;
+				}
+				.select2-search__field {
+					color: rgba(255, 255, 255, 0.7);
+				}
 			}
-		}
 
-		&.select2-container--focus .select2-selection--multiple {
-			border-color: @dark-accent;
+			&.select2-container--focus .select2-selection--multiple {
+				border-color: @dark-accent;
+			}
 		}
-	}
-	.select2-dropdown {
-		background-color: @dark-bg-surface;
-		border-color: @dark-border;
-		.select2-results__option--selected:not(.select2-results__option--highlighted) {
-			background-color: rgba(255, 255, 255, 0.08);
+		.select2-dropdown {
+			background-color: @dark-bg-surface;
+			border-color: @dark-border;
+			.select2-results__option--selected:not(.select2-results__option--highlighted) {
+				background-color: rgba(255, 255, 255, 0.08);
+			}
 		}
 	}
 }

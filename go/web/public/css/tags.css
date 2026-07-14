@@ -25,29 +25,31 @@
 .select2-container--default .select2-dropdown .select2-results__option--selected:not(.select2-results__option--highlighted) {
   background-color: rgba(217, 106, 75, 0.08);
 }
-.uk-light .select2-container--default .select2-selection {
+
+/* Dark-mode Select2 — scoped to non-comic so comic-theme.css owns its own Select2 */
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-container--default .select2-selection {
   background-color: rgba(255, 255, 255, 0.05);
 }
-.uk-light .select2-container--default .select2-selection--multiple {
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-container--default .select2-selection--multiple {
   border: 1px solid #333333;
 }
-.uk-light .select2-container--default .select2-selection--multiple .select2-selection__choice,
-.uk-light .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
-.uk-light .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-container--default .select2-selection--multiple .select2-selection__choice,
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
   background-color: rgba(232, 132, 95, 0.12);
   color: #E8845F;
   border: 1px solid rgba(232, 132, 95, 0.25);
 }
-.uk-light .select2-container--default .select2-selection--multiple .select2-search__field {
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-container--default .select2-selection--multiple .select2-search__field {
   color: rgba(255, 255, 255, 0.7);
 }
-.uk-light .select2-container--default.select2-container--focus .select2-selection--multiple {
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-container--default.select2-container--focus .select2-selection--multiple {
   border-color: #E8845F;
 }
-.uk-light .select2-dropdown {
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-dropdown {
   background-color: #1A1A1A;
   border-color: #333333;
 }
-.uk-light .select2-dropdown .select2-results__option--selected:not(.select2-results__option--highlighted) {
+body:not(.comic-theme):not(.comic-theme-dark) .uk-light .select2-dropdown .select2-results__option--selected:not(.select2-results__option--highlighted) {
   background-color: rgba(255, 255, 255, 0.08);
 }

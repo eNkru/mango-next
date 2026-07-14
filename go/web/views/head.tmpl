@@ -7,7 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&display=swap" rel="stylesheet">
+  <script>
+    // Only load comic fonts when the comic UI style is active.
+    // Flat mode does not use Bangers or Fredoka One.
+    (function () {
+      if (localStorage.getItem('ui-style') !== 'flat') {
+        var l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = 'https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&display=swap';
+        document.head.appendChild(l);
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="{{.BaseURL}}css/mango.css" />
   <link rel="stylesheet" href="{{.BaseURL}}css/comic-theme.css" />
   <link rel="icon" href="{{.BaseURL}}favicon.ico">

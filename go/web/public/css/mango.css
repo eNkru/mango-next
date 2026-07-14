@@ -21548,7 +21548,7 @@ body.sidebar-is-collapsed .app-content {
 body.mango-app-shell {
   margin: 0;
   min-height: 100vh;
-  background-color: #101116;
+  background-color: #121212;
 }
 body.uk-light.mango-app-shell,
 body.uk-section-primary:not(.uk-preserve-color).mango-app-shell,
@@ -21561,7 +21561,7 @@ body.uk-card-secondary.uk-card-body.mango-app-shell,
 body.uk-card-secondary > :not([class*='uk-card-media']).mango-app-shell,
 body.uk-overlay-primary.mango-app-shell,
 body.uk-offcanvas-bar.mango-app-shell {
-  background: radial-gradient(circle at 76% 8%, rgba(242, 139, 69, 0.12), transparent 30rem), linear-gradient(135deg, #101116 0%, #15161D 58%, #191820 100%) !important;
+  background: radial-gradient(circle at 76% 8%, rgba(242, 139, 69, 0.12), transparent 30rem), linear-gradient(135deg, #121212 0%, #15161D 58%, #191820 100%) !important;
   background-attachment: fixed;
   color: #ECEAF2;
 }
@@ -21714,7 +21714,7 @@ body.mango-app-shell .hero-banner {
   border-radius: 7px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
-  background-color: #101116;
+  background-color: #121212;
 }
 body.mango-app-shell .hero-banner::before {
   display: none !important;
