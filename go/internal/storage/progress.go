@@ -36,6 +36,7 @@ type ContinueReadingItem struct {
 	TitleID    string
 	TitleName  string
 	Page       int
+	PageCount  int
 	Percentage float64
 	CoverURL   string
 }
@@ -51,6 +52,7 @@ type RecentlyAddedItem struct {
 	EntryName    string
 	TitleID      string
 	TitleName    string
+	PageCount    int
 	Percentage   float64
 	GroupedCount int
 	CoverURL     string

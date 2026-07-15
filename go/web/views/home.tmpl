@@ -88,7 +88,14 @@
               {{range $i, $cr := .ContinueReading}}
                 {{if gt $i 0}}
                   <div class="item">
-                    <div class="acard is_entry">
+                    <div class="acard is_entry"
+                      data-encoded-path="{{$cr.EntryID}}"
+                      data-pages="{{$cr.PageCount}}"
+                      data-progress="{{printf "%.1f" $cr.Percentage}}"
+                      data-encoded-book-title="{{$cr.TitleName}}"
+                      data-encoded-title="{{$cr.EntryName}}"
+                      data-book-id="{{$cr.TitleID}}"
+                      data-id="{{$cr.EntryID}}">
                       <div class="uk-card uk-card-default comic-card">
                         <div class="uk-card-media-top uk-inline comic-card-media">
                           <img data-src="{{$cr.CoverURL}}" alt="" uk-img>
@@ -166,7 +173,14 @@
         <div class="carousel-track">
           {{range $ra := .RecentlyAdded}}
             <div class="item">
-              <a class="acard is_entry" href="{{$.BaseURL}}book/{{$ra.TitleID}}">
+              <div class="acard is_entry"
+                data-encoded-path="{{$ra.EntryID}}"
+                data-pages="{{$ra.PageCount}}"
+                data-progress="{{printf "%.1f" $ra.Percentage}}"
+                data-encoded-book-title="{{$ra.TitleName}}"
+                data-encoded-title="{{$ra.EntryName}}"
+                data-book-id="{{$ra.TitleID}}"
+                data-id="{{$ra.EntryID}}">
                 <div class="uk-card uk-card-default comic-card">
                   <div class="uk-card-media-top uk-inline comic-card-media">
                     <img data-src="{{$ra.CoverURL}}" alt="" uk-img>
@@ -179,10 +193,10 @@
                   </div>
                   <div class="uk-card-body comic-card-body">
                     <h3 class="uk-card-title break-word comic-card-title uk-margin-remove-bottom">{{$ra.EntryName}}</h3>
-                    <span class="uk-card-title break-word uk-margin-remove-top uk-text-meta uk-display-inline-block">{{$ra.TitleName}}</span>
+                    <a class="uk-card-title break-word uk-margin-remove-top uk-text-meta uk-display-inline-block no-modal" href="{{$.BaseURL}}book/{{$ra.TitleID}}">{{$ra.TitleName}}</a>
                   </div>
                 </div>
-              </a>
+              </div>
             </div>
           {{end}}
         </div>
