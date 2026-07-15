@@ -28,7 +28,7 @@ func TestMigrateFreshDB(t *testing.T) {
 		t.Errorf("schema version = %d, want %d", ver, wantVersion)
 	}
 
-	wantTables := []string{"users", "ids", "titles", "thumbnails", "tags", "md_account", "progress"}
+	wantTables := []string{"users", "ids", "titles", "thumbnails", "tags", "md_account", "progress", "entry_dimensions"}
 	for _, tbl := range wantTables {
 		var name string
 		err := st.DB().QueryRow(
@@ -441,6 +441,82 @@ func TestAdminIsAdmin(t *testing.T) {
 // ---------------------------------------------------------------------------
 // Thumbnail tests
 // ---------------------------------------------------------------------------
+
+func TestEntryDimensionsSaveGetAndSignature(t *testing.T) {
+	dir := t.TempDir()
+	st, err := Open(filepath.Join(dir, "mango.db"), filepath.Join(dir, "library"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+
+	_, err = st.DB().Exec("INSERT INTO ids (id, path, signature) VALUES (?, ?, ?)",
+		"entry-dim-1", "book/vol1.cbz", "111")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []PageDimension{{Width: 100, Height: 200}, {Width: 0, Height: 0}}
+	if err := st.SaveEntryDimensions("entry-dim-1", "111", want); err != nil {
+		t.Fatal(err)
+	}
+
+	got, ok, err := st.GetEntryDimensions("entry-dim-1", "111")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !ok {
+		t.Fatal("expected cache hit")
+	}
+	if len(got) != 2 || got[0].Width != 100 || got[0].Height != 200 || got[1].Width != 0 {
+		t.Fatalf("got %#v, want %#v", got, want)
+	}
+
+	_, ok, err = st.GetEntryDimensions("entry-dim-1", "222")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok {
+		t.Fatal("expected miss on signature mismatch")
+	}
+
+	_, ok, err = st.GetEntryDimensions("missing", "111")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok {
+		t.Fatal("expected miss for missing id")
+	}
+
+	// Corrupt JSON → miss
+	_, err = st.DB().Exec(
+		`UPDATE entry_dimensions SET dimensions = ? WHERE id = ?`,
+		"not-json", "entry-dim-1",
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, ok, err = st.GetEntryDimensions("entry-dim-1", "111")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok {
+		t.Fatal("expected miss for corrupt JSON")
+	}
+
+	// UPSERT overwrites
+	next := []PageDimension{{Width: 10, Height: 20}}
+	if err := st.SaveEntryDimensions("entry-dim-1", "333", next); err != nil {
+		t.Fatal(err)
+	}
+	got, ok, err = st.GetEntryDimensions("entry-dim-1", "333")
+	if err != nil || !ok {
+		t.Fatalf("upsert hit: ok=%v err=%v", ok, err)
+	}
+	if len(got) != 1 || got[0].Width != 10 || got[0].Height != 20 {
+		t.Fatalf("after upsert got %#v", got)
+	}
+}
 
 func TestSaveGetThumbnail(t *testing.T) {
 	dir := t.TempDir()

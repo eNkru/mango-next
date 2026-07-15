@@ -164,8 +164,18 @@ CREATE TABLE IF NOT EXISTS progress (
   FOREIGN KEY (username) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (title_id) REFERENCES titles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );`},
+
+		{Version: 15, Name: "CreateEntryDimensions", Up: `
+CREATE TABLE IF NOT EXISTS entry_dimensions (
+  id TEXT NOT NULL PRIMARY KEY,
+  signature TEXT NOT NULL,
+  dimensions TEXT NOT NULL,
+  page_count INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  FOREIGN KEY (id) REFERENCES ids (id) ON UPDATE CASCADE ON DELETE CASCADE
+);`},
 	}
 }
 
 // LatestVersion returns the highest migration version.
-func LatestVersion() int { return 14 }
+func LatestVersion() int { return 15 }
