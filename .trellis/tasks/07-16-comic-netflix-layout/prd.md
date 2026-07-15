@@ -43,13 +43,14 @@
 
 ## Acceptance Criteria
 
-- [ ] Comic Dark + Light：顶栏 + 全宽主区；侧栏不作主导航
-- [ ] Comic 仍可识别为漫画风（原色板 + 半调/纸感/粗边/字体）
-- [ ] 装饰中等：无强 pop/倾斜主导的卡片进场；rails/网格可读
-- [ ] Flat + 任意 theme 无回归
-- [ ] 切换 ui-style / theme 稳定
-- [ ] Home / Library / Title / Login / Admin / Reader 主路径已覆盖
-- [ ] 无 Netflix 商标/官方素材
+- [x] Comic Dark + Light：顶栏 + 全宽主区；侧栏不作主导航
+- [x] Comic 仍可识别为漫画风（原色板 + 半调/纸感/粗边/字体）
+- [x] 装饰中等：无强 pop/倾斜主导的卡片进场；rails/网格可读
+- [x] Flat + 任意 theme 无回归（仅顶栏可见性选择器共享）
+- [x] 切换 ui-style / theme 稳定
+- [x] Home / Library / Title / Login / Admin / Reader 主路径已覆盖（壳几何 + 既有 comic 组件）
+- [x] 无 Netflix 商标/官方素材
+- [x] Comic 全站直角（border-radius: 0）
 
 ## Out of scope
 
