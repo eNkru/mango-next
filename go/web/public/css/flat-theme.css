@@ -1261,19 +1261,35 @@ body.flat-theme .login-toggle-pw {
   color: #b3b3b3 !important;
 }
 
-/* Admin cards */
+/* Admin cards — single-column by default so resize never overflows selects */
 body.flat-theme .admin-panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 960px) {
+  body.flat-theme .admin-panel {
+    /* Safer multi-col: never force sub-280px tracks that clip controls */
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
 }
 
 body.flat-theme .admin-card,
 body.flat-theme .comic-admin-card {
-  display: flex;
+  display: flex !important;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
-  padding: 18px 16px;
+  gap: 12px 14px;
+  padding: 16px 16px !important;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background: #181818 !important;
   border: 1px solid #2a2a2a !important;
   border-radius: 6px !important;
@@ -1282,6 +1298,7 @@ body.flat-theme .comic-admin-card {
   color: inherit !important;
   transition: border-color 0.15s ease, background 0.15s ease;
   cursor: pointer;
+  overflow: hidden;
 }
 
 body.flat-theme:not(.uk-light) .admin-card,
@@ -1308,7 +1325,13 @@ body.flat-theme .comic-admin-icon {
   background: rgba(229, 9, 20, 0.15) !important;
   color: #e50914 !important;
   border: none !important;
-  flex-shrink: 0;
+  flex: 0 0 44px;
+}
+
+body.flat-theme .admin-card-content {
+  flex: 1 1 140px;
+  min-width: 0 !important;
+  overflow: hidden;
 }
 
 body.flat-theme .admin-card-title,
@@ -1317,6 +1340,9 @@ body.flat-theme .comic-admin-title {
   font-weight: 700 !important;
   color: #fff !important;
   margin: 0 0 4px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 body.flat-theme:not(.uk-light) .admin-card-title,
@@ -1328,6 +1354,9 @@ body.flat-theme .admin-card-meta {
   color: #b3b3b3 !important;
   margin: 0 !important;
   font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 body.flat-theme:not(.uk-light) .admin-card-meta {
@@ -1343,15 +1372,49 @@ body.flat-theme .comic-admin-badge {
   font-weight: 700;
   min-width: 28px;
   text-align: center;
+  flex: 0 0 auto;
+}
+
+body.flat-theme .admin-card-right {
+  flex: 0 0 auto;
+}
+
+/* Theme / UI style selects inside admin cards */
+body.flat-theme .admin-card .uk-select,
+body.flat-theme .admin-card .sort-select,
+body.flat-theme .admin-card select {
+  flex: 1 1 120px;
+  width: auto !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box;
 }
 
 body.flat-theme .admin-footer {
   margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   color: #b3b3b3;
+  max-width: 100%;
 }
 
 body.flat-theme:not(.uk-light) .admin-footer {
   color: #737373;
+}
+
+body.flat-theme .admin-footer .comic-btn,
+body.flat-theme .admin-footer .uk-button {
+  flex: 0 0 auto;
+}
+
+body.flat-theme .admin-sub-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 body.flat-theme .admin-sub-page .action-bar {
@@ -1359,6 +1422,12 @@ body.flat-theme .admin-sub-page .action-bar {
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
+  max-width: 100%;
+}
+
+body.flat-theme .admin-sub-page .uk-table,
+body.flat-theme .admin-sub-page .uk-overflow-auto {
+  max-width: 100%;
 }
 
 /* Tables */
