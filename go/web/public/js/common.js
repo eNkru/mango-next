@@ -150,20 +150,28 @@ const setUIStyle = (style) => {
 	if (!style) style = loadUIStyle();
 	const theme = loadTheme();
 	if (style === 'comic') {
+		applyThemeClass('remove', 'flat-theme');
+		applyThemeClass('remove', 'flat-theme-dark');
 		applyThemeClass('add', 'comic-theme');
-		// If dark theme is active, use CSS classes for background
 		if (theme === 'dark') {
 			document.documentElement.style.background = '';
 			$('html').css('background', '');
 			applyThemeClass('add', 'comic-theme-dark');
+		} else {
+			applyThemeClass('remove', 'comic-theme-dark');
 		}
 	} else {
 		applyThemeClass('remove', 'comic-theme');
 		applyThemeClass('remove', 'comic-theme-dark');
-		// If dark theme is active, use inline style for background
+		applyThemeClass('add', 'flat-theme');
 		if (theme === 'dark') {
-			document.documentElement.style.background = '#121212';
-			$('html').css('background', '#121212');
+			document.documentElement.style.background = '#141414';
+			$('html').css('background', '#141414');
+			applyThemeClass('add', 'flat-theme-dark');
+		} else {
+			document.documentElement.style.background = '';
+			$('html').css('background', '');
+			applyThemeClass('remove', 'flat-theme-dark');
 		}
 	}
 };
@@ -273,15 +281,14 @@ const setTheme = (theme) => {
 	if (!theme) theme = loadTheme();
 	const uiStyle = loadUIStyle();
 	if (theme === 'dark') {
-		// In comic mode, CSS handles the html/body backgrounds
-		// (comic-theme-dark classes). In flat mode, html bg via inline;
-		// body bg via body.uk-light:not(.comic-theme*) in comic-theme.less.
-		if (uiStyle !== 'comic') {
-			document.documentElement.style.background = '#121212';
-			$('html').css('background', '#121212');
+		if (uiStyle === 'flat') {
+			document.documentElement.style.background = '#141414';
+			$('html').css('background', '#141414');
+			applyThemeClass('add', 'flat-theme-dark');
 		} else {
 			document.documentElement.style.background = '';
 			$('html').css('background', '');
+			applyThemeClass('remove', 'flat-theme-dark');
 		}
 		if (document.body) document.body.classList.add('uk-light');
 		$('body').addClass('uk-light');
@@ -296,6 +303,7 @@ const setTheme = (theme) => {
 		$('body').removeClass('uk-light');
 		$('.ui-widget-content').removeClass('dark');
 		applyThemeClass('remove', 'comic-theme-dark');
+		applyThemeClass('remove', 'flat-theme-dark');
 	}
 };
 

@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <!-- Desktop sidebar (hidden on mobile) -->
+    <!-- Desktop sidebar (comic only; hidden under flat-theme) -->
     <nav class="app-sidebar comic-sidebar uk-visible@m">
       <div class="sidebar-header">
         <div class="sidebar-logo">
@@ -52,6 +52,25 @@
         {{end}}
       </ul>
     </nav>
+
+    <!-- Flat / Netflix-style top bar (desktop; hidden under comic via CSS) -->
+    <header class="flat-topbar uk-visible@m" role="banner">
+      <div class="flat-topbar__left">
+        <a class="flat-topbar__logo" href="{{.BaseURL}}">
+          <img src="{{.BaseURL}}img/icons/icon.png" alt="Mango">
+          <span>Mango</span>
+        </a>
+        <ul class="flat-topbar__nav">
+          <li><a href="{{.BaseURL}}" data-i18n="home">主页</a></li>
+          <li><a href="{{.BaseURL}}library" data-i18n="library">资料库</a></li>
+          <li><a href="{{.BaseURL}}tags" data-i18n="tags">标签</a></li>
+          {{if .IsAdmin}}
+            <li><a href="{{.BaseURL}}admin" data-i18n="admin">管理员</a></li>
+          {{end}}
+        </ul>
+      </div>
+      <div class="flat-topbar__right"></div>
+    </header>
 
     <!-- Floating utility speed-dial -->
     <div class="utility-fab" id="utility-fab">
