@@ -117,20 +117,34 @@ body.flat-theme:not(.uk-light) .flat-topbar {
   align-items: center;
   flex-shrink: 0;
   text-decoration: none;
+  gap: 10px;
 }
 
-.flat-topbar__logo img {
-  height: 32px;
-  width: 32px;
-  border-radius: 4px;
-  object-fit: cover;
+.flat-topbar__logo img,
+.flat-topbar__mark {
+  height: 34px;
+  width: 34px;
+  border-radius: 8px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  /* subtle plate so mark reads on light/dark bars */
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+body.flat-theme:not(.uk-light) .flat-topbar__mark {
+  background: rgba(229, 9, 20, 0.08);
+  box-shadow: 0 0 0 1px rgba(229, 9, 20, 0.12);
 }
 
 .flat-topbar__logo span {
-  margin-left: 10px;
+  margin-left: 0;
   font-weight: 800;
   font-size: 1.35rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   color: #e50914;
   text-transform: uppercase;
 }
