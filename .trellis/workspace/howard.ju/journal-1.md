@@ -310,3 +310,36 @@ Archived 07-15-flat-netflix-restyle after Netflix-inspired Flat UI restyle lande
 ### Next Steps
 
 - None - task complete
+
+
+## Session 8: Comic Netflix layout
+
+**Date**: 2026-07-16
+**Task**: Comic Netflix layout
+**Branch**: `ui/comic-netflix-layout`
+
+### Summary
+
+Implemented Comic layout aligned to Flat top-bar shell (shared topbar DOM, hide sidebar, full-width, rails/library poster fixes, global sharp corners). Spec ui-theme-layout.md. Branch ui/comic-netflix-layout.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `259c5b5` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

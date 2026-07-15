@@ -28,7 +28,8 @@ body.flat-theme {
 }
 
 // ---------------------------------------------------------------------------
-// Layout: top bar (flat) vs sidebar (comic)
+// Layout: top bar (flat + comic share DOM); sidebar hidden under flat
+// Comic top-bar visibility is owned by comic-theme.less (shared shell).
 // ---------------------------------------------------------------------------
 body.flat-theme .app-sidebar {
   display: none !important;
@@ -38,7 +39,8 @@ body.flat-theme .flat-topbar {
   display: flex;
 }
 
-body:not(.flat-theme) .flat-topbar {
+// Only hide topbar when neither flat nor comic chrome is active
+body:not(.flat-theme):not(.comic-theme):not(.comic-theme-dark) .flat-topbar {
   display: none !important;
 }
 

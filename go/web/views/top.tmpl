@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <!-- Desktop sidebar (comic only; hidden under flat-theme) -->
+    <!-- Desktop sidebar (legacy DOM; hidden under flat + comic top-bar layouts) -->
     <nav class="app-sidebar comic-sidebar uk-visible@m">
       <div class="sidebar-header">
         <div class="sidebar-logo">
@@ -53,7 +53,7 @@
       </ul>
     </nav>
 
-    <!-- Flat / Netflix-style top bar (desktop; hidden under comic via CSS) -->
+    <!-- Shared top bar (flat + comic desktop chrome; mobile uses mango-navbar) -->
     <header class="flat-topbar uk-visible@m" role="banner">
       <div class="flat-topbar__left">
         <a class="flat-topbar__logo" href="{{.BaseURL}}">
