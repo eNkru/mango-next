@@ -14,7 +14,7 @@ import (
 	"github.com/eNkru/mango-next/internal/library"
 	"github.com/eNkru/mango-next/internal/plugin"
 	"github.com/eNkru/mango-next/internal/queue"
-	"github.com/eNkru/mango-next/internal/thumbnail"
+	"github.com/eNkru/mango-next/internal/storage"
 	"github.com/eNkru/mango-next/internal/upload"
 	"github.com/go-chi/chi/v5"
 )
@@ -326,24 +326,30 @@ func (s *Server) apiDimensions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var dims []map[string]any
-	for i := 1; i <= entry.PageCount(); i++ {
-		img, err := entry.ReadPage(i)
-		if err != nil {
-			dims = append(dims, map[string]any{"width": 0, "height": 0})
-			continue
-		}
-		w, h, err := thumbnail.DecodeConfig(img.Data)
-		if err != nil {
-			w, h = 0, 0
-		}
-		dims = append(dims, map[string]any{
-			"width":  w,
-			"height": h,
-		})
+	sig := strconv.FormatUint(entry.Signature(), 10)
+	if cached, ok, err := s.Deps.Storage.GetEntryDimensions(entry.ID(), sig); err == nil && ok {
+		sendJSON(w, map[string]any{"success": true, "dimensions": cached})
+		return
 	}
 
-	sendJSON(w, map[string]any{"success": true, "dimensions": dims})
+	pageDims, err := library.ReadPageDimensions(entry)
+	if err != nil {
+		log.Printf("Read page dimensions error: %v", err)
+		sendJSONError(w, "Failed to read dimensions", http.StatusInternalServerError)
+		return
+	}
+
+	stored := make([]storage.PageDimension, len(pageDims))
+	out := make([]map[string]any, len(pageDims))
+	for i, d := range pageDims {
+		stored[i] = storage.PageDimension{Width: d.Width, Height: d.Height}
+		out[i] = map[string]any{"width": d.Width, "height": d.Height}
+	}
+	if err := s.Deps.Storage.SaveEntryDimensions(entry.ID(), sig, stored); err != nil {
+		log.Printf("Save entry dimensions error: %v", err)
+	}
+
+	sendJSON(w, map[string]any{"success": true, "dimensions": out})
 }
 
 func (s *Server) apiDownload(w http.ResponseWriter, r *http.Request) {

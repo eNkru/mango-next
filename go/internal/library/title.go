@@ -10,6 +10,7 @@ import (
 
 	"github.com/eNkru/mango-next/internal/archive"
 	"github.com/eNkru/mango-next/internal/storage"
+	"github.com/eNkru/mango-next/internal/thumbnail"
 )
 
 // ---------------------------------------------------------------------------
@@ -178,6 +179,21 @@ func NewArchiveEntry(absPath string, book *Title, st *storage.Storage) *ArchiveE
 	return e
 }
 
+// sortedImageEntries filters archive entries to supported images and sorts
+// them in reading order (shared by ReadPage and ReadPageDimensions).
+func sortedImageEntries(entries []archive.Entry) []archive.Entry {
+	var imgEntries []archive.Entry
+	for _, entry := range entries {
+		if isSupportedImage(mimeFromFilename(entry.Name)) {
+			imgEntries = append(imgEntries, entry)
+		}
+	}
+	sort.Slice(imgEntries, func(i, j int) bool {
+		return compareNumerically(imgEntries[i].Name, imgEntries[j].Name) < 0
+	})
+	return imgEntries
+}
+
 func (e *ArchiveEntry) ReadPage(n int) (*storage.Image, error) {
 	if e.err != nil {
 		return nil, fmt.Errorf("unreadable archive: %w", e.err)
@@ -194,16 +210,7 @@ func (e *ArchiveEntry) ReadPage(n int) (*storage.Image, error) {
 		return nil, err
 	}
 
-	// Filter and sort image entries
-	var imgEntries []archive.Entry
-	for _, entry := range entries {
-		if isSupportedImage(mimeFromFilename(entry.Name)) {
-			imgEntries = append(imgEntries, entry)
-		}
-	}
-	sort.Slice(imgEntries, func(i, j int) bool {
-		return compareNumerically(imgEntries[i].Name, imgEntries[j].Name) < 0
-	})
+	imgEntries := sortedImageEntries(entries)
 
 	if n < 1 || n > len(imgEntries) {
 		return nil, fmt.Errorf("page %d out of range (1-%d)", n, len(imgEntries))
@@ -221,6 +228,92 @@ func (e *ArchiveEntry) ReadPage(n int) (*storage.Image, error) {
 		Mime:     mimeFromFilename(pageEntry.Name),
 		Size:     len(data),
 	}, nil
+}
+
+// PageDimension is width/height for one page in reading order.
+type PageDimension struct {
+	Width  int
+	Height int
+}
+
+// ReadPageDimensions returns width/height for every page with a single
+// archive open (or one pass over directory files). Decode failures yield 0,0.
+func ReadPageDimensions(e Entry) ([]PageDimension, error) {
+	switch v := e.(type) {
+	case *ArchiveEntry:
+		return v.readPageDimensions()
+	case *DirEntry:
+		return v.readPageDimensions()
+	default:
+		// Fallback: per-page ReadPage (unknown entry kinds).
+		dims := make([]PageDimension, 0, e.PageCount())
+		for i := 1; i <= e.PageCount(); i++ {
+			img, err := e.ReadPage(i)
+			if err != nil {
+				dims = append(dims, PageDimension{})
+				continue
+			}
+			w, h, err := thumbnail.DecodeConfig(img.Data)
+			if err != nil {
+				w, h = 0, 0
+			}
+			dims = append(dims, PageDimension{Width: w, Height: h})
+		}
+		return dims, nil
+	}
+}
+
+func (e *ArchiveEntry) readPageDimensions() ([]PageDimension, error) {
+	if e.err != nil {
+		return nil, fmt.Errorf("unreadable archive: %w", e.err)
+	}
+
+	arc, err := archive.Open(e.path)
+	if err != nil {
+		return nil, err
+	}
+	defer arc.Close()
+
+	entries, err := arc.Entries()
+	if err != nil {
+		return nil, err
+	}
+
+	imgEntries := sortedImageEntries(entries)
+	dims := make([]PageDimension, 0, len(imgEntries))
+	for _, pageEntry := range imgEntries {
+		data, err := arc.ReadEntry(pageEntry)
+		if err != nil {
+			dims = append(dims, PageDimension{})
+			continue
+		}
+		w, h, err := thumbnail.DecodeConfig(data)
+		if err != nil {
+			w, h = 0, 0
+		}
+		dims = append(dims, PageDimension{Width: w, Height: h})
+	}
+	return dims, nil
+}
+
+func (e *DirEntry) readPageDimensions() ([]PageDimension, error) {
+	if e.err != nil {
+		return nil, fmt.Errorf("unreadable directory entry: %w", e.err)
+	}
+	dims := make([]PageDimension, 0, len(e.files))
+	for _, path := range e.files {
+		data, err := os.ReadFile(path)
+		if err != nil {
+			dims = append(dims, PageDimension{})
+			continue
+		}
+		w, h, err := thumbnail.DecodeConfig(data)
+		if err != nil {
+			w, h = 0, 0
+		}
+		dims = append(dims, PageDimension{Width: w, Height: h})
+	}
+	return dims, nil
 }
 
 func (e *ArchiveEntry) PageCount() int    { return e.pages }
