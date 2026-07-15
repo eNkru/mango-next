@@ -183,51 +183,143 @@ body.flat-theme.flat-theme-dark .flat-topbar__nav a.uk-active {
   gap: 10px;
 }
 
-/* Buttons */
+/*
+ * Buttons — comic-btn styles only exist under body.comic-theme, so Flat must
+ * define a full control chrome (padding/display). Do NOT paint every .comic-btn
+ * solid red: outline/secondary must stay distinct (Netflix grey).
+ */
 body.flat-theme .comic-btn,
-body.flat-theme .uk-button-primary {
-  background: #e50914 !important;
-  color: #fff !important;
-  border: none !important;
+body.flat-theme .uk-button,
+body.flat-theme a.comic-btn,
+body.flat-theme .hide-toggle-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 10px 20px !important;
   border-radius: 4px !important;
-  font-weight: 600;
+  border: 1px solid transparent !important;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
   box-shadow: none !important;
-  text-transform: none;
-  letter-spacing: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, filter 0.15s ease;
 }
 
-body.flat-theme .comic-btn:hover,
-body.flat-theme .uk-button-primary:hover {
+body.flat-theme .comic-btn-sm,
+body.flat-theme .hide-toggle-btn.comic-btn-sm {
+  min-height: 34px;
+  padding: 7px 14px !important;
+  font-size: 0.85rem !important;
+  gap: 6px;
+}
+
+/* Primary filled */
+body.flat-theme .comic-btn-primary,
+body.flat-theme .uk-button-primary,
+body.flat-theme a.comic-btn.comic-btn-primary,
+body.flat-theme .login-btn {
+  background: #e50914 !important;
+  color: #fff !important;
+  border-color: #e50914 !important;
+}
+
+body.flat-theme .comic-btn-primary:hover,
+body.flat-theme .uk-button-primary:hover,
+body.flat-theme a.comic-btn.comic-btn-primary:hover {
   background: #b20710 !important;
+  border-color: #b20710 !important;
+  color: #fff !important;
+  filter: brightness(1.05);
+}
+
+/* Secondary / outline — Netflix grey, not red */
+body.flat-theme .comic-btn-outline,
+body.flat-theme .comic-btn.comic-btn-outline,
+body.flat-theme a.comic-btn.comic-btn-outline,
+body.flat-theme .hide-toggle-btn.comic-btn-outline,
+body.flat-theme .uk-button-default {
+  background: rgba(109, 109, 110, 0.55) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+body.flat-theme .comic-btn-outline:hover,
+body.flat-theme .comic-btn.comic-btn-outline:hover,
+body.flat-theme a.comic-btn.comic-btn-outline:hover,
+body.flat-theme .hide-toggle-btn.comic-btn-outline:hover,
+body.flat-theme .uk-button-default:hover {
+  background: rgba(109, 109, 110, 0.85) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Light theme secondary */
+body.flat-theme:not(.uk-light) .comic-btn-outline,
+body.flat-theme:not(.uk-light) .comic-btn.comic-btn-outline,
+body.flat-theme:not(.uk-light) a.comic-btn.comic-btn-outline,
+body.flat-theme:not(.uk-light) .hide-toggle-btn.comic-btn-outline,
+body.flat-theme:not(.uk-light) .uk-button-default {
+  background: #fff !important;
+  color: #141414 !important;
+  border: 1px solid #d0d0d0 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.flat-theme:not(.uk-light) .comic-btn-outline:hover,
+body.flat-theme:not(.uk-light) .hide-toggle-btn.comic-btn-outline:hover,
+body.flat-theme:not(.uk-light) .uk-button-default:hover {
+  background: #f5f5f5 !important;
+  border-color: #b3b3b3 !important;
+  color: #141414 !important;
+}
+
+/* Active toggle (show-hidden on) */
+body.flat-theme .comic-btn-active-toggle,
+body.flat-theme .hide-toggle-btn.comic-btn-active-toggle {
+  background: #e50914 !important;
+  color: #fff !important;
+  border: 1px solid #e50914 !important;
+}
+
+body.flat-theme .comic-btn-active-toggle:hover,
+body.flat-theme .hide-toggle-btn.comic-btn-active-toggle:hover {
+  background: #b20710 !important;
+  border-color: #b20710 !important;
   color: #fff !important;
 }
 
-body.flat-theme.uk-light .comic-btn,
-body.flat-theme.uk-light .uk-button-primary,
-body.flat-theme.flat-theme-dark .comic-btn,
-body.flat-theme.flat-theme-dark .uk-button-primary {
-  background: #e50914 !important;
+/* Hero pair: primary play + secondary details */
+body.flat-theme .hero-actions .comic-btn,
+body.flat-theme .comic-hero-actions .comic-btn {
+  min-height: 42px;
+  padding: 11px 22px !important;
+  font-size: 0.95rem !important;
 }
 
-body.flat-theme.uk-light .comic-btn:hover,
-body.flat-theme.uk-light .uk-button-primary:hover,
-body.flat-theme.flat-theme-dark .comic-btn:hover,
-body.flat-theme.flat-theme-dark .uk-button-primary:hover {
-  background: #f40612 !important;
+body.flat-theme .hero-actions .comic-btn-outline,
+body.flat-theme .comic-hero-actions .comic-btn-outline {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-body.flat-theme .uk-button-default {
-  border-radius: 4px;
-  border-color: #e5e5e5;
-  background: transparent;
-  color: #141414;
+/* Danger */
+body.flat-theme .comic-btn-danger {
+  background: transparent !important;
+  color: #e50914 !important;
+  border: 1px solid #e50914 !important;
 }
 
-body.flat-theme.uk-light .uk-button-default,
-body.flat-theme.flat-theme-dark .uk-button-default {
-  border-color: #2a2a2a;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+body.flat-theme .comic-btn-danger:hover {
+  background: rgba(229, 9, 20, 0.12) !important;
 }
 
 /* FAB */
@@ -482,25 +574,6 @@ body.flat-theme .hero-actions {
   flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 16px;
-}
-
-body.flat-theme .comic-btn-outline,
-body.flat-theme .hero-actions .comic-btn-outline {
-  background: rgba(109, 109, 110, 0.7) !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 4px !important;
-  font-weight: 600;
-}
-
-body.flat-theme .comic-btn-outline:hover {
-  background: rgba(109, 109, 110, 0.4) !important;
-}
-
-body.flat-theme:not(.uk-light) .comic-btn-outline {
-  background: rgba(0, 0, 0, 0.08) !important;
-  color: #141414 !important;
-  border: 1px solid #e5e5e5 !important;
 }
 
 body.flat-theme .hero-progress-bar {
@@ -941,16 +1014,7 @@ body.flat-theme.flat-theme-dark .comic-select {
   color: #fff;
 }
 
-body.flat-theme .comic-btn-sm {
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-body.flat-theme .comic-btn-active-toggle {
-  background: #e50914 !important;
-  color: #fff !important;
-  border: none !important;
-}
+/* comic-btn-sm / active-toggle defined in Buttons block above */
 
 /* Title page */
 body.flat-theme .title-heading,
