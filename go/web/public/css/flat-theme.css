@@ -1518,26 +1518,345 @@ body.flat-theme .progress-text {
   color: #b3b3b3;
 }
 
-/* Modals generally under flat */
-body.flat-theme .uk-modal-dialog {
-  border-radius: 6px;
+/* ==========================================================================
+ * Chrome controls — modals, close, icon buttons, card actions (all Flat pages)
+ * Comic only styles these under body.comic-theme; Flat must supply full chrome.
+ * ========================================================================== */
+
+/* Modal shells */
+body.flat-theme .uk-modal-dialog,
+body.flat-theme .mango-modal .uk-modal-dialog,
+body.flat-theme .comic-modal .uk-modal-dialog {
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55) !important;
+  border: 1px solid #2a2a2a !important;
+  background: #181818 !important;
+  color: #fff !important;
 }
 
-body.flat-theme.uk-light .uk-modal-dialog,
-body.flat-theme.flat-theme-dark .uk-modal-dialog {
-  background: #181818;
-  color: #fff;
+body.flat-theme:not(.uk-light) .uk-modal-dialog,
+body.flat-theme:not(.uk-light) .mango-modal .uk-modal-dialog,
+body.flat-theme:not(.uk-light) .comic-modal .uk-modal-dialog {
+  background: #fff !important;
+  border-color: #e5e5e5 !important;
+  color: #141414 !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.flat-theme .uk-modal-header,
+body.flat-theme .mango-modal .uk-modal-header,
+body.flat-theme .comic-modal .uk-modal-header {
+  background: transparent !important;
+  border-bottom: 1px solid #2a2a2a !important;
+  padding: 20px 52px 14px 24px !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-header,
+body.flat-theme:not(.uk-light) .mango-modal .uk-modal-header,
+body.flat-theme:not(.uk-light) .comic-modal .uk-modal-header {
+  border-bottom-color: #e5e5e5 !important;
+}
+
+body.flat-theme .uk-modal-title,
+body.flat-theme .mango-modal .uk-modal-title,
+body.flat-theme .comic-modal .uk-modal-title {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1.15rem !important;
+  color: inherit !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+body.flat-theme .uk-modal-body,
+body.flat-theme .mango-modal .uk-modal-body,
+body.flat-theme .comic-modal .uk-modal-body {
+  padding: 18px 24px !important;
+  background: transparent !important;
+  color: inherit !important;
+}
+
+body.flat-theme .uk-modal-footer,
+body.flat-theme .mango-modal .uk-modal-footer,
+body.flat-theme .comic-modal .uk-modal-footer {
+  background: transparent !important;
+  border-top: 1px solid #2a2a2a !important;
+  padding: 14px 24px !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-footer,
+body.flat-theme:not(.uk-light) .mango-modal .uk-modal-footer,
+body.flat-theme:not(.uk-light) .comic-modal .uk-modal-footer {
+  border-top-color: #e5e5e5 !important;
+}
+
+body.flat-theme .modal-section-label {
+  color: #b3b3b3 !important;
+  font-weight: 600 !important;
+  font-size: 0.78rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  margin: 12px 0 8px !important;
+}
+
+body.flat-theme:not(.uk-light) .modal-section-label {
+  color: #737373 !important;
+}
+
+body.flat-theme .modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+body.flat-theme #path-text,
+body.flat-theme #pages-text,
+body.flat-theme .uk-text-meta {
+  color: #b3b3b3 !important;
+}
+
+body.flat-theme:not(.uk-light) #path-text,
+body.flat-theme:not(.uk-light) #pages-text,
+body.flat-theme:not(.uk-light) .uk-text-meta {
+  color: #737373 !important;
+}
+
+/*
+ * Modal close — UIkit default is a tiny icon; Flat needs a clear hit target.
+ * Covers entry modal, title edit, reader settings, reader-error, etc.
+ */
+body.flat-theme .uk-modal-close-default,
+body.flat-theme .uk-modal-close-outside,
+body.flat-theme button.uk-modal-close-default,
+body.flat-theme .mango-modal .uk-modal-close-default,
+body.flat-theme .comic-modal .uk-modal-close-default,
+body.flat-theme .reader-modal .uk-modal-close-default,
+body.flat-theme .comic-reader-modal .uk-modal-close-default {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 10;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  font-size: 0.95rem !important;
+  line-height: 1 !important;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  box-shadow: none !important;
+}
+
+body.flat-theme .uk-modal-close-default:hover,
+body.flat-theme .uk-modal-close-default:focus,
+body.flat-theme .mango-modal .uk-modal-close-default:hover,
+body.flat-theme .comic-modal .uk-modal-close-default:hover,
+body.flat-theme .reader-modal .uk-modal-close-default:hover {
+  background: #e50914 !important;
+  border-color: #e50914 !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  transform: scale(1.05);
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-close-default,
+body.flat-theme:not(.uk-light) .mango-modal .uk-modal-close-default,
+body.flat-theme:not(.uk-light) .comic-modal .uk-modal-close-default,
+body.flat-theme:not(.uk-light) .reader-modal .uk-modal-close-default {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid #d0d0d0 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-close-default:hover,
+body.flat-theme:not(.uk-light) .uk-modal-close-default:focus {
+  background: #e50914 !important;
+  border-color: #e50914 !important;
+  color: #fff !important;
+}
+
+body.flat-theme .uk-modal-close-default i,
+body.flat-theme .uk-modal-close-default .fas,
+body.flat-theme .uk-modal-close-default svg {
+  color: inherit !important;
+  font-size: 0.9rem !important;
+  pointer-events: none;
+}
+
+/* Icon buttons — edit / download / title heading actions */
+body.flat-theme .uk-icon-button,
+body.flat-theme a.uk-icon-button,
+body.flat-theme button.uk-icon-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  vertical-align: middle;
+}
+
+body.flat-theme .uk-icon-button:hover,
+body.flat-theme .uk-icon-button:focus,
+body.flat-theme a.uk-icon-button:hover {
+  background: #e50914 !important;
+  border-color: #e50914 !important;
+  color: #fff !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-icon-button,
+body.flat-theme:not(.uk-light) a.uk-icon-button {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid #d0d0d0 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-icon-button:hover,
+body.flat-theme:not(.uk-light) a.uk-icon-button:hover {
+  background: #e50914 !important;
+  border-color: #e50914 !important;
+  color: #fff !important;
+}
+
+body.flat-theme .uk-icon-button i,
+body.flat-theme .uk-icon-button .fas {
+  color: inherit !important;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Modal header icon cluster next to title */
+body.flat-theme #modal-entry-title .uk-icon-button,
+body.flat-theme .uk-modal-title .uk-icon-button {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Card hover hide/show actions on library/tag grids */
+body.flat-theme .card-hover-actions {
+  display: flex;
+  gap: 6px;
+}
+
+body.flat-theme .card-action-btn,
+body.flat-theme .card-hide-btn,
+body.flat-theme .card-unhide-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: rgba(20, 20, 20, 0.82) !important;
+  color: #fff !important;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+body.flat-theme .card-action-btn:hover,
+body.flat-theme .card-hide-btn:hover,
+body.flat-theme .card-unhide-btn:hover {
+  background: #e50914 !important;
+  color: #fff !important;
+  transform: scale(1.06);
+}
+
+/* Select bar icons on title page */
+body.flat-theme #select-bar {
+  border-radius: 6px !important;
+  border: 1px solid #2a2a2a !important;
+  background: #1f1f1f !important;
+  color: #fff !important;
+}
+
+body.flat-theme:not(.uk-light) #select-bar {
+  border-color: #e5e5e5 !important;
+  background: #fff !important;
+  color: #141414 !important;
+}
+
+body.flat-theme #select-bar a,
+body.flat-theme #select-bar-controls a {
+  color: inherit !important;
+  opacity: 0.85;
+}
+
+body.flat-theme #select-bar a:hover,
+body.flat-theme #select-bar-controls a:hover {
+  color: #e50914 !important;
+  opacity: 1;
+}
+
+/* Alerts */
+body.flat-theme .uk-alert {
+  border-radius: 6px;
+  border: 1px solid #2a2a2a;
+}
+
+body.flat-theme .uk-alert-close {
+  color: inherit;
+  opacity: 0.7;
+}
+
+body.flat-theme .uk-alert-close:hover {
+  opacity: 1;
+  color: #e50914;
+}
+
+/* Breadcrumb / meta links in modals */
+body.flat-theme .uk-modal a:not(.comic-btn):not(.uk-button):not(.uk-icon-button) {
+  color: #e50914;
+}
+
+body.flat-theme .uk-modal a:not(.comic-btn):not(.uk-button):not(.uk-icon-button):hover {
+  color: #f40612;
+  text-decoration: underline;
 }
 
 /* Totop */
 body.flat-theme #totop-wrapper a {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   background: #e50914 !important;
   color: #fff !important;
   border: none !important;
   border-radius: 50% !important;
+  box-shadow: 0 4px 14px rgba(229, 9, 20, 0.4);
 }
 
-/* Plugin cards if any use uk-card */
+body.flat-theme #totop-wrapper a:hover {
+  background: #b20710 !important;
+}
+
+/* Plugin / admin cards */
 body.flat-theme .admin-sub-page .uk-card-default {
   background: #181818;
   border: 1px solid #2a2a2a;
@@ -1550,6 +1869,17 @@ body.flat-theme:not(.uk-light) .admin-sub-page .uk-card-default {
   background: #fff;
   border-color: #e5e5e5;
   color: #141414;
+}
+
+/* Offcanvas close (if present) */
+body.flat-theme .uk-offcanvas-close {
+  color: #fff !important;
+  opacity: 0.85;
+}
+
+body.flat-theme .uk-offcanvas-close:hover {
+  color: #e50914 !important;
+  opacity: 1;
 }
 
 /* Select2 — Netflix red (title tags etc.) */
