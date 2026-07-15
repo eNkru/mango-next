@@ -181,11 +181,23 @@ const setUIStyle = (style) => {
  *
  * @function toggleUIStyle
  */
+const ensureComicFonts = () => {
+	if (document.getElementById('mango-comic-fonts')) return;
+	const l = document.createElement('link');
+	l.id = 'mango-comic-fonts';
+	l.rel = 'stylesheet';
+	l.href = 'https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&display=swap';
+	document.head.appendChild(l);
+};
+
 const toggleUIStyle = () => {
 	const current = loadUIStyle();
 	const next = current === 'comic' ? 'flat' : 'comic';
 	saveUIStyle(next);
 	setUIStyle(next);
+	// Keep dark/light body markers (uk-light) in sync after style switch.
+	setTheme(loadTheme());
+	if (next === 'comic') ensureComicFonts();
 };
 
 /**
@@ -312,6 +324,7 @@ const setTheme = (theme) => {
 //  in inline event handlers across all browsers/caching scenarios)
 window.toggleTheme = toggleTheme;
 window.toggleUIStyle = toggleUIStyle;
+window.ensureComicFonts = ensureComicFonts;
 window.cycleLanguage = cycleLanguage;
 window.setLanguage = setLanguage;
 

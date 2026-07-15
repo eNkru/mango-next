@@ -21,10 +21,13 @@
       } else {
         document.documentElement.classList.add('comic-theme');
         if (dark) document.documentElement.classList.add('comic-theme-dark');
-        var l = document.createElement('link');
-        l.rel = 'stylesheet';
-        l.href = 'https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&display=swap';
-        document.head.appendChild(l);
+        if (!document.getElementById('mango-comic-fonts')) {
+          var l = document.createElement('link');
+          l.id = 'mango-comic-fonts';
+          l.rel = 'stylesheet';
+          l.href = 'https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&display=swap';
+          document.head.appendChild(l);
+        }
       }
       if (dark) document.documentElement.style.background = style === 'flat' ? '#141414' : '';
     })();

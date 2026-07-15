@@ -10,7 +10,7 @@ body.flat-theme {
   color: #141414;
 }
 
-html.flat-theme.uk-light,
+/* uk-light is only on body (dark theme marker). html uses flat-theme-dark. */
 html.flat-theme.flat-theme-dark,
 body.flat-theme.uk-light,
 body.flat-theme.flat-theme-dark {
@@ -22,17 +22,35 @@ body.flat-theme::before {
   display: none !important;
 }
 
-/* Layout: hide sidebar, show top bar */
+/*
+ * Layout-critical rules use html.flat-theme as well as body.flat-theme.
+ * FOUC script only marks <html> before <body> exists; without html selectors
+ * the sidebar still shows and content keeps sidebar margin until JS ready.
+ */
+html.flat-theme .app-sidebar,
 body.flat-theme .app-sidebar {
   display: none !important;
 }
 
+html.flat-theme .flat-topbar,
 body.flat-theme .flat-topbar {
   display: flex;
 }
 
+html:not(.flat-theme) .flat-topbar,
 body:not(.flat-theme) .flat-topbar {
   display: none !important;
+}
+
+html.flat-theme .app-content,
+body.flat-theme .app-content {
+  margin-left: 0 !important;
+  padding-top: 84px;
+  padding-left: 4vw;
+  padding-right: 4vw;
+  padding-bottom: 48px;
+  min-height: 100vh;
+  max-width: none;
 }
 
 body.flat-theme .mango-navbar {
@@ -47,21 +65,13 @@ body.flat-theme:not(.uk-light) .mango-navbar {
   border-bottom: 1px solid #e5e5e5;
 }
 
-body.flat-theme .app-content {
-  margin-left: 0 !important;
-  padding-top: 84px;
-  padding-left: 4vw;
-  padding-right: 4vw;
-  padding-bottom: 48px;
-  min-height: 100vh;
-  max-width: none;
-}
-
 @media (max-width: 959px) {
+  html.flat-theme .flat-topbar,
   body.flat-theme .flat-topbar {
     display: none !important;
   }
 
+  html.flat-theme .app-content,
   body.flat-theme .app-content {
     padding-top: 72px;
     padding-left: 16px;
@@ -316,12 +326,14 @@ body.flat-theme.flat-theme-dark #mobile-nav .uk-offcanvas-bar a {
  * Batch 2 — Browse surfaces (home / library / title / tags)
  * ========================================================================== */
 
-/* Full-bleed home under top bar */
+/* Full-bleed home under top bar (avoid horizontal page scroll) */
 body.flat-theme .home-page {
   margin-left: -4vw;
   margin-right: -4vw;
   padding-left: 0;
   padding-right: 0;
+  max-width: none;
+  overflow-x: clip;
 }
 
 body.flat-theme .home-page .carousel-section {
