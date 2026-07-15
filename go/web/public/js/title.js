@@ -54,25 +54,38 @@ const toggleShowHidden = (value) => {
 
 const setupAcard = () => {
 	$('.acard.is_entry').click((e) => {
-		if ($(e.target).hasClass('no-modal')) return;
+		if ($(e.target).closest('.no-modal').length) return;
 		const card = $(e.target).closest('.acard');
+		const titleID = card.attr('data-book-id');
+		const entryID = card.attr('data-id');
+		// Home rails used to ship is_entry without modal metadata → "undefined" popup.
+		if (!titleID || !entryID) return;
 
+		e.preventDefault();
 		showModal(
-			$(card).attr('data-encoded-path'),
-			parseInt($(card).attr('data-pages')),
-			parseFloat($(card).attr('data-progress')),
-			$(card).attr('data-encoded-book-title'),
-			$(card).attr('data-encoded-title'),
-			$(card).attr('data-book-id'),
-			$(card).attr('data-id')
+			card.attr('data-encoded-path') || entryID,
+			parseInt(card.attr('data-pages'), 10) || 0,
+			parseFloat(card.attr('data-progress')) || 0,
+			card.attr('data-encoded-book-title') || '',
+			card.attr('data-encoded-title') || '',
+			titleID,
+			entryID
 		);
 	});
 };
 
 function showModal(encodedPath, pages, percentage, encodedeTitle, encodedEntryTitle, titleID, entryID) {
-	const zipPath = decodeURIComponent(encodedPath);
-	const title = decodeURIComponent(encodedeTitle);
-	const entry = decodeURIComponent(encodedEntryTitle);
+	const safeDecode = (v) => {
+		if (v == null || v === '') return '';
+		try {
+			return decodeURIComponent(v);
+		} catch (err) {
+			return String(v);
+		}
+	};
+	const zipPath = safeDecode(encodedPath);
+	const title = safeDecode(encodedeTitle);
+	const entry = safeDecode(encodedEntryTitle);
 	$('#modal button, #modal a').each(function() {
 		$(this).removeAttr('hidden');
 	});

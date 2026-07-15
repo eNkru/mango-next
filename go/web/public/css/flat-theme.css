@@ -1,0 +1,2110 @@
+/* Flat UI — Netflix-inspired browse chrome (Batch 1)
+ * Compiled companion of flat-theme.less (hand-synced; no less pipeline in repo).
+ * All rules under .flat-theme so comic is unaffected.
+ */
+
+html.flat-theme,
+body.flat-theme {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background: #ffffff;
+  color: #141414;
+}
+
+/* uk-light is only on body (dark theme marker). html uses flat-theme-dark. */
+html.flat-theme.flat-theme-dark,
+body.flat-theme.uk-light,
+body.flat-theme.flat-theme-dark {
+  background: #141414;
+  color: #ffffff;
+}
+
+body.flat-theme::before {
+  display: none !important;
+}
+
+/*
+ * Layout-critical rules use html.flat-theme as well as body.flat-theme.
+ * FOUC script only marks <html> before <body> exists; without html selectors
+ * the sidebar still shows and content keeps sidebar margin until JS ready.
+ */
+html.flat-theme .app-sidebar,
+body.flat-theme .app-sidebar {
+  display: none !important;
+}
+
+html.flat-theme .flat-topbar,
+body.flat-theme .flat-topbar {
+  display: flex;
+}
+
+html:not(.flat-theme) .flat-topbar,
+body:not(.flat-theme) .flat-topbar {
+  display: none !important;
+}
+
+html.flat-theme .app-content,
+body.flat-theme .app-content {
+  margin-left: 0 !important;
+  padding-top: 84px;
+  padding-left: 4vw;
+  padding-right: 4vw;
+  padding-bottom: 48px;
+  min-height: 100vh;
+  max-width: none;
+}
+
+body.flat-theme .mango-navbar {
+  background: rgba(20, 20, 20, 0.92) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #2a2a2a;
+}
+
+body.flat-theme:not(.uk-light) .mango-navbar {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+@media (max-width: 959px) {
+  html.flat-theme .flat-topbar,
+  body.flat-theme .flat-topbar {
+    display: none !important;
+  }
+
+  html.flat-theme .app-content,
+  body.flat-theme .app-content {
+    padding-top: 72px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* Top bar */
+.flat-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  height: 68px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4vw;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 70%, transparent 100%);
+  transition: background 0.25s ease;
+}
+
+body.flat-theme.uk-light .flat-topbar,
+body.flat-theme.flat-theme-dark .flat-topbar {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.92) 0%, rgba(20, 20, 20, 0.75) 80%, transparent 100%);
+}
+
+body.flat-theme:not(.uk-light) .flat-topbar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 245, 245, 0.9) 80%, transparent 100%);
+  box-shadow: 0 1px 0 #e5e5e5;
+}
+
+.flat-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  min-width: 0;
+}
+
+.flat-topbar__logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  text-decoration: none;
+  gap: 10px;
+}
+
+.flat-topbar__logo img,
+.flat-topbar__mark {
+  height: 34px;
+  width: 34px;
+  border-radius: 8px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  /* subtle plate so mark reads on light/dark bars */
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+body.flat-theme:not(.uk-light) .flat-topbar__mark {
+  background: rgba(229, 9, 20, 0.08);
+  box-shadow: 0 0 0 1px rgba(229, 9, 20, 0.12);
+}
+
+.flat-topbar__logo span {
+  margin-left: 0;
+  font-weight: 800;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  color: #e50914;
+  text-transform: uppercase;
+}
+
+body.flat-theme.uk-light .flat-topbar__logo span,
+body.flat-theme.flat-theme-dark .flat-topbar__logo span {
+  color: #e50914;
+}
+
+.flat-topbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.flat-topbar__nav a {
+  color: #4b4b4b;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.flat-topbar__nav a:hover,
+.flat-topbar__nav a.active,
+.flat-topbar__nav a.uk-active {
+  color: #141414;
+}
+
+body.flat-theme.uk-light .flat-topbar__nav a,
+body.flat-theme.flat-theme-dark .flat-topbar__nav a {
+  color: #b3b3b3;
+}
+
+body.flat-theme.uk-light .flat-topbar__nav a:hover,
+body.flat-theme.uk-light .flat-topbar__nav a.active,
+body.flat-theme.uk-light .flat-topbar__nav a.uk-active,
+body.flat-theme.flat-theme-dark .flat-topbar__nav a:hover,
+body.flat-theme.flat-theme-dark .flat-topbar__nav a.active,
+body.flat-theme.flat-theme-dark .flat-topbar__nav a.uk-active {
+  color: #ffffff;
+}
+
+.flat-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/*
+ * Buttons — comic-btn styles only exist under body.comic-theme, so Flat must
+ * define a full control chrome (padding/display). Do NOT paint every .comic-btn
+ * solid red: outline/secondary must stay distinct (Netflix grey).
+ */
+body.flat-theme .comic-btn,
+body.flat-theme .uk-button,
+body.flat-theme a.comic-btn,
+body.flat-theme .hide-toggle-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 10px 20px !important;
+  border-radius: 4px !important;
+  border: 1px solid transparent !important;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, filter 0.15s ease;
+}
+
+body.flat-theme .comic-btn-sm,
+body.flat-theme .hide-toggle-btn.comic-btn-sm {
+  min-height: 34px;
+  padding: 7px 14px !important;
+  font-size: 0.85rem !important;
+  gap: 6px;
+}
+
+/* Primary filled */
+body.flat-theme .comic-btn-primary,
+body.flat-theme .uk-button-primary,
+body.flat-theme a.comic-btn.comic-btn-primary,
+body.flat-theme .login-btn {
+  background: #e50914 !important;
+  color: #fff !important;
+  border-color: #e50914 !important;
+}
+
+body.flat-theme .comic-btn-primary:hover,
+body.flat-theme .uk-button-primary:hover,
+body.flat-theme a.comic-btn.comic-btn-primary:hover {
+  background: #b20710 !important;
+  border-color: #b20710 !important;
+  color: #fff !important;
+  filter: brightness(1.05);
+}
+
+/* Secondary / outline — Netflix grey, not red */
+body.flat-theme .comic-btn-outline,
+body.flat-theme .comic-btn.comic-btn-outline,
+body.flat-theme a.comic-btn.comic-btn-outline,
+body.flat-theme .hide-toggle-btn.comic-btn-outline,
+body.flat-theme .uk-button-default {
+  background: rgba(109, 109, 110, 0.55) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+body.flat-theme .comic-btn-outline:hover,
+body.flat-theme .comic-btn.comic-btn-outline:hover,
+body.flat-theme a.comic-btn.comic-btn-outline:hover,
+body.flat-theme .hide-toggle-btn.comic-btn-outline:hover,
+body.flat-theme .uk-button-default:hover {
+  background: rgba(109, 109, 110, 0.85) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Light theme secondary */
+body.flat-theme:not(.uk-light) .comic-btn-outline,
+body.flat-theme:not(.uk-light) .comic-btn.comic-btn-outline,
+body.flat-theme:not(.uk-light) a.comic-btn.comic-btn-outline,
+body.flat-theme:not(.uk-light) .hide-toggle-btn.comic-btn-outline,
+body.flat-theme:not(.uk-light) .uk-button-default {
+  background: #fff !important;
+  color: #141414 !important;
+  border: 1px solid #d0d0d0 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+}
+
+body.flat-theme:not(.uk-light) .comic-btn-outline:hover,
+body.flat-theme:not(.uk-light) .hide-toggle-btn.comic-btn-outline:hover,
+body.flat-theme:not(.uk-light) .uk-button-default:hover {
+  background: #f5f5f5 !important;
+  border-color: #b3b3b3 !important;
+  color: #141414 !important;
+}
+
+/* Active toggle (show-hidden on) */
+body.flat-theme .comic-btn-active-toggle,
+body.flat-theme .hide-toggle-btn.comic-btn-active-toggle {
+  background: #e50914 !important;
+  color: #fff !important;
+  border: 1px solid #e50914 !important;
+}
+
+body.flat-theme .comic-btn-active-toggle:hover,
+body.flat-theme .hide-toggle-btn.comic-btn-active-toggle:hover {
+  background: #b20710 !important;
+  border-color: #b20710 !important;
+  color: #fff !important;
+}
+
+/* Hero pair: primary play + secondary details */
+body.flat-theme .hero-actions .comic-btn,
+body.flat-theme .comic-hero-actions .comic-btn {
+  min-height: 42px;
+  padding: 11px 22px !important;
+  font-size: 0.95rem !important;
+}
+
+body.flat-theme .hero-actions .comic-btn-outline,
+body.flat-theme .comic-hero-actions .comic-btn-outline {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Danger */
+body.flat-theme .comic-btn-danger {
+  background: transparent !important;
+  color: #e50914 !important;
+  border: 1px solid #e50914 !important;
+}
+
+body.flat-theme .comic-btn-danger:hover {
+  background: rgba(229, 9, 20, 0.12) !important;
+}
+
+/* FAB */
+body.flat-theme .utility-fab__primary {
+  background: #e50914 !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28) !important;
+}
+
+body.flat-theme .utility-fab__item {
+  background: #f5f5f5 !important;
+  border: 1px solid #e5e5e5 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme.uk-light .utility-fab__item,
+body.flat-theme.flat-theme-dark .utility-fab__item {
+  background: #1f1f1f !important;
+  border-color: #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+/* Cards baseline — scale only the cover image, not the card box (avoids rail overlap) */
+body.flat-theme .item .uk-card {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 4px;
+  overflow: visible;
+  transition: none;
+  transform: none !important;
+}
+
+body.flat-theme .item .uk-card:hover {
+  transform: none !important;
+  box-shadow: none;
+}
+
+body.flat-theme .item .uk-card .uk-card-body {
+  padding: 10px 4px 4px;
+}
+
+body.flat-theme .item .uk-card .uk-card-body .uk-card-title {
+  color: #141414;
+  font-weight: 600;
+}
+
+body.flat-theme .item .uk-card .uk-card-body .uk-text-meta {
+  color: #737373;
+}
+
+body.flat-theme.uk-light .item .uk-card .uk-card-body .uk-card-title,
+body.flat-theme.flat-theme-dark .item .uk-card .uk-card-body .uk-card-title {
+  color: #ffffff;
+}
+
+body.flat-theme.uk-light .item .uk-card .uk-card-body .uk-text-meta,
+body.flat-theme.flat-theme-dark .item .uk-card .uk-card-body .uk-text-meta {
+  color: #b3b3b3;
+}
+
+/* Headings */
+body.flat-theme .comic-section-heading,
+body.flat-theme h1,
+body.flat-theme h2,
+body.flat-theme .page-heading-comic {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  letter-spacing: normal;
+  text-transform: none;
+  color: #141414;
+  font-weight: 700;
+}
+
+body.flat-theme.uk-light .comic-section-heading,
+body.flat-theme.uk-light h1,
+body.flat-theme.uk-light h2,
+body.flat-theme.uk-light .page-heading-comic,
+body.flat-theme.flat-theme-dark .comic-section-heading,
+body.flat-theme.flat-theme-dark h1,
+body.flat-theme.flat-theme-dark h2,
+body.flat-theme.flat-theme-dark .page-heading-comic {
+  color: #ffffff;
+}
+
+body.flat-theme.uk-light #mobile-nav .uk-offcanvas-bar,
+body.flat-theme.flat-theme-dark #mobile-nav .uk-offcanvas-bar {
+  background: #141414;
+}
+
+body.flat-theme.uk-light #mobile-nav .uk-offcanvas-bar a,
+body.flat-theme.flat-theme-dark #mobile-nav .uk-offcanvas-bar a {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+ * Batch 2 — Browse surfaces (home / library / title / tags)
+ * ========================================================================== */
+
+/* Full-bleed home under top bar (avoid horizontal page scroll) */
+body.flat-theme .home-page {
+  margin-left: -4vw;
+  margin-right: -4vw;
+  padding-left: 0;
+  padding-right: 0;
+  max-width: none;
+  overflow-x: clip;
+}
+
+body.flat-theme .home-page .carousel-section {
+  margin-bottom: 2.5rem;
+  padding: 0 4vw;
+}
+
+body.flat-theme .home-page .continue-reading-section {
+  margin-bottom: 2rem;
+}
+
+body.flat-theme .section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+body.flat-theme .comic-section-count {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #737373;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+body.flat-theme.uk-light .comic-section-count,
+body.flat-theme.flat-theme-dark .comic-section-count {
+  color: #b3b3b3;
+}
+
+/* Hero — Netflix-style: blur fill + full portrait poster (no half-cropped cover) */
+body.flat-theme .continue-reading-row > .hero-banner,
+body.flat-theme .continue-reading-row > .comic-hero {
+  min-height: 0 !important;
+  border-radius: 6px !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: #141414 !important;
+  background-image: none !important;
+  overflow: hidden;
+}
+
+body.flat-theme .hero-bg {
+  opacity: 0.45;
+  filter: blur(40px) saturate(1.2);
+}
+
+body.flat-theme .hero-poster {
+  width: min(44%, 240px);
+  background-position: center right;
+  background-size: contain;
+  /* Soft edge so poster blends into blur */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 100%);
+}
+
+body.flat-theme .hero-overlay,
+body.flat-theme .comic-hero-overlay {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(20, 20, 20, 0.94) 0%,
+      rgba(20, 20, 20, 0.78) 36%,
+      rgba(20, 20, 20, 0.25) 58%,
+      rgba(20, 20, 20, 0.05) 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(20, 20, 20, 0.55) 0%,
+      transparent 50%
+    ) !important;
+}
+
+body.flat-theme:not(.uk-light) .continue-reading-row > .hero-banner {
+  background: #f0f0f0 !important;
+}
+
+body.flat-theme:not(.uk-light) .hero-overlay,
+body.flat-theme:not(.uk-light) .comic-hero-overlay {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(245, 245, 245, 0.96) 0%,
+      rgba(245, 245, 245, 0.82) 40%,
+      rgba(245, 245, 245, 0.2) 65%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.35) 0%,
+      transparent 45%
+    ) !important;
+}
+
+body.flat-theme:not(.uk-light) .hero-poster {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 100%);
+}
+
+body.flat-theme .hero-content {
+  padding: 48px 4vw 36px;
+  max-width: 560px;
+}
+
+body.flat-theme .comic-hero-badge {
+  display: inline-block;
+  background: #e50914;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 2px;
+  border: none;
+  margin-bottom: 12px;
+}
+
+body.flat-theme .comic-hero-title,
+body.flat-theme .hero-content h1 {
+  font-size: clamp(1.6rem, 4vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+body.flat-theme.uk-light .comic-hero-title,
+body.flat-theme.flat-theme-dark .comic-hero-title {
+  color: #fff;
+}
+
+body.flat-theme .hero-meta {
+  color: #b3b3b3;
+  margin-bottom: 16px;
+}
+
+body.flat-theme:not(.uk-light) .hero-meta {
+  color: #4b4b4b;
+}
+
+body.flat-theme .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+body.flat-theme .hero-progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  overflow: hidden;
+  max-width: 280px;
+}
+
+body.flat-theme:not(.uk-light) .hero-progress-bar {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+body.flat-theme .hero-progress-fill {
+  height: 100%;
+  background: #e50914;
+  border-radius: 2px;
+}
+
+/* Continue row: single horizontal row — hero left, rail right (no 2nd row) */
+body.flat-theme .continue-reading-section {
+  padding: 0 4vw;
+}
+
+body.flat-theme .continue-reading-section .section-header {
+  padding: 0;
+}
+
+body.flat-theme .continue-reading-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
+  gap: 14px !important;
+  /* Match original mango row heights so side posters are tall */
+  height: 300px !important;
+  min-height: 300px !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+@media (min-width: 600px) {
+  body.flat-theme .continue-reading-row {
+    height: 320px !important;
+    min-height: 320px !important;
+  }
+}
+
+@media (min-width: 960px) {
+  body.flat-theme .continue-reading-row {
+    height: 360px !important;
+    min-height: 360px !important;
+  }
+}
+
+body.flat-theme .continue-reading-row > .hero-banner,
+body.flat-theme .continue-reading-row > .comic-hero {
+  flex: 0 0 52% !important;
+  min-width: 0 !important;
+  width: 52% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  border-radius: 6px !important;
+}
+
+body.flat-theme .continue-reading-row .hero-content {
+  padding: 24px 28px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+body.flat-theme .continue-reading-row .comic-hero-title,
+body.flat-theme .continue-reading-row .hero-content h1 {
+  font-size: clamp(1.15rem, 2.2vw, 1.75rem);
+}
+
+body.flat-theme .continue-reading-row > .carousel-wrapper {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: stretch !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.flat-theme .continue-reading-carousel-wrapper {
+  padding: 0;
+}
+
+/*
+ * Side rail: MUST win over general .carousel-track { height:auto } below.
+ * Cards fill full row height; cover-only (body hidden).
+ */
+body.flat-theme .continue-reading-row .continue-reading-cards.carousel-track {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  gap: 12px !important;
+  padding: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+body.flat-theme .continue-reading-row .continue-reading-cards > .item {
+  flex: 0 0 200px !important;
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 200px !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  align-self: stretch !important;
+}
+
+@media (min-width: 600px) {
+  body.flat-theme .continue-reading-row .continue-reading-cards > .item {
+    flex-basis: 220px !important;
+    width: 220px !important;
+    min-width: 220px !important;
+    max-width: 220px !important;
+  }
+}
+
+@media (min-width: 960px) {
+  body.flat-theme .continue-reading-row .continue-reading-cards > .item {
+    flex-basis: 240px !important;
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
+  }
+}
+
+body.flat-theme .continue-reading-row .continue-reading-cards .item .acard,
+body.flat-theme .continue-reading-row .continue-reading-cards .item .uk-card,
+body.flat-theme .continue-reading-row .continue-reading-cards .item .uk-card.uk-card-default {
+  height: 100% !important;
+  min-height: 100% !important;
+  display: block !important;
+  position: relative !important;
+}
+
+body.flat-theme .continue-reading-row .continue-reading-cards .item .uk-card-media-top,
+body.flat-theme .continue-reading-row .continue-reading-cards .item .comic-card-media {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  aspect-ratio: auto !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+
+body.flat-theme .continue-reading-row .continue-reading-cards .item .uk-card-media-top img,
+body.flat-theme .continue-reading-row .continue-reading-cards .item .comic-card-media img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+body.flat-theme .continue-reading-row .continue-reading-cards .item .uk-card-body,
+body.flat-theme .continue-reading-row .continue-reading-cards .item .comic-card-body {
+  display: none !important;
+}
+
+@media (max-width: 599px) {
+  body.flat-theme .continue-reading-row {
+    flex-direction: column !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body.flat-theme .continue-reading-row > .hero-banner,
+  body.flat-theme .continue-reading-row > .comic-hero {
+    flex: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 220px !important;
+  }
+
+  body.flat-theme .continue-reading-row > .carousel-wrapper {
+    flex: none !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  body.flat-theme .continue-reading-cards.carousel-track {
+    height: auto !important;
+    padding: 12px 0 8px !important;
+  }
+
+  body.flat-theme .continue-reading-cards > .item {
+    height: auto !important;
+  }
+
+  body.flat-theme .continue-reading-cards .item .uk-card-media-top {
+    aspect-ratio: 2 / 3 !important;
+    height: auto !important;
+  }
+
+  body.flat-theme .continue-reading-cards .item .uk-card-body {
+    display: block !important;
+  }
+}
+
+/* Rails / carousels */
+body.flat-theme .carousel-wrapper {
+  position: relative;
+  overflow: visible;
+}
+
+/* Other home rails only (Start / Recent) — not the continue side rail */
+body.flat-theme .carousel-section:not(.continue-reading-section) .carousel-track {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  align-items: flex-start !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 8px 2px 20px;
+  scroll-snap-type: x mandatory;
+}
+
+body.flat-theme .carousel-section:not(.continue-reading-section) .carousel-track > .item {
+  flex: 0 0 clamp(140px, 16vw, 200px) !important;
+  width: clamp(140px, 16vw, 200px) !important;
+  min-width: clamp(140px, 16vw, 200px) !important;
+  max-width: clamp(140px, 16vw, 200px) !important;
+  height: auto !important;
+  position: relative;
+  z-index: 0;
+  scroll-snap-align: start;
+}
+
+body.flat-theme .carousel-track > .item:hover,
+body.flat-theme .continue-reading-cards > .item:hover {
+  z-index: 3;
+}
+
+body.flat-theme .carousel-arrow,
+body.flat-theme .comic-carousel-arrow {
+  background: rgba(20, 20, 20, 0.55) !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 0 !important;
+  width: 40px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+body.flat-theme .carousel-wrapper:hover .carousel-arrow {
+  opacity: 1;
+}
+
+body.flat-theme:not(.uk-light) .carousel-arrow {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #141414 !important;
+}
+
+/* Poster cards on rails + library */
+body.flat-theme .item .uk-card.uk-card-default,
+body.flat-theme .comic-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  height: auto !important;
+  transform: none !important;
+}
+
+body.flat-theme .item .uk-card.uk-card-default:hover,
+body.flat-theme .comic-card:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Cover only: fixed 2:3 box; zoom image inside so siblings never reflow/overlap */
+body.flat-theme .item .uk-card-media-top,
+body.flat-theme .comic-card-media {
+  position: relative !important;
+  border-radius: 4px;
+  overflow: hidden !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 2 / 3;
+  background: #1f1f1f;
+}
+
+body.flat-theme:not(.uk-light) .item .uk-card-media-top {
+  background: #e5e5e5;
+}
+
+body.flat-theme .item .uk-card-media-top img,
+body.flat-theme .comic-card-media img {
+  position: absolute !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+  transform: none;
+}
+
+body.flat-theme .item .uk-card:hover .uk-card-media-top img,
+body.flat-theme .item .uk-card:hover .comic-card-media img {
+  transform: scale(1.06);
+}
+
+body.flat-theme .item .uk-card-body,
+body.flat-theme .comic-card-body {
+  padding: 8px 2px 0 !important;
+  background: transparent !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Progress on posters */
+body.flat-theme .card-progress-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 0;
+}
+
+body.flat-theme .card-progress-fill {
+  height: 100%;
+  background: #e50914 !important;
+  border-radius: 0;
+}
+
+body.flat-theme .card-progress-percent {
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Library / title grids */
+body.flat-theme .library-page,
+body.flat-theme .title-card-grid {
+  max-width: none;
+}
+
+body.flat-theme .library-card-grid,
+body.flat-theme .title-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px 10px;
+}
+
+@media (min-width: 960px) {
+  body.flat-theme .library-card-grid,
+  body.flat-theme .title-card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px 12px;
+  }
+}
+
+body.flat-theme .library-card-grid > .item,
+body.flat-theme .title-card-grid > .item {
+  width: auto;
+  margin: 0;
+}
+
+/* Tag page still uses uk-grid — make cards denser */
+body.flat-theme .library-page .uk-grid > .item .uk-card-media-top {
+  aspect-ratio: 2 / 3;
+  height: auto !important;
+}
+
+/* Toolbar / search */
+body.flat-theme .library-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+body.flat-theme .search-bar,
+body.flat-theme .comic-search {
+  flex: 1 1 220px;
+  max-width: 420px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+}
+
+body.flat-theme.uk-light .search-bar,
+body.flat-theme.flat-theme-dark .search-bar,
+body.flat-theme.uk-light .comic-search,
+body.flat-theme.flat-theme-dark .comic-search {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #2a2a2a;
+}
+
+body.flat-theme .search-input,
+body.flat-theme .comic-search-input {
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
+
+body.flat-theme .sort-select,
+body.flat-theme .comic-select {
+  border-radius: 4px;
+  border-color: #e5e5e5;
+  background: #fff;
+  color: #141414;
+  max-width: 180px;
+}
+
+body.flat-theme.uk-light .sort-select,
+body.flat-theme.flat-theme-dark .sort-select,
+body.flat-theme.uk-light .comic-select,
+body.flat-theme.flat-theme-dark .comic-select {
+  background: #1f1f1f;
+  border-color: #2a2a2a;
+  color: #fff;
+}
+
+/* comic-btn-sm / active-toggle defined in Buttons block above */
+
+/* Title page */
+body.flat-theme .title-heading,
+body.flat-theme .comic-heading {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+body.flat-theme .breadcrumb-nav .uk-breadcrumb > * > * {
+  color: #737373;
+  font-size: 0.9rem;
+}
+
+body.flat-theme.uk-light .breadcrumb-nav .uk-breadcrumb > * > *,
+body.flat-theme.flat-theme-dark .breadcrumb-nav .uk-breadcrumb > * > * {
+  color: #b3b3b3;
+}
+
+body.flat-theme .breadcrumb-nav .uk-breadcrumb > :last-child > * {
+  color: #141414;
+}
+
+body.flat-theme.uk-light .breadcrumb-nav .uk-breadcrumb > :last-child > *,
+body.flat-theme.flat-theme-dark .breadcrumb-nav .uk-breadcrumb > :last-child > * {
+  color: #fff;
+}
+
+body.flat-theme .page-subtitle {
+  color: #737373;
+  margin-bottom: 16px;
+}
+
+body.flat-theme.uk-light .page-subtitle,
+body.flat-theme.flat-theme-dark .page-subtitle {
+  color: #b3b3b3;
+}
+
+body.flat-theme #select-bar {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  color: #fff;
+}
+
+body.flat-theme:not(.uk-light) #select-bar {
+  background: #fff !important;
+  border-color: #e5e5e5;
+  color: #141414;
+}
+
+/* Tags */
+body.flat-theme .tag-pill,
+body.flat-theme .comic-tag-pill {
+  display: inline-block;
+  margin: 0 8px 10px 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e5e5;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+body.flat-theme .tag-pill:hover,
+body.flat-theme .comic-tag-pill:hover {
+  border-color: #e50914;
+  background: rgba(229, 9, 20, 0.08);
+}
+
+body.flat-theme.uk-light .tag-pill,
+body.flat-theme.flat-theme-dark .tag-pill,
+body.flat-theme.uk-light .comic-tag-pill,
+body.flat-theme.flat-theme-dark .comic-tag-pill {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: #2a2a2a;
+  color: #fff;
+}
+
+body.flat-theme.uk-light .tag-pill:hover,
+body.flat-theme.flat-theme-dark .tag-pill:hover {
+  border-color: #e50914;
+  background: rgba(229, 9, 20, 0.16);
+}
+
+body.flat-theme .tag-pill a,
+body.flat-theme .comic-tag-pill a {
+  color: inherit !important;
+  font-weight: 500;
+}
+
+/* Empty states */
+body.flat-theme .empty-state {
+  text-align: center;
+  padding: 64px 24px;
+}
+
+body.flat-theme .empty-state .empty-icon {
+  color: #e50914;
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+/* Hover admin actions on cards */
+body.flat-theme .card-hover-actions .card-action-btn {
+  background: rgba(20, 20, 20, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+body.flat-theme .card-action-btn:hover {
+  background: #e50914;
+}
+
+/* Hidden badge */
+body.flat-theme .hidden-badge {
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+ * Batch 3 — Login / Admin / Reader shell / plugin pages
+ * ========================================================================== */
+
+/* Login */
+body.flat-theme.login-page,
+body.flat-theme.comic-login-page {
+  background: #141414 !important;
+  min-height: 100vh;
+}
+
+body.flat-theme.login-page:not(.uk-light),
+body.flat-theme.comic-login-page:not(.uk-light) {
+  background: #f5f5f5 !important;
+}
+
+body.flat-theme .login-bg-decoration,
+body.flat-theme .login-halftone,
+body.flat-theme .login-burst {
+  display: none !important;
+}
+
+body.flat-theme .login-card,
+body.flat-theme .comic-login-card {
+  background: #181818 !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 6px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+  color: #fff;
+}
+
+body.flat-theme:not(.uk-light) .login-card,
+body.flat-theme:not(.uk-light) .comic-login-card {
+  background: #fff !important;
+  border-color: #e5e5e5 !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08) !important;
+  color: #141414;
+}
+
+body.flat-theme .comic-login-title,
+body.flat-theme .login-header .uk-card-title {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 800 !important;
+  color: #fff !important;
+  letter-spacing: normal !important;
+}
+
+body.flat-theme:not(.uk-light) .comic-login-title,
+body.flat-theme:not(.uk-light) .login-header .uk-card-title {
+  color: #141414 !important;
+}
+
+body.flat-theme .login-subtitle,
+body.flat-theme .login-footer p {
+  color: #b3b3b3 !important;
+}
+
+body.flat-theme:not(.uk-light) .login-subtitle,
+body.flat-theme:not(.uk-light) .login-footer p {
+  color: #737373 !important;
+}
+
+body.flat-theme .login-label {
+  color: #b3b3b3;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+body.flat-theme:not(.uk-light) .login-label {
+  color: #4b4b4b;
+}
+
+body.flat-theme .login-input,
+body.flat-theme .login-input.uk-input {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 4px !important;
+  color: #fff !important;
+}
+
+body.flat-theme:not(.uk-light) .login-input,
+body.flat-theme:not(.uk-light) .login-input.uk-input {
+  background: #f5f5f5 !important;
+  border-color: #e5e5e5 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme .login-input:focus {
+  border-color: #e50914 !important;
+  box-shadow: 0 0 0 1px #e50914 !important;
+}
+
+body.flat-theme .login-btn,
+body.flat-theme .login-btn.uk-button-primary {
+  background: #e50914 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+}
+
+body.flat-theme .login-btn:hover {
+  background: #b20710 !important;
+}
+
+body.flat-theme .login-form-icon,
+body.flat-theme .login-toggle-pw {
+  color: #b3b3b3 !important;
+}
+
+/* Admin cards — single-column by default so resize never overflows selects */
+body.flat-theme .admin-panel {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 960px) {
+  body.flat-theme .admin-panel {
+    /* Safer multi-col: never force sub-280px tracks that clip controls */
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+body.flat-theme .admin-card,
+body.flat-theme .comic-admin-card {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 14px;
+  padding: 16px 16px !important;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: #181818 !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+body.flat-theme:not(.uk-light) .admin-card,
+body.flat-theme:not(.uk-light) .comic-admin-card {
+  background: #fff !important;
+  border-color: #e5e5e5 !important;
+}
+
+body.flat-theme .admin-card:hover,
+body.flat-theme .comic-admin-card:hover {
+  border-color: #e50914 !important;
+  background: rgba(229, 9, 20, 0.06) !important;
+  transform: none !important;
+}
+
+body.flat-theme .admin-card-icon,
+body.flat-theme .comic-admin-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(229, 9, 20, 0.15) !important;
+  color: #e50914 !important;
+  border: none !important;
+  flex: 0 0 44px;
+}
+
+body.flat-theme .admin-card-content {
+  flex: 1 1 140px;
+  min-width: 0 !important;
+  overflow: hidden;
+}
+
+body.flat-theme .admin-card-title,
+body.flat-theme .comic-admin-title {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  margin: 0 0 4px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.flat-theme:not(.uk-light) .admin-card-title,
+body.flat-theme:not(.uk-light) .comic-admin-title {
+  color: #141414 !important;
+}
+
+body.flat-theme .admin-card-meta {
+  color: #b3b3b3 !important;
+  margin: 0 !important;
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.flat-theme:not(.uk-light) .admin-card-meta {
+  color: #737373 !important;
+}
+
+body.flat-theme .admin-card-badge,
+body.flat-theme .comic-admin-badge {
+  background: #e50914 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  font-weight: 700;
+  min-width: 28px;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+body.flat-theme .admin-card-right {
+  flex: 0 0 auto;
+}
+
+/* Theme / UI style selects inside admin cards */
+body.flat-theme .admin-card .uk-select,
+body.flat-theme .admin-card .sort-select,
+body.flat-theme .admin-card select {
+  flex: 1 1 120px;
+  width: auto !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box;
+}
+
+body.flat-theme .admin-footer {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #b3b3b3;
+  max-width: 100%;
+}
+
+body.flat-theme:not(.uk-light) .admin-footer {
+  color: #737373;
+}
+
+body.flat-theme .admin-footer .comic-btn,
+body.flat-theme .admin-footer .uk-button {
+  flex: 0 0 auto;
+}
+
+body.flat-theme .admin-sub-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+body.flat-theme .admin-sub-page .action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  max-width: 100%;
+}
+
+body.flat-theme .admin-sub-page .uk-table,
+body.flat-theme .admin-sub-page .uk-overflow-auto {
+  max-width: 100%;
+}
+
+/* Tables */
+body.flat-theme .uk-table,
+body.flat-theme .comic-table {
+  background: transparent;
+  color: inherit;
+}
+
+body.flat-theme .uk-table th {
+  color: #b3b3b3;
+  font-weight: 600;
+  border-bottom: 1px solid #2a2a2a !important;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+body.flat-theme:not(.uk-light) .uk-table th {
+  color: #737373;
+  border-bottom-color: #e5e5e5 !important;
+}
+
+body.flat-theme .uk-table td {
+  border-bottom: 1px solid #2a2a2a !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-table td {
+  border-bottom-color: #e5e5e5 !important;
+}
+
+body.flat-theme .uk-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+body.flat-theme:not(.uk-light) .uk-table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body.flat-theme .status-label,
+body.flat-theme .comic-status {
+  border-radius: 4px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+body.flat-theme .comic-status-success {
+  background: rgba(46, 160, 67, 0.2);
+  color: #3dd68c;
+}
+
+body.flat-theme .comic-status-pending {
+  background: rgba(255, 255, 255, 0.08);
+  color: #b3b3b3;
+}
+
+/* Forms / inputs on admin & plugin pages */
+body.flat-theme .uk-input,
+body.flat-theme .uk-select,
+body.flat-theme .uk-textarea,
+body.flat-theme .comic-input,
+body.flat-theme .comic-select {
+  border-radius: 4px !important;
+}
+
+body.flat-theme.uk-light .uk-input,
+body.flat-theme.flat-theme-dark .uk-input,
+body.flat-theme.uk-light .uk-select,
+body.flat-theme.flat-theme-dark .uk-select,
+body.flat-theme.uk-light .uk-textarea,
+body.flat-theme.flat-theme-dark .uk-textarea,
+body.flat-theme.uk-light .comic-input,
+body.flat-theme.flat-theme-dark .comic-input {
+  background: #1f1f1f !important;
+  border-color: #2a2a2a !important;
+  color: #fff !important;
+}
+
+body.flat-theme.uk-light .uk-input:focus,
+body.flat-theme.flat-theme-dark .uk-input:focus,
+body.flat-theme.uk-light .comic-input:focus {
+  border-color: #e50914 !important;
+}
+
+body.flat-theme code {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e50914;
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+body.flat-theme:not(.uk-light) code {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Empty states on plugin pages */
+body.flat-theme .comic-empty-state {
+  text-align: center;
+  padding: 48px 16px;
+  color: #b3b3b3;
+}
+
+body.flat-theme .comic-empty-icon {
+  font-size: 2.5rem;
+  color: #e50914;
+  margin-bottom: 12px;
+}
+
+/* Reader shell (no app sidebar; dark canvas) */
+html.flat-theme.reader-bg,
+body.flat-theme.reader-page,
+body.flat-theme .reader-bg {
+  background: #141414 !important;
+}
+
+body.flat-theme.reader-page .uk-section-default {
+  background: transparent !important;
+}
+
+body.flat-theme .comic-reader-btn,
+body.flat-theme .comic-reader-btn-primary {
+  background: #e50914 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+}
+
+body.flat-theme .comic-reader-btn:hover,
+body.flat-theme .comic-reader-btn-primary:hover {
+  background: #b20710 !important;
+}
+
+/* Reader settings modal — dark default */
+body.flat-theme.uk-light .reader-modal .uk-modal-dialog,
+body.flat-theme.flat-theme-dark .reader-modal .uk-modal-dialog,
+body.flat-theme.uk-light .comic-reader-modal .uk-modal-dialog,
+body.flat-theme.flat-theme-dark .comic-reader-modal .uk-modal-dialog {
+  background: #181818 !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 8px !important;
+  color: #fff !important;
+}
+
+/* Light mode: high-contrast text on white (avoid leftover #777 / #AAA from mango.css) */
+body.flat-theme:not(.uk-light) .reader-modal .uk-modal-dialog,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-modal-dialog {
+  background: #fff !important;
+  border: 1px solid #e5e5e5 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme .reader-modal .uk-modal-header,
+body.flat-theme .comic-reader-modal .uk-modal-header,
+body.flat-theme .reader-modal .uk-modal-footer,
+body.flat-theme .comic-reader-modal .uk-modal-footer,
+body.flat-theme .reader-modal .uk-modal-body,
+body.flat-theme .comic-reader-modal .uk-modal-body {
+  background: transparent !important;
+  border-color: #2a2a2a !important;
+  color: inherit !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-modal-header,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-modal-header,
+body.flat-theme:not(.uk-light) .reader-modal .uk-modal-footer,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-modal-footer {
+  border-color: #e5e5e5 !important;
+}
+
+body.flat-theme .reader-modal .uk-modal-title,
+body.flat-theme .comic-reader-modal .uk-modal-title {
+  color: inherit !important;
+  font-weight: 700;
+}
+
+body.flat-theme.uk-light .reader-modal .uk-text-meta,
+body.flat-theme.flat-theme-dark .reader-modal .uk-text-meta,
+body.flat-theme.uk-light .comic-reader-modal .uk-text-meta,
+body.flat-theme.flat-theme-dark .comic-reader-modal .uk-text-meta,
+body.flat-theme.uk-light .reader-modal .progress-text,
+body.flat-theme.flat-theme-dark .reader-modal .progress-text {
+  color: #b3b3b3 !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-text-meta,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-text-meta,
+body.flat-theme:not(.uk-light) .reader-modal .progress-text,
+body.flat-theme:not(.uk-light) .comic-reader-modal .progress-text,
+body.flat-theme:not(.uk-light) .reader-modal .uk-form-label,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-form-label {
+  color: #4b4b4b !important;
+}
+
+body.flat-theme.uk-light .reader-modal .uk-form-label,
+body.flat-theme.flat-theme-dark .reader-modal .uk-form-label,
+body.flat-theme.uk-light .comic-reader-modal .uk-form-label,
+body.flat-theme.flat-theme-dark .comic-reader-modal .uk-form-label {
+  color: #b3b3b3 !important;
+}
+
+body.flat-theme.uk-light .reader-modal .uk-select,
+body.flat-theme.flat-theme-dark .reader-modal .uk-select,
+body.flat-theme.uk-light .comic-reader-modal .uk-select,
+body.flat-theme.flat-theme-dark .comic-reader-modal .uk-select {
+  background: #1f1f1f !important;
+  border-color: #2a2a2a !important;
+  color: #fff !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-select,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-select {
+  background: #fff !important;
+  border: 1px solid #d0d0d0 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-select option,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-select option {
+  background: #fff;
+  color: #141414;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-range,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-range {
+  accent-color: #e50914;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-checkbox,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-checkbox {
+  background: #fff;
+  border-color: #b3b3b3;
+}
+
+/* Footer actions on light modal */
+body.flat-theme:not(.uk-light) .reader-modal .uk-button-default,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-button-default,
+body.flat-theme:not(.uk-light) .reader-modal .comic-reader-btn:not(.reader-exit-btn):not(.uk-button-danger) {
+  background: #fff !important;
+  color: #141414 !important;
+  border: 1px solid #d0d0d0 !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .reader-exit-btn,
+body.flat-theme:not(.uk-light) .comic-reader-modal .reader-exit-btn,
+body.flat-theme:not(.uk-light) .reader-modal .uk-button-danger {
+  background: #e50914 !important;
+  color: #fff !important;
+  border: 1px solid #e50914 !important;
+}
+
+body.flat-theme.uk-light .progress-text,
+body.flat-theme.flat-theme-dark .progress-text {
+  color: #b3b3b3;
+}
+
+body.flat-theme:not(.uk-light) .progress-text {
+  color: #4b4b4b !important;
+}
+
+/* ==========================================================================
+ * Chrome controls — modals, close, icon buttons, card actions (all Flat pages)
+ * Comic only styles these under body.comic-theme; Flat must supply full chrome.
+ * ========================================================================== */
+
+/* Modal shells */
+body.flat-theme .uk-modal-dialog,
+body.flat-theme .mango-modal .uk-modal-dialog,
+body.flat-theme .comic-modal .uk-modal-dialog {
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55) !important;
+  border: 1px solid #2a2a2a !important;
+  background: #181818 !important;
+  color: #fff !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-dialog,
+body.flat-theme:not(.uk-light) .mango-modal .uk-modal-dialog,
+body.flat-theme:not(.uk-light) .comic-modal .uk-modal-dialog {
+  background: #fff !important;
+  border-color: #e5e5e5 !important;
+  color: #141414 !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18) !important;
+}
+
+body.flat-theme .uk-modal-header,
+body.flat-theme .mango-modal .uk-modal-header,
+body.flat-theme .comic-modal .uk-modal-header {
+  background: transparent !important;
+  border-bottom: 1px solid #2a2a2a !important;
+  padding: 20px 52px 14px 24px !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-header,
+body.flat-theme:not(.uk-light) .mango-modal .uk-modal-header,
+body.flat-theme:not(.uk-light) .comic-modal .uk-modal-header {
+  border-bottom-color: #e5e5e5 !important;
+}
+
+body.flat-theme .uk-modal-title,
+body.flat-theme .mango-modal .uk-modal-title,
+body.flat-theme .comic-modal .uk-modal-title {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 1.15rem !important;
+  color: inherit !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+body.flat-theme .uk-modal-body,
+body.flat-theme .mango-modal .uk-modal-body,
+body.flat-theme .comic-modal .uk-modal-body {
+  padding: 18px 24px !important;
+  background: transparent !important;
+  color: inherit !important;
+}
+
+body.flat-theme .uk-modal-footer,
+body.flat-theme .mango-modal .uk-modal-footer,
+body.flat-theme .comic-modal .uk-modal-footer {
+  background: transparent !important;
+  border-top: 1px solid #2a2a2a !important;
+  padding: 14px 24px !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-footer,
+body.flat-theme:not(.uk-light) .mango-modal .uk-modal-footer,
+body.flat-theme:not(.uk-light) .comic-modal .uk-modal-footer {
+  border-top-color: #e5e5e5 !important;
+}
+
+body.flat-theme .modal-section-label {
+  color: #b3b3b3 !important;
+  font-weight: 600 !important;
+  font-size: 0.78rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  margin: 12px 0 8px !important;
+}
+
+body.flat-theme:not(.uk-light) .modal-section-label {
+  color: #737373 !important;
+}
+
+body.flat-theme .modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+body.flat-theme #path-text,
+body.flat-theme #pages-text,
+body.flat-theme .uk-text-meta {
+  color: #b3b3b3 !important;
+}
+
+body.flat-theme:not(.uk-light) #path-text,
+body.flat-theme:not(.uk-light) #pages-text,
+body.flat-theme:not(.uk-light) .uk-text-meta {
+  color: #737373 !important;
+}
+
+/*
+ * Modal close — UIkit default is a tiny icon; Flat needs a clear hit target.
+ * Covers entry modal, title edit, reader settings, reader-error, etc.
+ */
+body.flat-theme .uk-modal-close-default,
+body.flat-theme .uk-modal-close-outside,
+body.flat-theme button.uk-modal-close-default,
+body.flat-theme .mango-modal .uk-modal-close-default,
+body.flat-theme .comic-modal .uk-modal-close-default,
+body.flat-theme .reader-modal .uk-modal-close-default,
+body.flat-theme .comic-reader-modal .uk-modal-close-default {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 10;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  font-size: 0.95rem !important;
+  line-height: 1 !important;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  box-shadow: none !important;
+}
+
+body.flat-theme .uk-modal-close-default:hover,
+body.flat-theme .uk-modal-close-default:focus,
+body.flat-theme .mango-modal .uk-modal-close-default:hover,
+body.flat-theme .comic-modal .uk-modal-close-default:hover,
+body.flat-theme .reader-modal .uk-modal-close-default:hover {
+  background: #e50914 !important;
+  border-color: #e50914 !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  transform: scale(1.05);
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-close-default,
+body.flat-theme:not(.uk-light) .mango-modal .uk-modal-close-default,
+body.flat-theme:not(.uk-light) .comic-modal .uk-modal-close-default,
+body.flat-theme:not(.uk-light) .reader-modal .uk-modal-close-default {
+  background: rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid #d0d0d0 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-modal-close-default:hover,
+body.flat-theme:not(.uk-light) .uk-modal-close-default:focus {
+  background: #e50914 !important;
+  border-color: #e50914 !important;
+  color: #fff !important;
+}
+
+body.flat-theme .uk-modal-close-default i,
+body.flat-theme .uk-modal-close-default .fas,
+body.flat-theme .uk-modal-close-default svg {
+  color: inherit !important;
+  font-size: 0.9rem !important;
+  pointer-events: none;
+}
+
+/* Icon buttons — edit / download / title heading actions */
+body.flat-theme .uk-icon-button,
+body.flat-theme a.uk-icon-button,
+body.flat-theme button.uk-icon-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  vertical-align: middle;
+}
+
+body.flat-theme .uk-icon-button:hover,
+body.flat-theme .uk-icon-button:focus,
+body.flat-theme a.uk-icon-button:hover {
+  background: #e50914 !important;
+  border-color: #e50914 !important;
+  color: #fff !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-icon-button,
+body.flat-theme:not(.uk-light) a.uk-icon-button {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid #d0d0d0 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme:not(.uk-light) .uk-icon-button:hover,
+body.flat-theme:not(.uk-light) a.uk-icon-button:hover {
+  background: #e50914 !important;
+  border-color: #e50914 !important;
+  color: #fff !important;
+}
+
+body.flat-theme .uk-icon-button i,
+body.flat-theme .uk-icon-button .fas {
+  color: inherit !important;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Modal header icon cluster next to title */
+body.flat-theme #modal-entry-title .uk-icon-button,
+body.flat-theme .uk-modal-title .uk-icon-button {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Card hover hide/show actions on library/tag grids */
+body.flat-theme .card-hover-actions {
+  display: flex;
+  gap: 6px;
+}
+
+body.flat-theme .card-action-btn,
+body.flat-theme .card-hide-btn,
+body.flat-theme .card-unhide-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: rgba(20, 20, 20, 0.82) !important;
+  color: #fff !important;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+body.flat-theme .card-action-btn:hover,
+body.flat-theme .card-hide-btn:hover,
+body.flat-theme .card-unhide-btn:hover {
+  background: #e50914 !important;
+  color: #fff !important;
+  transform: scale(1.06);
+}
+
+/* Select bar icons on title page */
+body.flat-theme #select-bar {
+  border-radius: 6px !important;
+  border: 1px solid #2a2a2a !important;
+  background: #1f1f1f !important;
+  color: #fff !important;
+}
+
+body.flat-theme:not(.uk-light) #select-bar {
+  border-color: #e5e5e5 !important;
+  background: #fff !important;
+  color: #141414 !important;
+}
+
+body.flat-theme #select-bar a,
+body.flat-theme #select-bar-controls a {
+  color: inherit !important;
+  opacity: 0.85;
+}
+
+body.flat-theme #select-bar a:hover,
+body.flat-theme #select-bar-controls a:hover {
+  color: #e50914 !important;
+  opacity: 1;
+}
+
+/* Alerts */
+body.flat-theme .uk-alert {
+  border-radius: 6px;
+  border: 1px solid #2a2a2a;
+}
+
+body.flat-theme .uk-alert-close {
+  color: inherit;
+  opacity: 0.7;
+}
+
+body.flat-theme .uk-alert-close:hover {
+  opacity: 1;
+  color: #e50914;
+}
+
+/* Breadcrumb / meta links in modals */
+body.flat-theme .uk-modal a:not(.comic-btn):not(.uk-button):not(.uk-icon-button) {
+  color: #e50914;
+}
+
+body.flat-theme .uk-modal a:not(.comic-btn):not(.uk-button):not(.uk-icon-button):hover {
+  color: #f40612;
+  text-decoration: underline;
+}
+
+/* Totop */
+body.flat-theme #totop-wrapper a {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: #e50914 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 14px rgba(229, 9, 20, 0.4);
+}
+
+body.flat-theme #totop-wrapper a:hover {
+  background: #b20710 !important;
+}
+
+/* Plugin / admin cards */
+body.flat-theme .admin-sub-page .uk-card-default {
+  background: #181818;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  box-shadow: none;
+  color: #fff;
+}
+
+body.flat-theme:not(.uk-light) .admin-sub-page .uk-card-default {
+  background: #fff;
+  border-color: #e5e5e5;
+  color: #141414;
+}
+
+/* Offcanvas close (if present) */
+body.flat-theme .uk-offcanvas-close {
+  color: #fff !important;
+  opacity: 0.85;
+}
+
+body.flat-theme .uk-offcanvas-close:hover {
+  color: #e50914 !important;
+  opacity: 1;
+}
+
+/* Select2 — Netflix red (title tags etc.) */
+body.flat-theme .select2-container--default .select2-selection--multiple {
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  background: #fff;
+}
+
+body.flat-theme.uk-light .select2-container--default .select2-selection,
+body.flat-theme.flat-theme-dark .select2-container--default .select2-selection {
+  background-color: #1f1f1f !important;
+}
+
+body.flat-theme.uk-light .select2-container--default .select2-selection--multiple,
+body.flat-theme.flat-theme-dark .select2-container--default .select2-selection--multiple {
+  border: 1px solid #2a2a2a !important;
+}
+
+body.flat-theme .select2-container--default .select2-selection--multiple .select2-selection__choice,
+body.flat-theme .select2-container--default .select2-selection--multiple .select2-selection__choice__remove,
+body.flat-theme .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+  background-color: rgba(229, 9, 20, 0.12) !important;
+  color: #e50914 !important;
+  border: 1px solid rgba(229, 9, 20, 0.35) !important;
+  border-radius: 999px !important;
+}
+
+body.flat-theme.uk-light .select2-container--default .select2-selection--multiple .select2-search__field,
+body.flat-theme.flat-theme-dark .select2-container--default .select2-selection--multiple .select2-search__field {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+body.flat-theme .select2-container--default.select2-container--focus .select2-selection--multiple {
+  border-color: #e50914 !important;
+}
+
+body.flat-theme .select2-container--default .select2-dropdown {
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+body.flat-theme.uk-light .select2-dropdown,
+body.flat-theme.flat-theme-dark .select2-dropdown {
+  background-color: #1f1f1f !important;
+  border-color: #2a2a2a !important;
+  color: #fff;
+}
+
+body.flat-theme .select2-container--default .select2-dropdown .select2-results__option--highlighted.select2-results__option--selectable {
+  background-color: #e50914 !important;
+}
+
+body.flat-theme.uk-light .select2-dropdown .select2-results__option--selected:not(.select2-results__option--highlighted),
+body.flat-theme.flat-theme-dark .select2-dropdown .select2-results__option--selected:not(.select2-results__option--highlighted) {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}

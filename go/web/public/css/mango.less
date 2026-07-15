@@ -173,7 +173,7 @@
     width: 60vw;
     height: 60vw;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(217, 106, 75, 0.10) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(229, 9, 20, 0.10) 0%, transparent 70%);
     animation: login-bg-pan 12s ease-in-out infinite;
   }
 
@@ -317,7 +317,7 @@
     }
 
     &:active {
-      background: #B04E38 !important;
+      background: #8B0A12 !important;
     }
 
     &:disabled {
@@ -393,7 +393,7 @@
     background: @dark-accent !important;
 
     &:hover {
-      background: #D4765A !important;
+      background: #B20710 !important;
     }
 
     &:active {
@@ -417,7 +417,7 @@
 
 // ============================================
 // Flat Design System
-// Accent: #D96A4B warm coral
+// Accent: #E50914 Netflix red (Flat primary)
 // No gradients, no glassmorphism, no transforms
 // ============================================
 
@@ -926,37 +926,84 @@
   position: relative;
   flex: 0 0 55%;
   min-width: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   overflow: hidden;
   display: flex;
   align-items: flex-end;
   border-radius: @radius-lg;
+  background: #1a1a1a;
+}
+
+// Soft ambient fill from the cover (portrait art would look cropped as cover alone)
+.hero-bg {
+  position: absolute;
+  inset: -12%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(36px) saturate(1.15);
+  transform: scale(1.08);
+  opacity: 0.55;
+  z-index: 0;
+  pointer-events: none;
+}
+
+// Full-height portrait panel — show entire cover, not a cropped half
+.hero-poster {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(42%, 220px);
+  background-size: contain;
+  background-position: center right;
+  background-repeat: no-repeat;
+  z-index: 1;
+  pointer-events: none;
+
+  @media (min-width: 960px) {
+    width: min(46%, 260px);
+  }
+
+  @media (max-width: 599px) {
+    width: 38%;
+    background-position: center;
+  }
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.6) 30%,
-    rgba(0, 0, 0, 0.25) 55%,
-    rgba(0, 0, 0, 0.08) 80%,
-    rgba(0, 0, 0, 0.02) 100%
-  );
-  z-index: 1;
+  // Keep text side readable; keep poster side more visible
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.88) 0%,
+      rgba(0, 0, 0, 0.72) 38%,
+      rgba(0, 0, 0, 0.28) 62%,
+      rgba(0, 0, 0, 0.08) 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.55) 0%,
+      transparent 45%
+    );
+  z-index: 2;
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   padding: 24px 24px;
-  max-width: 600px;
+  max-width: min(560px, 58%);
+  box-sizing: border-box;
 
   @media (min-width: 960px) {
     padding: 32px 32px;
+  }
+
+  @media (max-width: 599px) {
+    max-width: 70%;
+    padding: 18px 16px;
   }
 }
 
@@ -1326,7 +1373,7 @@
       color: #fff !important;
     }
     &:active {
-      background: #B04E38 !important;
+      background: #8B0A12 !important;
     }
   }
 
@@ -1760,7 +1807,7 @@
   }
 
   &:active {
-    background: #B04E38 !important;
+    background: #8B0A12 !important;
   }
 
   &:focus-visible {
@@ -2042,7 +2089,8 @@
     }
 
     .uk-text-meta {
-      color: #777;
+      // Readable on both dark reader chrome and light Flat modal overrides
+      color: #8a8a8a;
     }
 
     .uk-modal-body {
@@ -2076,7 +2124,7 @@
     .uk-form-label {
       font-weight: 600;
       font-size: 0.85rem;
-      color: #AAA;
+      color: #b0b0b0;
     }
 
     .uk-select {
@@ -2138,7 +2186,7 @@
       color: #fff !important;
 
       &:hover {
-        background: #D4765A !important;
+        background: #B20710 !important;
       }
     }
 
@@ -2169,7 +2217,7 @@
     margin-bottom: 20px;
 
     &:hover {
-      background: #D4765A !important;
+      background: #B20710 !important;
     }
   }
 
@@ -2537,7 +2585,7 @@
     }
     .section-link {
       color: @dark-accent;
-      &:hover { color: #D4765A; }
+      &:hover { color: #B20710; }
     }
   }
 
@@ -2721,7 +2769,7 @@
     background: @dark-accent !important;
 
     &:hover {
-      background: #D4765A !important;
+      background: #B20710 !important;
     }
 
     &:active {
@@ -2734,7 +2782,7 @@
     background: @dark-accent;
 
     &:hover {
-      background: #D4765A;
+      background: #B20710;
     }
   }
 
@@ -3048,7 +3096,7 @@
 @shelf-text: #ECEAF2;
 @shelf-muted: #A5A1B2;
 @shelf-dim: #777386;
-@shelf-accent: #F28B45;
+@shelf-accent: #E50914;
 @shelf-accent-2: #69A7FF;
 @shelf-sidebar: #11131A;
 
@@ -3065,7 +3113,7 @@ body.mango-app-shell {
 
 body.uk-light.mango-app-shell {
   background:
-    radial-gradient(circle at 76% 8%, rgba(242, 139, 69, 0.12), transparent 30rem),
+    radial-gradient(circle at 76% 8%, rgba(229, 9, 20, 0.12), transparent 30rem),
     linear-gradient(135deg, #121212 0%, #15161D 58%, #191820 100%) !important;
   background-attachment: fixed;
   color: @shelf-text;
@@ -3142,7 +3190,7 @@ body.mango-app-shell .app-sidebar .sidebar-nav a:hover,
 body.mango-app-shell .app-sidebar .sidebar-nav a.active,
 body.mango-app-shell .app-sidebar .sidebar-nav a.uk-active {
   color: @shelf-text;
-  background: rgba(242, 139, 69, 0.13);
+  background: rgba(229, 9, 20, 0.13);
 }
 
 body.mango-app-shell .app-sidebar .sidebar-nav a:hover i,
@@ -3165,7 +3213,7 @@ body.mango-app-shell .app-sidebar .sidebar-footer a {
 
 body.mango-app-shell .app-sidebar .sidebar-toggle button:hover,
 body.mango-app-shell .app-sidebar .sidebar-footer a:hover {
-  background: rgba(242, 139, 69, 0.16);
+  background: rgba(229, 9, 20, 0.16);
   color: @shelf-accent;
   text-decoration: none;
 }
@@ -3299,7 +3347,7 @@ body.mango-app-shell .card-progress-bar {
 
 body.mango-app-shell .hero-progress-fill,
 body.mango-app-shell .card-progress-fill {
-  background: linear-gradient(90deg, @shelf-accent 0%, #F3B45B 100%);
+  background: linear-gradient(90deg, @shelf-accent 0%, #F40612 100%);
 }
 
 body.mango-app-shell .continue-reading-cards,
@@ -3432,8 +3480,8 @@ body.mango-app-shell .carousel-arrow {
   transition: background 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
 
   &:hover {
-    background: rgba(242, 139, 69, 0.25);
-    border-color: rgba(242, 139, 69, 0.4);
+    background: rgba(229, 9, 20, 0.25);
+    border-color: rgba(229, 9, 20, 0.4);
   }
 
   &.carousel-arrow-left {
@@ -3614,7 +3662,7 @@ body.mango-app-shell .mango-btn.mango-btn-primary {
 
 body.mango-app-shell .mango-btn.mango-btn-outline {
   color: @shelf-accent !important;
-  border-color: rgba(242,139,69,0.45) !important;
+  border-color: rgba(229, 9, 20,0.45) !important;
   border-radius: 6px !important;
 }
 
@@ -3636,7 +3684,7 @@ body.mango-app-shell .page-subtitle {
 
 body.mango-app-shell:not(.uk-light) {
   background:
-    radial-gradient(circle at 72% 8%, rgba(242, 139, 69, 0.12), transparent 28rem),
+    radial-gradient(circle at 72% 8%, rgba(229, 9, 20, 0.12), transparent 28rem),
     linear-gradient(135deg, #F7F5F2 0%, #EEEFF4 54%, #F4EDE8 100%) !important;
   color: @text-primary;
 }

@@ -137,7 +137,8 @@ func (s *Server) enrichContinueReading(base string, items []storage.ContinueRead
 			if e := library.EntryByID(t, it.EntryID); e != nil {
 				it.EntryName = e.Name()
 				coverEID = e.ID()
-				if pages := e.PageCount(); pages > 0 && it.Page > 0 {
+				it.PageCount = e.PageCount()
+				if pages := it.PageCount; pages > 0 && it.Page > 0 {
 					pct := float64(it.Page) / float64(pages) * 100
 					if pct > 100 {
 						pct = 100
@@ -191,6 +192,7 @@ func (s *Server) enrichRecentlyAdded(base string, items []storage.RecentlyAddedI
 		if len(t.Entries) > 0 {
 			it.EntryID = t.Entries[0].ID()
 			it.EntryName = t.Entries[0].Name()
+			it.PageCount = t.Entries[0].PageCount()
 		}
 		if eid := firstEntryID(t); eid != "" {
 			it.CoverURL = fmt.Sprintf("%sapi/cover/%s/%s", base, t.ID, eid)

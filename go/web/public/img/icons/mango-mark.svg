@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mango">
+  <defs>
+    <linearGradient id="mangoBody" x1="18%" y1="8%" x2="86%" y2="94%">
+      <stop offset="0%" stop-color="#FF4D4F"/>
+      <stop offset="45%" stop-color="#E50914"/>
+      <stop offset="100%" stop-color="#9B0D14"/>
+    </linearGradient>
+    <linearGradient id="mangoShine" x1="30%" y1="15%" x2="70%" y2="70%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="55%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="20%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#5CE08A"/>
+      <stop offset="100%" stop-color="#1FA855"/>
+    </linearGradient>
+  </defs>
+  <!-- soft tile for light bars -->
+  <rect width="64" height="64" rx="14" fill="none"/>
+  <!-- mango body: modern rounded teardrop -->
+  <path
+    fill="url(#mangoBody)"
+    d="M33.2 8.6c8.8 1.4 18.1 10.2 19.2 22.1 1.2 13.2-8.2 25.4-20.8 26.7-11.5 1.2-22.4-7.6-24.1-18.9C5.5 26.6 12.8 15.4 23.1 11.2c3.4-1.4 6.7-2.3 10.1-2.6z"/>
+  <!-- highlight -->
+  <path
+    fill="url(#mangoShine)"
+    d="M28.5 14.2c5.4-1.6 12.2.6 15.8 5.4 1.6 2.1 1.2 4.2-1.1 4.6-4.8.8-9.6-1.2-13.1-4.3-2.1-1.9-2.4-4.4-1.6-5.7z"/>
+  <!-- stem -->
+  <path
+    fill="#3D2B1F"
+    d="M36.8 10.4c1.4-3.2 4.1-5.4 7.1-6.2.5-.1.9.4.7.9-1 2.4-1.2 4.4-.3 6.5.2.4-.2.8-.6.7-2.9-.7-5.4-1-6.9-1.9z"/>
+  <!-- leaf -->
+  <path
+    fill="url(#leafGrad)"
+    d="M42.4 6.8c5.8.2 10.2 3.6 11.1 8.1.2.9-.8 1.5-1.5 1-3.2-2.3-6.5-3.1-10.2-3.2-.8 0-1.1-.9-.6-1.4 0 0 .4-.9 1.2-4.5z"/>
+  <path
+    fill="#0E7A3A"
+    opacity="0.35"
+    d="M44.2 8.6c3.2.6 5.9 2.2 7.3 4.4-2.5-1.2-5.2-1.9-8.1-2.1.2-.8.5-1.6.8-2.3z"/>
+</svg>

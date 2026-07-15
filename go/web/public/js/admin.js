@@ -24,10 +24,13 @@ const component = () => {
 			setTheme();
 		},
 		uiStyleChanged(event) {
-			const newStyle = $(event.currentTarget).val().toLowerCase();
+			const newStyle = event.target.value.toLowerCase();
 			saveUIStyle(newStyle);
 			setUIStyle(newStyle);
-			setTheme();
+			setTheme(loadTheme());
+			if (newStyle === 'comic' && typeof ensureComicFonts === 'function') {
+				ensureComicFonts();
+			}
 		},
 		scan() {
 			if (this.scanning) return;
