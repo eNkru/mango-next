@@ -37,8 +37,9 @@ body.flat-theme .flat-topbar {
   display: flex;
 }
 
-html:not(.flat-theme) .flat-topbar,
-body:not(.flat-theme) .flat-topbar {
+/* Shared shell: comic owns its topbar visibility in comic-theme.css */
+html:not(.flat-theme):not(.comic-theme):not(.comic-theme-dark) .flat-topbar,
+body:not(.flat-theme):not(.comic-theme):not(.comic-theme-dark) .flat-topbar {
   display: none !important;
 }
 
