@@ -366,51 +366,73 @@ body.flat-theme.flat-theme-dark .comic-section-count {
   color: #b3b3b3;
 }
 
-/* Hero — Netflix billboard */
-body.flat-theme .hero-banner,
-body.flat-theme .comic-hero {
-  min-height: min(56vw, 420px);
-  border-radius: 0 !important;
+/* Hero — Netflix-style: blur fill + full portrait poster (no half-cropped cover) */
+body.flat-theme .continue-reading-row > .hero-banner,
+body.flat-theme .continue-reading-row > .comic-hero {
+  min-height: 0 !important;
+  border-radius: 6px !important;
   border: none !important;
   box-shadow: none !important;
-  background-size: cover;
-  background-position: center top;
-  position: relative;
+  background: #141414 !important;
+  background-image: none !important;
   overflow: hidden;
+}
+
+body.flat-theme .hero-bg {
+  opacity: 0.45;
+  filter: blur(40px) saturate(1.2);
+}
+
+body.flat-theme .hero-poster {
+  width: min(44%, 240px);
+  background-position: center right;
+  background-size: contain;
+  /* Soft edge so poster blends into blur */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 100%);
 }
 
 body.flat-theme .hero-overlay,
 body.flat-theme .comic-hero-overlay {
-  background: linear-gradient(
-    90deg,
-    rgba(20, 20, 20, 0.92) 0%,
-    rgba(20, 20, 20, 0.55) 45%,
-    rgba(20, 20, 20, 0.15) 100%
-  ) !important;
-  background-image: linear-gradient(
-    0deg,
-    rgba(20, 20, 20, 0.95) 0%,
-    transparent 55%
-  ),
-  linear-gradient(
-    90deg,
-    rgba(20, 20, 20, 0.9) 0%,
-    transparent 60%
-  ) !important;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(20, 20, 20, 0.94) 0%,
+      rgba(20, 20, 20, 0.78) 36%,
+      rgba(20, 20, 20, 0.25) 58%,
+      rgba(20, 20, 20, 0.05) 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(20, 20, 20, 0.55) 0%,
+      transparent 50%
+    ) !important;
+}
+
+body.flat-theme:not(.uk-light) .continue-reading-row > .hero-banner {
+  background: #f0f0f0 !important;
 }
 
 body.flat-theme:not(.uk-light) .hero-overlay,
 body.flat-theme:not(.uk-light) .comic-hero-overlay {
-  background-image: linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.92) 0%,
-    transparent 50%
-  ),
-  linear-gradient(
-    90deg,
-    rgba(245, 245, 245, 0.88) 0%,
-    transparent 55%
-  ) !important;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(245, 245, 245, 0.96) 0%,
+      rgba(245, 245, 245, 0.82) 40%,
+      rgba(245, 245, 245, 0.2) 65%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.35) 0%,
+      transparent 45%
+    ) !important;
+}
+
+body.flat-theme:not(.uk-light) .hero-poster {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 18%, #000 100%);
 }
 
 body.flat-theme .hero-content {

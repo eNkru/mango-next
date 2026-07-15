@@ -57,8 +57,10 @@
       </div>
 
       <div class="continue-reading-row">
-        <!-- Featured hero card (first item, wide) -->
-        <div class="hero-banner comic-hero" style="background-image: url('{{$hero_item.CoverURL}}');">
+        <!-- Featured hero: blurred fill + full portrait poster (manga covers are tall) -->
+        <div class="hero-banner comic-hero">
+          <div class="hero-bg" style="background-image: url('{{$hero_item.CoverURL}}');" aria-hidden="true"></div>
+          <div class="hero-poster" style="background-image: url('{{$hero_item.CoverURL}}');" role="img" aria-label="{{$hero_item.EntryName}}"></div>
           <div class="hero-overlay comic-hero-overlay"></div>
           <div class="hero-content">
             <span class="comic-hero-badge" data-i18n="continue_reading">继续阅读</span>
