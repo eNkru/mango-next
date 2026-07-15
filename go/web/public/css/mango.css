@@ -19082,7 +19082,7 @@ body.sidebar-is-collapsed .app-content {
   color: #E0E0E0;
 }
 .reader-page .reader-modal .uk-modal-dialog .uk-text-meta {
-  color: #777;
+  color: #8a8a8a;
 }
 .reader-page .reader-modal .uk-modal-dialog .uk-modal-body {
   padding: 18px 24px;
@@ -19111,7 +19111,7 @@ body.sidebar-is-collapsed .app-content {
 .reader-page .reader-modal .uk-modal-dialog .uk-form-label {
   font-weight: 600;
   font-size: 0.85rem;
-  color: #AAA;
+  color: #b0b0b0;
 }
 .reader-page .reader-modal .uk-modal-dialog .uk-select {
   border-radius: 4px;

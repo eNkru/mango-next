@@ -1492,27 +1492,41 @@ body.flat-theme .comic-reader-btn-primary:hover {
   background: #b20710 !important;
 }
 
-body.flat-theme .reader-modal .uk-modal-dialog,
-body.flat-theme .comic-reader-modal .uk-modal-dialog {
+/* Reader settings modal — dark default */
+body.flat-theme.uk-light .reader-modal .uk-modal-dialog,
+body.flat-theme.flat-theme-dark .reader-modal .uk-modal-dialog,
+body.flat-theme.uk-light .comic-reader-modal .uk-modal-dialog,
+body.flat-theme.flat-theme-dark .comic-reader-modal .uk-modal-dialog {
   background: #181818 !important;
   border: 1px solid #2a2a2a !important;
-  border-radius: 6px !important;
+  border-radius: 8px !important;
   color: #fff !important;
 }
 
+/* Light mode: high-contrast text on white (avoid leftover #777 / #AAA from mango.css) */
 body.flat-theme:not(.uk-light) .reader-modal .uk-modal-dialog,
 body.flat-theme:not(.uk-light) .comic-reader-modal .uk-modal-dialog {
   background: #fff !important;
-  border-color: #e5e5e5 !important;
+  border: 1px solid #e5e5e5 !important;
   color: #141414 !important;
 }
 
 body.flat-theme .reader-modal .uk-modal-header,
 body.flat-theme .comic-reader-modal .uk-modal-header,
 body.flat-theme .reader-modal .uk-modal-footer,
-body.flat-theme .comic-reader-modal .uk-modal-footer {
+body.flat-theme .comic-reader-modal .uk-modal-footer,
+body.flat-theme .reader-modal .uk-modal-body,
+body.flat-theme .comic-reader-modal .uk-modal-body {
   background: transparent !important;
   border-color: #2a2a2a !important;
+  color: inherit !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-modal-header,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-modal-header,
+body.flat-theme:not(.uk-light) .reader-modal .uk-modal-footer,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-modal-footer {
+  border-color: #e5e5e5 !important;
 }
 
 body.flat-theme .reader-modal .uk-modal-title,
@@ -1521,15 +1535,88 @@ body.flat-theme .comic-reader-modal .uk-modal-title {
   font-weight: 700;
 }
 
-body.flat-theme .reader-modal .uk-select,
-body.flat-theme .comic-reader-modal .uk-select {
+body.flat-theme.uk-light .reader-modal .uk-text-meta,
+body.flat-theme.flat-theme-dark .reader-modal .uk-text-meta,
+body.flat-theme.uk-light .comic-reader-modal .uk-text-meta,
+body.flat-theme.flat-theme-dark .comic-reader-modal .uk-text-meta,
+body.flat-theme.uk-light .reader-modal .progress-text,
+body.flat-theme.flat-theme-dark .reader-modal .progress-text {
+  color: #b3b3b3 !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-text-meta,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-text-meta,
+body.flat-theme:not(.uk-light) .reader-modal .progress-text,
+body.flat-theme:not(.uk-light) .comic-reader-modal .progress-text,
+body.flat-theme:not(.uk-light) .reader-modal .uk-form-label,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-form-label {
+  color: #4b4b4b !important;
+}
+
+body.flat-theme.uk-light .reader-modal .uk-form-label,
+body.flat-theme.flat-theme-dark .reader-modal .uk-form-label,
+body.flat-theme.uk-light .comic-reader-modal .uk-form-label,
+body.flat-theme.flat-theme-dark .comic-reader-modal .uk-form-label {
+  color: #b3b3b3 !important;
+}
+
+body.flat-theme.uk-light .reader-modal .uk-select,
+body.flat-theme.flat-theme-dark .reader-modal .uk-select,
+body.flat-theme.uk-light .comic-reader-modal .uk-select,
+body.flat-theme.flat-theme-dark .comic-reader-modal .uk-select {
   background: #1f1f1f !important;
   border-color: #2a2a2a !important;
   color: #fff !important;
 }
 
-body.flat-theme .progress-text {
+body.flat-theme:not(.uk-light) .reader-modal .uk-select,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-select {
+  background: #fff !important;
+  border: 1px solid #d0d0d0 !important;
+  color: #141414 !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-select option,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-select option {
+  background: #fff;
+  color: #141414;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-range,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-range {
+  accent-color: #e50914;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .uk-checkbox,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-checkbox {
+  background: #fff;
+  border-color: #b3b3b3;
+}
+
+/* Footer actions on light modal */
+body.flat-theme:not(.uk-light) .reader-modal .uk-button-default,
+body.flat-theme:not(.uk-light) .comic-reader-modal .uk-button-default,
+body.flat-theme:not(.uk-light) .reader-modal .comic-reader-btn:not(.reader-exit-btn):not(.uk-button-danger) {
+  background: #fff !important;
+  color: #141414 !important;
+  border: 1px solid #d0d0d0 !important;
+}
+
+body.flat-theme:not(.uk-light) .reader-modal .reader-exit-btn,
+body.flat-theme:not(.uk-light) .comic-reader-modal .reader-exit-btn,
+body.flat-theme:not(.uk-light) .reader-modal .uk-button-danger {
+  background: #e50914 !important;
+  color: #fff !important;
+  border: 1px solid #e50914 !important;
+}
+
+body.flat-theme.uk-light .progress-text,
+body.flat-theme.flat-theme-dark .progress-text {
   color: #b3b3b3;
+}
+
+body.flat-theme:not(.uk-light) .progress-text {
+  color: #4b4b4b !important;
 }
 
 /* ==========================================================================
