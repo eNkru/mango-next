@@ -138,6 +138,37 @@ body.comic-theme-dark .comic-btn.comic-btn-sm {
   font-size: 0.8rem !important;
   box-shadow: 2px 2px 0 #000000 !important;
 }
+/* Library toolbar: align hide toggle with 44px comic-select */
+body.comic-theme .library-toolbar .hide-toggle-btn,
+body.comic-theme-dark .library-toolbar .hide-toggle-btn,
+body.comic-theme .library-page .hide-toggle-btn,
+body.comic-theme-dark .library-page .hide-toggle-btn {
+  min-height: 44px !important;
+  height: 44px !important;
+  box-sizing: border-box;
+  padding: 0 16px !important;
+  font-size: 0.9rem !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+/* Compact circular card hide control (less bulky than full comic-btn chrome) */
+body.comic-theme .card-action-btn,
+body.comic-theme-dark .card-action-btn,
+body.comic-theme .card-hide-btn,
+body.comic-theme-dark .card-hide-btn,
+body.comic-theme .card-unhide-btn,
+body.comic-theme-dark .card-unhide-btn {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  border: 2px solid #000000 !important;
+  box-shadow: 2px 2px 0 #000000 !important;
+  font-size: 0.72rem !important;
+  line-height: 1 !important;
+}
 body.comic-theme .comic-btn.comic-btn-active-toggle,
 body.comic-theme-dark .comic-btn.comic-btn-active-toggle {
   background: #2ECC40 !important;

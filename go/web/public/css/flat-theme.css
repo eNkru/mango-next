@@ -229,11 +229,21 @@ body.flat-theme .hide-toggle-btn {
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, filter 0.15s ease;
 }
 
-body.flat-theme .comic-btn-sm,
-body.flat-theme .hide-toggle-btn.comic-btn-sm {
+body.flat-theme .comic-btn-sm {
   min-height: 34px;
   padding: 7px 14px !important;
   font-size: 0.85rem !important;
+  gap: 6px;
+}
+
+/* Library toolbar: keep hide toggle aligned with 40px sort-select */
+body.flat-theme .library-toolbar .hide-toggle-btn,
+body.flat-theme .library-page .hide-toggle-btn,
+body.flat-theme .hide-toggle-btn.comic-btn-sm {
+  min-height: 40px !important;
+  height: 40px !important;
+  padding: 0 14px !important;
+  font-size: 0.88rem !important;
   gap: 6px;
 }
 
@@ -1132,12 +1142,12 @@ body.flat-theme .empty-state .empty-icon {
   margin-bottom: 12px;
 }
 
-/* Hover admin actions on cards */
+/* Hover admin actions on cards (size set with .card-action-btn below) */
 body.flat-theme .card-hover-actions .card-action-btn {
   background: rgba(20, 20, 20, 0.8);
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 50%;
 }
 
 body.flat-theme .card-action-btn:hover {
@@ -1936,16 +1946,17 @@ body.flat-theme .card-unhide-btn {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  width: 34px !important;
-  height: 34px !important;
-  min-width: 34px;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px;
   padding: 0 !important;
   border-radius: 50% !important;
   border: none !important;
+  font-size: 0.72rem !important;
   background: rgba(20, 20, 20, 0.82) !important;
   color: #fff !important;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   transition: background 0.15s ease, transform 0.15s ease;
 }
 

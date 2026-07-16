@@ -18554,6 +18554,15 @@ body.sidebar-is-collapsed .app-content {
   padding: 0 10px !important;
   transition: border-color 0.2s ease;
 }
+/* Match toolbar hide/show control to sort-select height */
+.library-toolbar .hide-toggle-btn,
+.library-page .hide-toggle-btn {
+  min-height: 40px !important;
+  height: 40px !important;
+  box-sizing: border-box;
+  padding: 0 14px !important;
+  font-size: 0.88rem !important;
+}
 .sort-select:focus {
   border-color: #E50914 !important;
   outline: none;
@@ -18803,12 +18812,15 @@ body.sidebar-is-collapsed .app-content {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
-  transition: background 0.2s ease;
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 .card-action-btn:active {
   opacity: 0.8;
