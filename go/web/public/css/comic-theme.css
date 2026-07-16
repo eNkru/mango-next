@@ -345,7 +345,7 @@ body.comic-theme-dark .comic-card .card-progress-fill {
   background: repeating-linear-gradient(45deg, #E23636, #E23636 8px, #c81d1d 8px, #c81d1d 16px);
   transition: width 0.5s ease;
 }
-/* Bottom-left above progress bar — top-right is reserved for hide/show actions */
+/* Continue-reading / entry cards: % above progress bar (library has no % label). */
 body.comic-theme .comic-card .card-progress-percent,
 body.comic-theme-dark .comic-card .card-progress-percent {
   position: absolute;
@@ -364,6 +364,7 @@ body.comic-theme-dark .comic-card .card-progress-percent {
   z-index: 2;
   box-shadow: 2px 2px 0 #000000;
 }
+/* Hide stays top-right (library no longer has % there). */
 body.comic-theme .card-hover-actions,
 body.comic-theme-dark .card-hover-actions {
   top: 8px;

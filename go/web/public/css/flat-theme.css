@@ -942,13 +942,25 @@ body.flat-theme .card-progress-fill {
   border-radius: 0;
 }
 
+/* Continue-reading / home cards: show % at bottom-right (library has no label). */
 body.flat-theme .card-progress-percent {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 3;
+  display: inline-block;
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
   border: none;
   border-radius: 2px;
   font-size: 0.7rem;
   font-weight: 600;
+  padding: 2px 6px;
+  line-height: 1.2;
+}
+body.flat-theme .continue-reading-section .card-progress-percent,
+body.flat-theme .continue-reading-cards .card-progress-percent {
+  display: inline-block;
 }
 
 /* Library / title grids */
