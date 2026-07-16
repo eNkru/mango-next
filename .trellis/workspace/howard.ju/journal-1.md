@@ -376,3 +376,36 @@ Registered PNG/GIF/WebP decoders in thumbnail package, removed WebP fallback tha
 ### Next Steps
 
 - None - task complete
+
+
+## Session 10: Fix nested titles missing from library TitleHash
+
+**Date**: 2026-07-16
+**Task**: Fix nested titles missing from library TitleHash
+**Branch**: `fix/nested-title-hash`
+
+### Summary
+
+Nested Series/Part/vol archives now retain Children, land in TitleHash, persist via cache v2, DeepEntries recurses, firstEntryID uses first deep entry for series covers, with regression tests and library-background-jobs spec updates.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `d5c5ade` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

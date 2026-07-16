@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 9
+- **Total Sessions**: 10
 - **Last Active**: 2026-07-16
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~378 | Active |
+| `journal-1.md` | ~411 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 10 | 2026-07-16 | Fix nested titles missing from library TitleHash | `d5c5ade` | `fix/nested-title-hash` |
 | 9 | 2026-07-16 | Fix thumbnail RIFF/WebP decode failure | `6350380` | `fix/thumbnail-riff-decode` |
 | 8 | 2026-07-16 | Comic Netflix layout | `259c5b5` | `ui/comic-netflix-layout` |
 | 7 | 2026-07-16 | Finish Flat Netflix restyle | `51ec5b1`, `58849df`, `a40900f`, `64fd106`, `3d1065c`, `c8c6960`, `11bb5eb`, `05e2543`, `a603fe2`, `4a9ea43`, `61a9265`, `b08bc87` | `main` |
