@@ -176,10 +176,23 @@ func (lib *Library) snapshotByDir() map[string]*Title {
 
 func (lib *Library) applyTitles(titles []*Title) {
 	ids := make([]string, 0, len(titles))
-	hash := make(map[string]*Title, len(titles))
-	for _, t := range titles {
-		ids = append(ids, t.ID)
+	hash := make(map[string]*Title)
+	var walk func(*Title)
+	walk = func(t *Title) {
+		if t == nil || t.ID == "" {
+			return
+		}
 		hash[t.ID] = t
+		for _, c := range t.Children {
+			walk(c)
+		}
+	}
+	for _, t := range titles {
+		if t == nil || t.ID == "" {
+			continue
+		}
+		ids = append(ids, t.ID)
+		walk(t)
 	}
 	lib.mu.Lock()
 	lib.TitleIDs = ids
@@ -197,10 +210,12 @@ func (lib *Library) saveCacheLocked(titles []*Title) error {
 // GenerateThumbnails iterates over all entries and generates thumbnails for
 // those that don't already have one. Matches Crystal Library#generate_thumbnails.
 func (lib *Library) GenerateThumbnails() error {
+	// Walk top-level titles only; DeepEntries already recurses into Children.
+	// Iterating every TitleHash node would double-count nested entries.
 	lib.mu.RLock()
-	titles := make([]*Title, 0, len(lib.TitleHash))
-	for _, t := range lib.TitleHash {
-		if t != nil {
+	titles := make([]*Title, 0, len(lib.TitleIDs))
+	for _, id := range lib.TitleIDs {
+		if t := lib.TitleHash[id]; t != nil {
 			titles = append(titles, t)
 		}
 	}

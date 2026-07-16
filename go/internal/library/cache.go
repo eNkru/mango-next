@@ -12,7 +12,9 @@ import (
 	"github.com/eNkru/mango-next/internal/storage"
 )
 
-const libraryCacheVersion = 1
+// libraryCacheVersion 2: Titles is a flat list of every title (top-level and
+// nested). v1 only stored top-level rows; nested TitleIDs could not be resolved.
+const libraryCacheVersion = 2
 
 // libraryCacheFile is the on-disk JSON (gzip) form of the in-memory title tree.
 type libraryCacheFile struct {
@@ -50,8 +52,18 @@ func titlesToCache(libraryPath string, titles []*Title) libraryCacheFile {
 		LibraryPath: libraryPath,
 		Titles:      make([]cachedTitle, 0, len(titles)),
 	}
-	for _, t := range titles {
+	var walk func(*Title)
+	walk = func(t *Title) {
+		if t == nil || t.ID == "" {
+			return
+		}
 		out.Titles = append(out.Titles, titleToCached(t))
+		for _, c := range t.Children {
+			walk(c)
+		}
+	}
+	for _, t := range titles {
+		walk(t)
 	}
 	return out
 }
@@ -92,10 +104,12 @@ func titleToCached(t *Title) cachedTitle {
 }
 
 func titlesFromCache(cf libraryCacheFile) ([]*Title, error) {
-	if cf.Version != 0 && cf.Version != libraryCacheVersion {
+	// Accept v0/v1 (top-level only) and v2 (flat full tree).
+	if cf.Version != 0 && cf.Version != 1 && cf.Version != libraryCacheVersion {
 		return nil, fmt.Errorf("unsupported library cache version %d", cf.Version)
 	}
-	titles := make([]*Title, 0, len(cf.Titles))
+	byID := make(map[string]*Title, len(cf.Titles))
+	order := make([]*Title, 0, len(cf.Titles))
 	for i := range cf.Titles {
 		t, err := titleFromCached(cf.Titles[i])
 		if err != nil {
@@ -104,9 +118,29 @@ func titlesFromCache(cf libraryCacheFile) ([]*Title, error) {
 		if t.ID == "" {
 			continue
 		}
-		titles = append(titles, t)
+		byID[t.ID] = t
+		order = append(order, t)
 	}
-	return titles, nil
+	// Rebuild Children from TitleIDs so DeepEntries / applyTitles walk works.
+	for _, t := range order {
+		if len(t.TitleIDs) == 0 {
+			continue
+		}
+		t.Children = make([]*Title, 0, len(t.TitleIDs))
+		for _, id := range t.TitleIDs {
+			if c := byID[id]; c != nil {
+				t.Children = append(t.Children, c)
+			}
+		}
+	}
+	// Top-level titles: empty ParentID, in file order.
+	top := make([]*Title, 0, len(order))
+	for _, t := range order {
+		if t.ParentID == "" {
+			top = append(top, t)
+		}
+	}
+	return top, nil
 }
 
 func cacheIdentitiesValid(cf libraryCacheFile, st *storage.Storage) (bool, error) {
