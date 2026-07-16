@@ -152,22 +152,71 @@ body.comic-theme-dark .library-page .hide-toggle-btn {
   align-items: center;
   gap: 6px;
 }
-/* Compact circular card hide control (less bulky than full comic-btn chrome) */
+/* Compact square card hide — comic language is hard-edged + offset shadow */
 body.comic-theme .card-action-btn,
 body.comic-theme-dark .card-action-btn,
 body.comic-theme .card-hide-btn,
 body.comic-theme-dark .card-hide-btn,
 body.comic-theme .card-unhide-btn,
 body.comic-theme-dark .card-unhide-btn {
-  width: 26px !important;
-  height: 26px !important;
-  min-width: 26px !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
   padding: 0 !important;
-  border-radius: 50% !important;
+  border-radius: 0 !important;
   border: 2px solid #000000 !important;
   box-shadow: 2px 2px 0 #000000 !important;
   font-size: 0.72rem !important;
   line-height: 1 !important;
+  background: #FFFEF0 !important;
+  color: #000000 !important;
+}
+body.comic-theme .card-hide-btn:hover,
+body.comic-theme-dark .card-hide-btn:hover,
+body.comic-theme .card-unhide-btn:hover,
+body.comic-theme-dark .card-unhide-btn:hover {
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #000000 !important;
+}
+body.comic-theme .card-unhide-btn,
+body.comic-theme-dark .card-unhide-btn {
+  background: #FFD700 !important;
+  color: #000000 !important;
+}
+/* Pill badges / circular icon buttons clash with comic hard-edge language */
+body.comic-theme .hidden-badge,
+body.comic-theme-dark .hidden-badge {
+  border-radius: 0 !important;
+  border: 2px solid #000000 !important;
+  box-shadow: 2px 2px 0 #000000 !important;
+  background: #E23636 !important;
+  color: #FFFEF0 !important;
+  font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+body.comic-theme .uk-icon-button,
+body.comic-theme-dark .uk-icon-button,
+body.comic-theme a.uk-icon-button,
+body.comic-theme-dark a.uk-icon-button {
+  border-radius: 0 !important;
+  border: 2px solid #000000 !important;
+  box-shadow: 2px 2px 0 #000000 !important;
+  background: #FFFEF0 !important;
+  color: #000000 !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+body.comic-theme .uk-icon-button:hover,
+body.comic-theme-dark .uk-icon-button:hover,
+body.comic-theme a.uk-icon-button:hover,
+body.comic-theme-dark a.uk-icon-button:hover {
+  background: #FFD700 !important;
+  color: #000000 !important;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #000000 !important;
 }
 body.comic-theme .comic-btn.comic-btn-active-toggle,
 body.comic-theme-dark .comic-btn.comic-btn-active-toggle {
