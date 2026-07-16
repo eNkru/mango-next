@@ -6,8 +6,13 @@ import (
 	"image/jpeg"
 	"io"
 
+	// Register standard decoders used by library image pages.
+	_ "image/gif"
+	_ "image/png"
+
 	"golang.org/x/image/draw"
-	"golang.org/x/image/webp"
+	// Registers WebP with image.Decode / image.DecodeConfig.
+	_ "golang.org/x/image/webp"
 )
 
 type Image struct {
@@ -20,10 +25,7 @@ type Image struct {
 func DecodeConfig(data []byte) (width, height int, err error) {
 	cfg, _, err := image.DecodeConfig(bytes.NewReader(data))
 	if err != nil {
-		cfg, err = webp.DecodeConfig(bytes.NewReader(data))
-		if err != nil {
-			return 0, 0, err
-		}
+		return 0, 0, err
 	}
 	return cfg.Width, cfg.Height, nil
 }
@@ -31,10 +33,7 @@ func DecodeConfig(data []byte) (width, height int, err error) {
 func Generate(data []byte, filename string) (*Image, error) {
 	cfg, _, err := image.DecodeConfig(bytes.NewReader(data))
 	if err != nil {
-		cfg, err = webp.DecodeConfig(bytes.NewReader(data))
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
 	var dstWidth, dstHeight int
@@ -48,10 +47,7 @@ func Generate(data []byte, filename string) (*Image, error) {
 
 	img, _, err := image.Decode(bytes.NewReader(data))
 	if err != nil {
-		img, err = webp.Decode(bytes.NewReader(data))
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 
 	dst := image.NewRGBA(image.Rect(0, 0, dstWidth, dstHeight))

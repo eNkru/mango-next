@@ -343,3 +343,36 @@ Implemented Comic layout aligned to Flat top-bar shell (shared topbar DOM, hide 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 9: Fix thumbnail RIFF/WebP decode failure
+
+**Date**: 2026-07-16
+**Task**: Fix thumbnail RIFF/WebP decode failure
+**Branch**: `fix/thumbnail-riff-decode`
+
+### Summary
+
+Registered PNG/GIF/WebP decoders in thumbnail package, removed WebP fallback that produced riff: missing RIFF chunk header on non-WebP pages, added regression tests with non-masking fixtures, and documented decoder registration contracts in library-background-jobs spec.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6350380` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

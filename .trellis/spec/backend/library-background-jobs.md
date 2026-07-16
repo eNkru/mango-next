@@ -91,3 +91,31 @@ for _, title := range titles {
     generateWithoutLibraryLock(title)
 }
 ```
+
+## Scenario: Thumbnail decode formats (JPEG/PNG/GIF/WebP)
+
+### 1. Scope / Trigger
+
+Apply when changing `internal/thumbnail` decode/generate paths, library
+image-extension support, or tests that exercise thumbnail generation.
+
+### 2. Contracts
+
+- Production code in `thumbnail` must blank-import decoders for every format
+  it claims to generate from: `image/jpeg` (also used for encode), `image/png`,
+  `image/gif`, and `golang.org/x/image/webp` (registers with `image.Decode*`).
+- Prefer a single `image.Decode` / `image.DecodeConfig` path after registration.
+  Do not fallback-decode arbitrary bytes with the WebP decoder: non-WebP input
+  yields `riff: missing RIFF chunk header` and masks the real failure.
+- Output remains JPEG (size policy 200w portrait / 300h landscape unchanged).
+- Thumbnail tests must not import `image/png` or `image/gif` solely to build
+  fixtures if that would register decoders process-wide and hide missing
+  production imports; use raw fixture bytes or `//go:embed` instead.
+
+### 3. Wrong vs Correct
+
+Wrong: only encode-import `image/jpeg`, then on `image.Decode` failure call
+`webp.Decode` on every remaining buffer.
+
+Correct: register PNG/GIF/WebP; decode only via `image.Decode*`; return the
+real decode error for unsupported/corrupt data.
