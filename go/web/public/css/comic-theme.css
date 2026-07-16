@@ -345,11 +345,14 @@ body.comic-theme-dark .comic-card .card-progress-fill {
   background: repeating-linear-gradient(45deg, #E23636, #E23636 8px, #c81d1d 8px, #c81d1d 16px);
   transition: width 0.5s ease;
 }
+/* Bottom-left above progress bar — top-right is reserved for hide/show actions */
 body.comic-theme .comic-card .card-progress-percent,
 body.comic-theme-dark .comic-card .card-progress-percent {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: auto;
+  right: auto;
+  left: 8px;
+  bottom: 18px;
   background: #FFD700;
   color: #000000;
   font-family: 'Fredoka One', 'Comic Sans MS', cursive, sans-serif;
@@ -360,6 +363,13 @@ body.comic-theme-dark .comic-card .card-progress-percent {
   border-radius: 0;
   z-index: 2;
   box-shadow: 2px 2px 0 #000000;
+}
+body.comic-theme .card-hover-actions,
+body.comic-theme-dark .card-hover-actions {
+  top: 8px;
+  right: 8px;
+  left: auto;
+  z-index: 5;
 }
 body.comic-theme .comic-hero,
 body.comic-theme-dark .comic-hero {
