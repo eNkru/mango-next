@@ -68,7 +68,7 @@ func ScanLibrary(libraryPath string, st *storage.Storage, previous map[string]*T
 		if t.ID == "" {
 			continue
 		}
-		if len(t.Entries) > 0 || len(t.TitleIDs) > 0 {
+		if len(t.Entries) > 0 || len(t.Children) > 0 {
 			titles = append(titles, t)
 			rebuilt++
 		}
@@ -94,8 +94,8 @@ func ScanLibrary(libraryPath string, st *storage.Storage, previous map[string]*T
 
 func countEntryRecursive(t *Title) int {
 	count := len(t.Entries)
-	for _, tid := range t.TitleIDs {
-		_ = tid
+	for _, c := range t.Children {
+		count += countEntryRecursive(c)
 	}
 	return count
 }

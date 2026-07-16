@@ -358,7 +358,7 @@ func TestLibraryScan(t *testing.T) {
 		t.Errorf("title count = %d, want 3", result.TitleCount)
 	}
 
-	// Verify hash map
+	// Flat fixture has no nested archive titles; hash size equals top-level.
 	if len(lib.TitleHash) != 3 {
 		t.Errorf("TitleHash size = %d, want 3", len(lib.TitleHash))
 	}
@@ -371,6 +371,97 @@ func TestLibraryScan(t *testing.T) {
 		if lib.TitleHash[tt.ID] != tt {
 			t.Errorf("Title %q not found in TitleHash", tt.Name)
 		}
+	}
+}
+
+// TestNestedArchiveTitlesInHash covers library/Series/Part/vol.zip style trees
+// (e.g. JOJO multi-folder layout): nested titles must land in TitleHash.
+func TestNestedArchiveTitlesInHash(t *testing.T) {
+	libDir := t.TempDir()
+	seriesDir := filepath.Join(libDir, "JOJO Series")
+	partDir := filepath.Join(seriesDir, "Part 7")
+	if err := os.MkdirAll(partDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	createFakeCBZ(t, filepath.Join(partDir, "Vol.15.cbz"), 4)
+	createFakeCBZ(t, filepath.Join(partDir, "Vol.16.cbz"), 5)
+
+	dbPath := filepath.Join(t.TempDir(), "mango.db")
+	cachePath := filepath.Join(t.TempDir(), "library.yml.gz")
+	st, err := storage.Open(dbPath, libDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+
+	lib := NewLibrary(libDir, st, cachePath)
+	result, err := lib.Scan()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.TitleCount != 1 {
+		t.Fatalf("top-level titles = %d, want 1", result.TitleCount)
+	}
+	if result.EntryCount != 2 {
+		t.Fatalf("entry count = %d, want 2", result.EntryCount)
+	}
+
+	lib.RLock()
+	defer lib.RUnlock()
+	if len(lib.TitleIDs) != 1 {
+		t.Fatalf("TitleIDs = %d, want 1 (top-level only)", len(lib.TitleIDs))
+	}
+	series := lib.TitleHash[lib.TitleIDs[0]]
+	if series == nil || series.Name != "JOJO Series" {
+		t.Fatalf("top title = %+v, want JOJO Series", series)
+	}
+	if len(series.Entries) != 0 {
+		t.Fatalf("series direct entries = %d, want 0", len(series.Entries))
+	}
+	if len(series.Children) != 1 || len(series.TitleIDs) != 1 {
+		t.Fatalf("series children = %d titleIDs = %d, want 1", len(series.Children), len(series.TitleIDs))
+	}
+	part := lib.TitleHash[series.TitleIDs[0]]
+	if part == nil {
+		t.Fatal("Part 7 missing from TitleHash (nested title dropped)")
+	}
+	if part.Name != "Part 7" {
+		t.Fatalf("nested name = %q, want Part 7", part.Name)
+	}
+	if len(part.Entries) != 2 {
+		t.Fatalf("part entries = %d, want 2", len(part.Entries))
+	}
+	deep := series.DeepEntries()
+	if len(deep) != 2 {
+		t.Fatalf("DeepEntries = %d, want 2", len(deep))
+	}
+
+	// Cache round-trip must restore nested TitleHash resolution.
+	lib2 := NewLibrary(libDir, st, cachePath)
+	if err := lib2.LoadFromCache(); err != nil {
+		t.Fatalf("LoadFromCache: %v", err)
+	}
+	lib2.RLock()
+	defer lib2.RUnlock()
+	if len(lib2.TitleIDs) != 1 {
+		t.Fatalf("cached TitleIDs = %d, want 1", len(lib2.TitleIDs))
+	}
+	s2 := lib2.TitleHash[lib2.TitleIDs[0]]
+	if s2 == nil {
+		t.Fatal("series missing after cache load")
+	}
+	if len(s2.TitleIDs) != 1 {
+		t.Fatalf("cached series TitleIDs = %d, want 1", len(s2.TitleIDs))
+	}
+	p2 := lib2.TitleHash[s2.TitleIDs[0]]
+	if p2 == nil {
+		t.Fatal("Part 7 missing from TitleHash after cache load")
+	}
+	if len(p2.Entries) != 2 {
+		t.Fatalf("cached part entries = %d, want 2", len(p2.Entries))
+	}
+	if len(s2.DeepEntries()) != 2 {
+		t.Fatalf("cached DeepEntries = %d, want 2", len(s2.DeepEntries()))
 	}
 }
 

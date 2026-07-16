@@ -99,11 +99,10 @@ func (s *Server) apiLibrary(w http.ResponseWriter, r *http.Request) {
 }
 
 func firstEntryID(t *library.Title) string {
-	for _, e := range t.Entries {
+	// Prefer any deep entry (including nested volumes). Nested-only trees have
+	// empty direct Entries; returning a sub-title ID here breaks /api/cover.
+	for _, e := range t.DeepEntries() {
 		return e.ID()
-	}
-	for _, subID := range t.TitleIDs {
-		return subID
 	}
 	return ""
 }

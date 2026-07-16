@@ -92,6 +92,35 @@ for _, title := range titles {
 }
 ```
 
+## Scenario: Nested titles in TitleHash
+
+### 1. Scope / Trigger
+
+Apply when changing library scan, `NewTitle`, `applyTitles`, library cache
+serialization, `DeepEntries`, or title/book pages that resolve `TitleIDs`.
+
+### 2. Contracts
+
+- `NewTitle` keeps nested titles on `Children` and mirrors IDs in `TitleIDs`
+  (sorted by child **name**).
+- `Library.TitleIDs` is **top-level only** (library shelf).
+- `Library.TitleHash` contains **every** title depth so `TitleHash[subID]` works.
+- Library cache (v2) stores a **flat** list of all titles; load rebuilds
+  `Children` from `title_ids`.
+- `DeepEntries` recurses `Children`. Thumbnail generation iterates **top-level**
+  titles only, then `DeepEntries` (do not range all `TitleHash` or nested
+  entries are counted twice).
+- Cover URL helper `firstEntryID` must return a **entry** id from
+  `DeepEntries()`, never a nested title id from `TitleIDs` (breaks `/api/cover`).
+  Any first deep entry is acceptable for series-level cover.
+
+### 3. Wrong vs Correct
+
+Wrong: parent only stores child IDs; `applyTitles` hashes top-level only → book
+page skips missing nested titles (empty JOJO-style multi-folder trees).
+
+Correct: retain `Children`, flatten into `TitleHash`, cache all depths.
+
 ## Scenario: Thumbnail decode formats (JPEG/PNG/GIF/WebP)
 
 ### 1. Scope / Trigger

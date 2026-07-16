@@ -458,9 +458,14 @@ type Title struct {
 	// mirrors Crystal Title @contents_signature
 	ContentsSig string
 	Name        string
-	TitleIDs    []string
-	Entries     []Entry
-	Mtime       time.Time
+	// TitleIDs lists nested title IDs in display order.
+	TitleIDs []string
+	// Children holds nested title objects produced by NewTitle / cache load.
+	// Kept in sync with TitleIDs so handlers can resolve via TitleHash and
+	// DeepEntries can walk the subtree without a library map.
+	Children []*Title
+	Entries  []Entry
+	Mtime    time.Time
 }
 
 // NewTitle creates a Title for the given directory, scanning its contents
@@ -508,10 +513,11 @@ func NewTitle(absPath, parentID string, st *storage.Storage) *Title {
 				}
 			}
 
-			// Recurse as sub-title
+			// Recurse as sub-title (even when also a dir entry: nested archives
+			// deeper than this folder still need a title node).
 			sub := NewTitle(childPath, t.ID, st)
-			if sub.ID != "" && (len(sub.Entries) > 0 || len(sub.TitleIDs) > 0) {
-				t.TitleIDs = append(t.TitleIDs, sub.ID)
+			if sub.ID != "" && (len(sub.Entries) > 0 || len(sub.Children) > 0) {
+				t.Children = append(t.Children, sub)
 			}
 			continue
 		}
@@ -525,10 +531,14 @@ func NewTitle(absPath, parentID string, st *storage.Storage) *Title {
 		}
 	}
 
-	// Sort sub-titles numerically by name
-	sort.Slice(t.TitleIDs, func(i, j int) bool {
-		return compareNumerically(t.TitleIDs[i], t.TitleIDs[j]) < 0
+	// Sort sub-titles by name, then rebuild TitleIDs from Children.
+	sort.Slice(t.Children, func(i, j int) bool {
+		return compareNumerically(t.Children[i].Name, t.Children[j].Name) < 0
 	})
+	t.TitleIDs = make([]string, len(t.Children))
+	for i, c := range t.Children {
+		t.TitleIDs[i] = c.ID
+	}
 
 	// Sort entries by name (numeric sort)
 	chSorter := newChapterSorter(t.entryNames())
@@ -536,14 +546,17 @@ func NewTitle(absPath, parentID string, st *storage.Storage) *Title {
 		return chSorter.compare(t.Entries[i].Name(), t.Entries[j].Name()) < 0
 	})
 
-	// Recompute mtime as max of self and child entries
+	// Recompute mtime as max of self, entries, and nested titles
 	for _, e := range t.Entries {
 		if e.Mtime().After(t.Mtime) {
 			t.Mtime = e.Mtime()
 		}
 	}
-	// For sub-titles we can't easily look up their mtimes without a hash map
-	// but the title's own mtime reflects directory changes
+	for _, c := range t.Children {
+		if c.Mtime.After(t.Mtime) {
+			t.Mtime = c.Mtime
+		}
+	}
 
 	return t
 }
@@ -559,11 +572,13 @@ func (t *Title) entryNames() []string {
 
 // DeepEntries returns all entries including those in nested sub-titles.
 func (t *Title) DeepEntries() []Entry {
-	if len(t.TitleIDs) == 0 {
+	if len(t.Children) == 0 {
 		return t.Entries
 	}
-	// Phase 2 simplification: returns direct entries only.
-	// Full recursive entry collection will be added when the Library
-	// hash map is available (future phase).
-	return t.Entries
+	out := make([]Entry, 0, len(t.Entries))
+	out = append(out, t.Entries...)
+	for _, c := range t.Children {
+		out = append(out, c.DeepEntries()...)
+	}
+	return out
 }
