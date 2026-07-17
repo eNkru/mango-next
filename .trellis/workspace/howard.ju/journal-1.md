@@ -442,3 +442,36 @@ Completed project-wide review deliverables (review.md + four child PRDs), commit
 ### Next Steps
 
 - None - task complete
+
+
+## Session 12: Auth and HTTP hardening
+
+**Date**: 2026-07-17
+**Task**: Auth and HTTP hardening
+**Branch**: `fix/auth-http-hardening`
+
+### Summary
+
+Implemented and verified auth/HTTP hardening: logout token revoke, safe login redirect, Secure cookies, login IP rate limit, timeouts+Shutdown, CORS tighten, security headers, body limits, upload path containment; docs+spec updated. Committed on fix/auth-http-hardening.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f3c1def` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
