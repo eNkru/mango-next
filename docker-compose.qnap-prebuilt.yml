@@ -1,4 +1,4 @@
-version: '3.7'
+
 
 services:
   mango:
@@ -23,7 +23,7 @@ services:
       # is lost on container recreation (default is ~/mango.db → /root/mango.db,
       # which is outside the /root/mango volume mount)
       - DB_PATH=/root/mango/mango.db
-      # Optional: override any config option via env vars (see src/config.cr for full list)
+      # Optional: override any config option via env vars (see go/internal/config/config.go)
       # - LIBRARY_PATH=/root/mango/library
       # - SCAN_INTERVAL_MINUTES=10
       # - DISABLE_LOGIN=false

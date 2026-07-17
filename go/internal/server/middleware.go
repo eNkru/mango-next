@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/eNkru/mango-next/internal/config"
 )
 
 func CORSMiddleware(next http.Handler) http.Handler {
@@ -62,8 +64,17 @@ func underUploadRoot(absPath, absUpload string) bool {
 func UploadHandler(uploadPath string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if strings.HasPrefix(r.URL.Path, "/uploads") {
-				filePath := filepath.Join(uploadPath, strings.TrimPrefix(r.URL.Path, "/uploads/"))
+			path := r.URL.Path
+			if cfg := configCurrentBase(); cfg != "" {
+				if mount := baseMountPath(cfg); mount != "" && strings.HasPrefix(path, mount) {
+					path = strings.TrimPrefix(path, mount)
+					if path == "" {
+						path = "/"
+					}
+				}
+			}
+			if strings.HasPrefix(path, "/uploads") {
+				filePath := filepath.Join(uploadPath, strings.TrimPrefix(path, "/uploads/"))
 				absPath, err := filepath.Abs(filePath)
 				if err != nil {
 					http.Error(w, "Bad request", http.StatusBadRequest)
@@ -88,6 +99,13 @@ func UploadHandler(uploadPath string) func(http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func configCurrentBase() string {
+	if c := config.Current(); c != nil {
+		return c.BaseURL
+	}
+	return ""
 }
 
 func (s *Server) isStaticFile(path string) bool {

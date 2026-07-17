@@ -287,7 +287,7 @@ func TestDownloaderStartStop(t *testing.T) {
 		cancel()
 	}()
 
-	d := NewDownloader(q, filepath.Join(dir, "library"), dir)
+	d := NewDownloader(q, filepath.Join(dir, "library"), dir, 30)
 	done := make(chan struct{})
 	go func() {
 		d.Start(ctx)

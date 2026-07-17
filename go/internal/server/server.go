@@ -79,111 +79,151 @@ func (s *Server) Start(ctx context.Context) error {
 	return nil
 }
 
+// baseMountPath returns the chi mount path for BaseURL ("/" → "", "/mango/" → "/mango").
+func baseMountPath(baseURL string) string {
+	p := strings.TrimSuffix(baseURL, "/")
+	if p == "" || p == "/" {
+		return ""
+	}
+	if !strings.HasPrefix(p, "/") {
+		p = "/" + p
+	}
+	return p
+}
+
+// appPath joins BaseURL with a relative path segment (no leading slash required).
+func (s *Server) appPath(rel string) string {
+	base := "/"
+	if s.Deps != nil && s.Deps.Config != nil && s.Deps.Config.BaseURL != "" {
+		base = s.Deps.Config.BaseURL
+	}
+	rel = strings.TrimPrefix(rel, "/")
+	if rel == "" {
+		return base
+	}
+	return strings.TrimSuffix(base, "/") + "/" + rel
+}
+
 func (s *Server) RegisterRoutes() {
-	r := s.Router
 	deps := s.Deps
+	mount := baseMountPath(deps.Config.BaseURL)
 
-	r.Get("/login", s.handleLoginPage)
-	r.Post("/login", s.handleLogin)
-	r.Get("/logout", s.handleLogout)
-	// Crystal POST /api/login is unauthenticated (session/token mint).
-	r.Post("/api/login", s.apiLogin)
+	registerApp := func(r chi.Router) {
+		r.Get("/login", s.handleLoginPage)
+		r.Post("/login", s.handleLogin)
+		r.Get("/logout", s.handleLogout)
+		// Crystal POST /api/login is unauthenticated (session/token mint).
+		r.Post("/api/login", s.apiLogin)
 
-	r.Group(func(r chi.Router) {
-		r.Use(func(next http.Handler) http.Handler {
-			return AuthMiddleware(next, deps.Storage)
-		})
+		r.Group(func(r chi.Router) {
+			r.Use(func(next http.Handler) http.Handler {
+				return AuthMiddleware(next, deps.Storage)
+			})
 
-		r.Get("/", s.handleHome)
-		r.Get("/library", s.handleLibrary)
-		r.Get("/book/{title}", s.handleTitle)
-		r.Get("/tags", s.handleTags)
-		r.Get("/tags/{tag}", s.handleTag)
-		r.Get("/api", s.handleAPIDocs)
+			r.Get("/", s.handleHome)
+			r.Get("/library", s.handleLibrary)
+			r.Get("/book/{title}", s.handleTitle)
+			r.Get("/tags", s.handleTags)
+			r.Get("/tags/{tag}", s.handleTag)
 
-		r.Get("/reader/{title}/{entry}", s.handleReaderNoPage)
-		r.Get("/reader/{title}/{entry}/{page}", s.handleReader)
+			r.Get("/reader/{title}/{entry}", s.handleReaderNoPage)
+			r.Get("/reader/{title}/{entry}/{page}", s.handleReader)
 
-		r.Get("/opds", s.handleOPDSIndex)
-		r.Get("/opds/book/{title_id}", s.handleOPDSTitle)
+			r.Get("/opds", s.handleOPDSIndex)
+			r.Get("/opds/book/{title_id}", s.handleOPDSTitle)
 
-		if deps.Config.PluginPath != "" {
-			r.Get("/download/plugins", s.handlePluginDownload)
-		}
-
-		r.Route("/admin", func(r chi.Router) {
-			r.Use(AdminMiddleware)
-			r.Get("/", s.handleAdmin)
-			r.Get("/user", s.handleUserList)
-			r.Get("/user/edit", s.handleUserEdit)
-			r.Post("/user/edit", s.handleUserEditPost)
-			r.Post("/user/edit/{original_username}", s.handleUserEditPost)
-			r.Get("/downloads", s.handleDownloadManager)
-			r.Get("/subscriptions", s.handleSubscriptionManager)
-			r.Get("/missing", s.handleMissingItems)
-		})
-
-		r.Route("/api", func(r chi.Router) {
-			// POST /api/login is registered outside AuthMiddleware (below).
-			r.Get("/library", s.apiLibrary)
-			r.Get("/library/continue_reading", s.apiContinueReading)
-			r.Get("/library/start_reading", s.apiStartReading)
-			r.Get("/library/recently_added", s.apiRecentlyAdded)
-			r.Get("/book/{tid}", s.apiBook)
-			r.Get("/sort_opt", s.apiGetSortOpt)
-			r.Put("/sort_opt", s.apiPutSortOpt)
-			r.Get("/page/{tid}/{eid}/{page}", s.apiPage)
-			r.Get("/cover/{tid}/{eid}", s.apiCover)
-			r.Get("/dimensions/{tid}/{eid}", s.apiDimensions)
-			r.Get("/download/{tid}/{eid}", s.apiDownload)
-			r.Put("/progress/{tid}/{page}", s.apiSaveProgress)
-			r.Put("/bulk_progress/{action}/{tid}", s.apiBulkProgress)
-			r.Get("/tags/{tid}", s.apiGetTitleTags)
-			r.Get("/tags", s.apiListTags)
+			if deps.Config.PluginPath != "" {
+				r.Get("/download/plugins", s.handlePluginDownload)
+			}
 
 			r.Route("/admin", func(r chi.Router) {
 				r.Use(AdminMiddleware)
-				r.Post("/scan", s.apiAdminScan)
-				r.Get("/thumbnail_progress", s.apiAdminThumbnailProgress)
-				r.Post("/generate_thumbnails", s.apiAdminGenerateThumbnails)
-				r.Delete("/user/delete/{username}", s.apiAdminDeleteUser)
-				r.Put("/display_name/{tid}/{name}", s.apiAdminSetDisplayName)
-				r.Put("/sort_title/{tid}", s.apiAdminSetSortTitle)
-				r.Post("/upload/{target}", s.apiAdminUpload)
-				r.Get("/plugin", s.apiAdminListPlugins)
-				r.Get("/plugin/info", s.apiAdminPluginInfo)
-				r.Get("/plugin/search", s.apiAdminPluginSearch)
-				r.Post("/plugin/subscriptions", s.apiAdminCreateSubscription)
-				r.Get("/plugin/subscriptions", s.apiAdminListSubscriptions)
-				r.Delete("/plugin/subscriptions", s.apiAdminDeleteSubscription)
-				r.Post("/plugin/subscriptions/update", s.apiAdminUpdateSubscription)
-				r.Get("/plugin/list", s.apiAdminPluginList)
-				r.Post("/plugin/download", s.apiAdminPluginDownload)
-				r.Get("/queue", s.apiAdminQueue)
-				r.Post("/queue/{action}", s.apiAdminQueueAction)
-				r.Put("/tags/{tid}/{tag}", s.apiAdminAddTag)
-				r.Delete("/tags/{tid}/{tag}", s.apiAdminDeleteTag)
-				r.Get("/titles/missing", s.apiAdminMissingTitles)
-				r.Get("/entries/missing", s.apiAdminMissingEntries)
-				r.Delete("/titles/missing", s.apiAdminDeleteMissingTitles)
-				r.Delete("/entries/missing", s.apiAdminDeleteMissingEntries)
-				r.Delete("/titles/missing/{tid}", s.apiAdminDeleteMissingTitle)
-				r.Delete("/entries/missing/{eid}", s.apiAdminDeleteMissingEntry)
-				r.Put("/hidden/{tid}/{value}", s.apiAdminSetHidden)
-				r.Get("/hidden_titles", s.apiAdminHiddenTitles)
+				r.Get("/", s.handleAdmin)
+				r.Get("/user", s.handleUserList)
+				r.Get("/user/edit", s.handleUserEdit)
+				r.Post("/user/edit", s.handleUserEditPost)
+				r.Post("/user/edit/{original_username}", s.handleUserEditPost)
+				r.Get("/downloads", s.handleDownloadManager)
+				r.Get("/subscriptions", s.handleSubscriptionManager)
+				r.Get("/missing", s.handleMissingItems)
+			})
+
+			r.Route("/api", func(r chi.Router) {
+				r.Get("/library", s.apiLibrary)
+				r.Get("/library/continue_reading", s.apiContinueReading)
+				r.Get("/library/start_reading", s.apiStartReading)
+				r.Get("/library/recently_added", s.apiRecentlyAdded)
+				r.Get("/book/{tid}", s.apiBook)
+				r.Get("/sort_opt", s.apiGetSortOpt)
+				r.Put("/sort_opt", s.apiPutSortOpt)
+				r.Get("/page/{tid}/{eid}/{page}", s.apiPage)
+				r.Get("/cover/{tid}/{eid}", s.apiCover)
+				r.Get("/dimensions/{tid}/{eid}", s.apiDimensions)
+				r.Get("/download/{tid}/{eid}", s.apiDownload)
+				r.Put("/progress/{tid}/{page}", s.apiSaveProgress)
+				r.Put("/bulk_progress/{action}/{tid}", s.apiBulkProgress)
+				r.Get("/tags/{tid}", s.apiGetTitleTags)
+				r.Get("/tags", s.apiListTags)
+
+				r.Route("/admin", func(r chi.Router) {
+					r.Use(AdminMiddleware)
+					r.Post("/scan", s.apiAdminScan)
+					r.Get("/thumbnail_progress", s.apiAdminThumbnailProgress)
+					r.Post("/generate_thumbnails", s.apiAdminGenerateThumbnails)
+					r.Delete("/user/delete/{username}", s.apiAdminDeleteUser)
+					r.Put("/display_name/{tid}/{name}", s.apiAdminSetDisplayName)
+					r.Put("/sort_title/{tid}", s.apiAdminSetSortTitle)
+					r.Post("/upload/{target}", s.apiAdminUpload)
+					r.Get("/plugin", s.apiAdminListPlugins)
+					r.Get("/plugin/info", s.apiAdminPluginInfo)
+					r.Get("/plugin/search", s.apiAdminPluginSearch)
+					r.Post("/plugin/subscriptions", s.apiAdminCreateSubscription)
+					r.Get("/plugin/subscriptions", s.apiAdminListSubscriptions)
+					r.Delete("/plugin/subscriptions", s.apiAdminDeleteSubscription)
+					r.Post("/plugin/subscriptions/update", s.apiAdminUpdateSubscription)
+					r.Get("/plugin/list", s.apiAdminPluginList)
+					r.Post("/plugin/download", s.apiAdminPluginDownload)
+					r.Get("/queue", s.apiAdminQueue)
+					r.Post("/queue/{action}", s.apiAdminQueueAction)
+					r.Put("/tags/{tid}/{tag}", s.apiAdminAddTag)
+					r.Delete("/tags/{tid}/{tag}", s.apiAdminDeleteTag)
+					r.Get("/titles/missing", s.apiAdminMissingTitles)
+					r.Get("/entries/missing", s.apiAdminMissingEntries)
+					r.Delete("/titles/missing", s.apiAdminDeleteMissingTitles)
+					r.Delete("/entries/missing", s.apiAdminDeleteMissingEntries)
+					r.Delete("/titles/missing/{tid}", s.apiAdminDeleteMissingTitle)
+					r.Delete("/entries/missing/{eid}", s.apiAdminDeleteMissingEntry)
+					r.Put("/hidden/{tid}/{value}", s.apiAdminSetHidden)
+					r.Get("/hidden_titles", s.apiAdminHiddenTitles)
+				})
 			})
 		})
-	})
 
-	s.servePublic()
+		s.servePublic(r)
+	}
+
+	if mount == "" {
+		registerApp(s.Router)
+		return
+	}
+	s.Router.Route(mount, registerApp)
 }
 
-func (s *Server) servePublic() {
-	r := s.Router
+func (s *Server) servePublic(r chi.Router) {
 	fileServer := http.FileServer(s.staticFS)
+	base := ""
+	if s.Deps != nil && s.Deps.Config != nil {
+		base = baseMountPath(s.Deps.Config.BaseURL)
+	}
 
-	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
-		path := r.URL.Path
+	r.Get("/*", func(w http.ResponseWriter, req *http.Request) {
+		path := req.URL.Path
+		if base != "" {
+			path = strings.TrimPrefix(path, base)
+			if path == "" {
+				path = "/"
+			}
+		}
 		if path == "" || path == "/" {
 			return
 		}
@@ -192,7 +232,10 @@ func (s *Server) servePublic() {
 			strings.HasPrefix(path, "/download") || strings.HasPrefix(path, "/uploads") {
 			return
 		}
-		fileServer.ServeHTTP(w, r)
+		// Strip mount prefix for embedded FS lookup.
+		r2 := req.Clone(req.Context())
+		r2.URL.Path = path
+		fileServer.ServeHTTP(w, r2)
 	})
 }
 

@@ -6,7 +6,16 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/eNkru/mango-next/internal/config"
 )
+
+func httpTimeoutSeconds() int {
+	if c := config.Current(); c != nil && c.DownloadTimeoutSeconds > 0 {
+		return c.DownloadTimeoutSeconds
+	}
+	return 30
+}
 
 type Info struct {
 	ID          string            `json:"id"`
@@ -34,7 +43,7 @@ func LoadPlugin(pluginDir, pluginID string) (*Plugin, error) {
 		return nil, fmt.Errorf("read index.js: %w", err)
 	}
 	storagePath := filepath.Join(info.Dir, "storage.json")
-	sbx, err := NewSandbox(storagePath, info.Dir)
+	sbx, err := NewSandbox(storagePath, info.Dir, httpTimeoutSeconds())
 	if err != nil {
 		return nil, err
 	}

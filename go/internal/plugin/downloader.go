@@ -26,15 +26,18 @@ type Downloader struct {
 	downloading bool
 }
 
-// NewDownloader creates a Downloader instance.
-func NewDownloader(q *queue.Queue, libraryPath, pluginDir string) *Downloader {
+// NewDownloader creates a Downloader instance. timeoutSeconds <= 0 uses 30s.
+func NewDownloader(q *queue.Queue, libraryPath, pluginDir string, timeoutSeconds int) *Downloader {
+	if timeoutSeconds <= 0 {
+		timeoutSeconds = 30
+	}
 	return &Downloader{
 		queue:       q,
 		libraryPath: libraryPath,
 		pluginDir:   pluginDir,
 		// mirrors Crystal src/util/proxy.cr: respect HTTP(S)_PROXY / NO_PROXY
 		httpClient: &http.Client{
-			Timeout: 30 * time.Second,
+			Timeout: time.Duration(timeoutSeconds) * time.Second,
 			Transport: &http.Transport{
 				Proxy: http.ProxyFromEnvironment,
 			},

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dop251/goja"
@@ -25,16 +26,20 @@ type Sandbox struct {
 }
 
 // NewSandbox builds a goja VM and injects the `mango` global, mirroring
-// def_helper_functions in plugin.cr.
-func NewSandbox(storagePath, infoDir string) (*Sandbox, error) {
+// def_helper_functions in plugin.cr. timeoutSeconds <= 0 uses 30s.
+func NewSandbox(storagePath, infoDir string, timeoutSeconds int) (*Sandbox, error) {
 	store, err := newStore(storagePath)
 	if err != nil {
 		return nil, fmt.Errorf("init plugin store: %w", err)
+	}
+	if timeoutSeconds <= 0 {
+		timeoutSeconds = 30
 	}
 	// mirrors Crystal src/util/proxy.cr: respect HTTP(S)_PROXY / NO_PROXY
 	s := &Sandbox{
 		vm: goja.New(),
 		httpClient: &http.Client{
+			Timeout: time.Duration(timeoutSeconds) * time.Second,
 			Transport: &http.Transport{
 				Proxy: http.ProxyFromEnvironment,
 			},

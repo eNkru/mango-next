@@ -189,9 +189,25 @@ func userExists(st *storage.Storage, username string) bool {
 
 // requireAuth sends a 401 for API routes or redirects to login for pages.
 func requireAuth(w http.ResponseWriter, r *http.Request) {
-	if strings.HasPrefix(r.URL.Path, "/api") {
+	path := r.URL.Path
+	if cfg := config.Current(); cfg != nil {
+		if mount := baseMountPath(cfg.BaseURL); mount != "" {
+			path = strings.TrimPrefix(path, mount)
+			if path == "" {
+				path = "/"
+			}
+		}
+	}
+	if strings.HasPrefix(path, "/api") {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	http.Redirect(w, r, "/login", http.StatusFound)
+	login := "/login"
+	if cfg := config.Current(); cfg != nil {
+		login = strings.TrimSuffix(cfg.BaseURL, "/") + "/login"
+		if cfg.BaseURL == "/" {
+			login = "/login"
+		}
+	}
+	http.Redirect(w, r, login, http.StatusFound)
 }

@@ -12,7 +12,7 @@ import (
 
 func newTestSandbox(t *testing.T) *Sandbox {
 	t.Helper()
-	s, err := NewSandbox("", "")
+	s, err := NewSandbox("", "", 30)
 	if err != nil {
 		t.Fatal(err)
 	}

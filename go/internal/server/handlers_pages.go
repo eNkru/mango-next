@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/eNkru/mango-next/internal/library"
 	"github.com/eNkru/mango-next/internal/storage"
@@ -18,14 +19,15 @@ func (s *Server) handleLoginPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
+	loginPath := s.appPath("login")
 	r.Body = http.MaxBytesReader(w, r.Body, loginBodyLimit)
 	if !loginAllowed(r) {
-		http.Redirect(w, r, "/login", http.StatusFound)
+		http.Redirect(w, r, loginPath, http.StatusFound)
 		return
 	}
 	if err := r.ParseForm(); err != nil {
 		recordLoginFailure(r)
-		http.Redirect(w, r, "/login", http.StatusFound)
+		http.Redirect(w, r, loginPath, http.StatusFound)
 		return
 	}
 
@@ -38,13 +40,20 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Login error: %v", err)
 		}
 		recordLoginFailure(r)
-		http.Redirect(w, r, "/login", http.StatusFound)
+		http.Redirect(w, r, loginPath, http.StatusFound)
 		return
 	}
 
 	clearLoginFailures(r)
 	SetAuthTokenCookie(w, r, s.Deps.Config, token)
-	http.Redirect(w, r, safeRedirectPath(r.FormValue("callback")), http.StatusFound)
+	cb := safeRedirectPath(r.FormValue("callback"))
+	if cb == "/" {
+		cb = s.appPath("")
+	} else if s.Deps.Config != nil && s.Deps.Config.BaseURL != "/" && strings.HasPrefix(cb, "/") && !strings.HasPrefix(cb, s.Deps.Config.BaseURL) {
+		// Relative app path under non-root base.
+		cb = strings.TrimSuffix(s.Deps.Config.BaseURL, "/") + cb
+	}
+	http.Redirect(w, r, cb, http.StatusFound)
 }
 
 func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +62,7 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 		_ = s.Deps.Storage.Logout(token)
 	}
 	ClearAuthTokenCookie(w, r, cfg)
-	http.Redirect(w, r, "/login", http.StatusFound)
+	http.Redirect(w, r, s.appPath("login"), http.StatusFound)
 }
 
 // handleHome mirrors Crystal GET / (src/routes/main.cr):
@@ -473,16 +482,6 @@ func (s *Server) handleTag(w http.ResponseWriter, r *http.Request) {
 	s.renderLayout(w, "tag", data)
 }
 
-func (s *Server) handleAPIDocs(w http.ResponseWriter, r *http.Request) {
-	ld := LayoutData{
-		BaseURL:  s.Deps.Config.BaseURL,
-		IsAdmin:  GetIsAdmin(r),
-		PageName: "api",
-		Version:  "2.0.0",
-	}
-	s.renderPage(w, "views/api", ld)
-}
-
 func (s *Server) handleReaderNoPage(w http.ResponseWriter, r *http.Request) {
 	titleID := chi.URLParam(r, "title")
 	entryID := chi.URLParam(r, "entry")
@@ -493,8 +492,7 @@ func (s *Server) handleReaderNoPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("/reader/%s/%s/1",
-		titleID, entryID), http.StatusFound)
+	http.Redirect(w, r, s.appPath(fmt.Sprintf("reader/%s/%s/1", titleID, entryID)), http.StatusFound)
 }
 
 func (s *Server) handleReader(w http.ResponseWriter, r *http.Request) {
@@ -644,17 +642,17 @@ func (s *Server) handleUserEditPost(w http.ResponseWriter, r *http.Request) {
 
 	if originalUsername == "" {
 		if err := s.Deps.Storage.NewUser(username, password, admin); err != nil {
-			http.Redirect(w, r, "/admin/user/edit?error="+err.Error(), http.StatusFound)
+			http.Redirect(w, r, s.appPath("admin/user/edit")+"?error="+err.Error(), http.StatusFound)
 			return
 		}
 	} else {
 		if err := s.Deps.Storage.UpdateUser(originalUsername, username, password, admin); err != nil {
-			http.Redirect(w, r, "/admin/user/edit?username="+originalUsername+"&error="+err.Error(), http.StatusFound)
+			http.Redirect(w, r, s.appPath("admin/user/edit")+"?username="+originalUsername+"&error="+err.Error(), http.StatusFound)
 			return
 		}
 	}
 
-	http.Redirect(w, r, "/admin/user", http.StatusFound)
+	http.Redirect(w, r, s.appPath("admin/user"), http.StatusFound)
 }
 
 func (s *Server) handleDownloadManager(w http.ResponseWriter, r *http.Request) {

@@ -5,7 +5,7 @@ BINARY := mango
 
 .PHONY: all build static run test check clean install uninstall go-build go-static go-test go-check go-run go-all
 
-all: build
+all: check test build
 
 build:
 	cd $(GO_DIR) && go build -o ../$(BINARY) ./cmd/mango/
