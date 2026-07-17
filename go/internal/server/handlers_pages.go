@@ -582,58 +582,16 @@ func (s *Server) handleAdmin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleUserList(w http.ResponseWriter, r *http.Request) {
-	users, err := s.Deps.Storage.ListUsers()
-	if err != nil {
-		http.Error(w, "Failed", http.StatusInternalServerError)
-		return
-	}
-
-	var userPairs [][2]string
-	for _, u := range users {
-		adminStr := "0"
-		if u.IsAdmin {
-			adminStr = "1"
-		}
-		userPairs = append(userPairs, [2]string{u.Username, adminStr})
-	}
-
-	data := UserPageData{
-		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  true,
-			PageName: "user",
-			Version:  "2.0.0",
-		},
-		Users:    userPairs,
-		Username: GetUsername(r),
-	}
-
-	s.renderLayout(w, "user", data)
+	s.renderReactShell(w, "user-list", "user-list", nil)
 }
 
 func (s *Server) handleUserEdit(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
-
-	data := UserEditPageData{
-		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  true,
-			PageName: "user-edit",
-			Version:  "2.0.0",
-		},
-		NewUser:  username == "",
-		Username: username,
-	}
-
+	extra := map[string]any{}
 	if username != "" {
-		exists, err := s.Deps.Storage.UsernameExists(username)
-		if err == nil && exists {
-			isAdmin, _ := s.Deps.Storage.UsernameIsAdmin(username)
-			data.Admin = isAdmin
-		}
+		extra["username"] = username
 	}
-
-	s.renderLayout(w, "user-edit", data)
+	s.renderReactShell(w, "user-edit", "user-edit", extra)
 }
 
 func (s *Server) handleUserEditPost(w http.ResponseWriter, r *http.Request) {
@@ -680,21 +638,24 @@ func (s *Server) handleSubscriptionManager(w http.ResponseWriter, r *http.Reques
 }
 
 func (s *Server) handleMissingItems(w http.ResponseWriter, r *http.Request) {
-	s.renderReactShell(w, "missing-items", "missing-items")
+	s.renderReactShell(w, "missing-items", "missing-items", nil)
 }
 
 // handleReactPreview serves the React foundation placeholder under admin auth.
 func (s *Server) handleReactPreview(w http.ResponseWriter, r *http.Request) {
-	s.renderReactShell(w, "react-preview", "react-preview")
+	s.renderReactShell(w, "react-preview", "react-preview", nil)
 }
 
-func (s *Server) renderReactShell(w http.ResponseWriter, pageID, pageName string) {
+func (s *Server) renderReactShell(w http.ResponseWriter, pageID, pageName string, extra map[string]any) {
 	boot := map[string]any{
 		"baseUrl":  s.Deps.Config.BaseURL,
 		"pageId":   pageID,
 		"pageName": pageName,
 		"isAdmin":  true,
 		"version":  "2.0.0",
+	}
+	for k, v := range extra {
+		boot[k] = v
 	}
 	raw, err := json.Marshal(boot)
 	if err != nil {

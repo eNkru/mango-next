@@ -510,6 +510,68 @@ func (s *Server) apiAdminGenerateThumbnails(w http.ResponseWriter, r *http.Reque
 	sendJSON(w, map[string]any{"success": true})
 }
 
+func (s *Server) apiAdminListUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := s.Deps.Storage.ListUsers()
+	if err != nil {
+		sendJSONError(w, "Failed to list users", http.StatusInternalServerError)
+		return
+	}
+	out := make([]map[string]any, 0, len(users))
+	for _, u := range users {
+		out = append(out, map[string]any{
+			"username": u.Username,
+			"admin":    u.IsAdmin,
+		})
+	}
+	sendJSON(w, map[string]any{
+		"success":          true,
+		"users":            out,
+		"current_username": GetUsername(r),
+	})
+}
+
+func (s *Server) apiAdminCreateUser(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		Admin    bool   `json:"admin"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sendJSONError(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	if err := s.Deps.Storage.NewUser(body.Username, body.Password, body.Admin); err != nil {
+		sendJSONError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	sendJSON(w, map[string]any{"success": true})
+}
+
+func (s *Server) apiAdminUpdateUser(w http.ResponseWriter, r *http.Request) {
+	original := chi.URLParam(r, "username")
+	if original == "" {
+		sendJSONError(w, "Missing username", http.StatusBadRequest)
+		return
+	}
+	var body struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		Admin    bool   `json:"admin"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sendJSONError(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	if body.Username == "" {
+		body.Username = original
+	}
+	if err := s.Deps.Storage.UpdateUser(original, body.Username, body.Password, body.Admin); err != nil {
+		sendJSONError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	sendJSON(w, map[string]any{"success": true})
+}
+
 func (s *Server) apiAdminDeleteUser(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 	currentUser := GetUsername(r)

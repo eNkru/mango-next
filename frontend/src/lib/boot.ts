@@ -4,6 +4,8 @@ export type MangoBoot = {
   pageName: string;
   isAdmin: boolean;
   version: string;
+  /** Optional page-specific payload, e.g. edit-target username. */
+  username?: string;
 };
 
 const DEFAULT_BOOT: MangoBoot = {
@@ -27,6 +29,7 @@ export function readBoot(): MangoBoot {
       pageName: parsed.pageName ?? DEFAULT_BOOT.pageName,
       isAdmin: Boolean(parsed.isAdmin),
       version: parsed.version ?? DEFAULT_BOOT.version,
+      username: typeof parsed.username === 'string' ? parsed.username : undefined,
     };
   } catch {
     return DEFAULT_BOOT;

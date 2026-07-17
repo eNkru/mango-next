@@ -283,3 +283,54 @@ html.comic-theme-dark .mango-table td {
   background: color-mix(in srgb, var(--mango-text-muted) 18%, transparent);
   color: var(--mango-text-secondary);
 }
+
+.mango-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 28rem;
+}
+
+.mango-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.mango-field--inline label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+.mango-field label {
+  font-weight: 700;
+  color: var(--mango-text-secondary);
+}
+
+.mango-input {
+  width: 100%;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-base);
+  color: var(--mango-text-primary);
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+}
+
+html.comic-theme .mango-input,
+html.comic-theme-dark .mango-input {
+  border-width: 2px;
+  border-color: #000;
+}
+
+.mango-input:focus {
+  outline: 2px solid color-mix(in srgb, var(--mango-accent) 45%, transparent);
+  outline-offset: 1px;
+}
+
+a.mango-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
