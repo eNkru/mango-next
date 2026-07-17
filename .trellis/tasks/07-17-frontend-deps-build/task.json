@@ -18,7 +18,10 @@
   "commit": null,
   "pr_url": null,
   "subtasks": [],
-  "children": [],
+  "children": [
+    "07-17-frontend-queue-contract",
+    "07-17-frontend-asset-pipeline"
+  ],
   "parent": null,
   "relatedFiles": [],
   "notes": "",

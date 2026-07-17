@@ -3,6 +3,8 @@
 *.dwarf
 /mango
 /mango-go
+/go/mango
+/node_modules/
 
 .agents/
 .claude/

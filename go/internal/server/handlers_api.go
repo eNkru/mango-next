@@ -919,26 +919,63 @@ func (s *Server) apiAdminDeleteTag(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) apiAdminMissingTitles(w http.ResponseWriter, r *http.Request) {
-	sendJSON(w, map[string]any{"success": true, "data": []any{}})
+	items, err := s.Deps.Storage.ListMissingTitles()
+	if err != nil {
+		sendJSONError(w, "Failed to list missing titles", http.StatusInternalServerError)
+		return
+	}
+	// Match the legacy browser client shape: { titles: [...] }.
+	sendJSON(w, map[string]any{"success": true, "titles": items})
 }
 
 func (s *Server) apiAdminMissingEntries(w http.ResponseWriter, r *http.Request) {
-	sendJSON(w, map[string]any{"success": true, "data": []any{}})
+	items, err := s.Deps.Storage.ListMissingEntries()
+	if err != nil {
+		sendJSONError(w, "Failed to list missing entries", http.StatusInternalServerError)
+		return
+	}
+	sendJSON(w, map[string]any{"success": true, "entries": items})
 }
 
 func (s *Server) apiAdminDeleteMissingTitles(w http.ResponseWriter, r *http.Request) {
+	if err := s.Deps.Storage.DeleteAllMissingTitles(); err != nil {
+		sendJSONError(w, "Failed to delete missing titles", http.StatusInternalServerError)
+		return
+	}
 	sendJSON(w, map[string]any{"success": true})
 }
 
 func (s *Server) apiAdminDeleteMissingEntries(w http.ResponseWriter, r *http.Request) {
+	if err := s.Deps.Storage.DeleteAllMissingEntries(); err != nil {
+		sendJSONError(w, "Failed to delete missing entries", http.StatusInternalServerError)
+		return
+	}
 	sendJSON(w, map[string]any{"success": true})
 }
 
 func (s *Server) apiAdminDeleteMissingTitle(w http.ResponseWriter, r *http.Request) {
+	tid := chi.URLParam(r, "tid")
+	if tid == "" {
+		sendJSONError(w, "Missing title id", http.StatusBadRequest)
+		return
+	}
+	if err := s.Deps.Storage.DeleteMissingTitle(tid); err != nil {
+		sendJSONError(w, "Failed to delete missing title", http.StatusInternalServerError)
+		return
+	}
 	sendJSON(w, map[string]any{"success": true})
 }
 
 func (s *Server) apiAdminDeleteMissingEntry(w http.ResponseWriter, r *http.Request) {
+	eid := chi.URLParam(r, "eid")
+	if eid == "" {
+		sendJSONError(w, "Missing entry id", http.StatusBadRequest)
+		return
+	}
+	if err := s.Deps.Storage.DeleteMissingEntry(eid); err != nil {
+		sendJSONError(w, "Failed to delete missing entry", http.StatusInternalServerError)
+		return
+	}
 	sendJSON(w, map[string]any{"success": true})
 }
 

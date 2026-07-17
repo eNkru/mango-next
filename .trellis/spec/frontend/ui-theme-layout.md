@@ -46,7 +46,12 @@ go/web/views/top.tmpl                    # shared chrome DOM
 go/web/public/js/common.js               # setUIStyle / setTheme class toggles
 ```
 
-Compile: `lessc comic-theme.less comic-theme.css`. Prefer lessc when available; flat-theme.css may be hand-synced for batch overrides — keep visibility rules in both less and css.
+Migrated React routes boot comic/flat + light/dark markers on `<html>` from
+`go/web/views/react-shell.tmpl` (same `localStorage` keys as legacy
+`head.tmpl`: `ui-style`, `theme`). Legacy LESS/CSS pages still use
+`go/web/public/css/*`. React tokens live under `frontend/src/styles/`.
+
+Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 
 ## Common mistakes
 

@@ -1,0 +1,29 @@
+{
+  "id": "frontend-react-vite",
+  "name": "frontend-react-vite",
+  "title": "React Vite frontend migration",
+  "description": "",
+  "status": "planning",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "howard.ju",
+  "assignee": "howard.ju",
+  "createdAt": "2026-07-17",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-18-frontend-react-foundation",
+    "07-18-frontend-react-missing-items"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

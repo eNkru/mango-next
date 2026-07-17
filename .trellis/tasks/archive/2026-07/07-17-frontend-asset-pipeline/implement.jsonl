@@ -1,0 +1,5 @@
+{"file":".trellis/spec/frontend/ui-theme-layout.md","reason":"Preserve comic/flat theme layout contracts while reconciling LESS and generated CSS."}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"Asset generation crosses npm, committed public files, Docker, Make, and Go embed boundaries."}
+{"file":".trellis/tasks/07-17-frontend-asset-pipeline/research/asset-inventory.md","reason":"Provides the current third-party asset, version, license, consumer, and provenance inventory."}
+{"file":".trellis/tasks/07-17-frontend-asset-pipeline/research/less-build-constraints.md","reason":"Defines the LESS graph, measured source/output drift, and build-order constraints."}
+{"file":".trellis/tasks/07-17-frontend-asset-pipeline/research/pipeline-design-inputs.md","reason":"Provides the minimal npm pipeline boundary, font and IE11 impacts, risks, and validation evidence."}

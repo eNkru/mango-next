@@ -1,0 +1,54 @@
+:root {
+  /* Flat light */
+  --mango-accent: #e50914;
+  --mango-accent-hover: #b20710;
+  --mango-border: #e5e5e5;
+  --mango-bg-surface: #f5f5f5;
+  --mango-bg-base: #ffffff;
+  --mango-text-primary: #141414;
+  --mango-text-secondary: #4b4b4b;
+  --mango-text-muted: #737373;
+  --mango-topbar-height: 68px;
+  --mango-radius: 6px;
+  --mango-font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --mango-font-comic: "Fredoka One", "Comic Sans MS", cursive, sans-serif;
+  --mango-font-sound: "Bangers", Impact, "Arial Black", sans-serif;
+}
+
+html.flat-theme-dark,
+html.flat-theme.flat-theme-dark {
+  --mango-accent: #e50914;
+  --mango-accent-hover: #f40612;
+  --mango-border: #2a2a2a;
+  --mango-bg-surface: #181818;
+  --mango-bg-base: #141414;
+  --mango-text-primary: #ffffff;
+  --mango-text-secondary: #b3b3b3;
+  --mango-text-muted: #8a8a8a;
+}
+
+html.comic-theme,
+html.comic-theme-dark {
+  --mango-accent: #e23636;
+  --mango-accent-hover: #c41e1e;
+  --mango-border: #000000;
+  --mango-bg-surface: #fffef0;
+  --mango-bg-base: #f5f0e1;
+  --mango-text-primary: #000000;
+  --mango-text-secondary: #2c2c2c;
+  --mango-text-muted: #555555;
+  --mango-radius: 0;
+}
+
+html.comic-theme-dark {
+  --mango-bg-surface: #2c2c2c;
+  --mango-bg-base: #1a1a1a;
+  --mango-text-primary: #fffef0;
+  --mango-text-secondary: #e0dcc8;
+  --mango-text-muted: #b0aa98;
+}
+
+/* Local comic fonts are already served from /webfonts by Go. Use absolute
+   runtime paths via BaseURL-relative CSS is hard without injection; the shell
+   relies on system fallbacks unless mango.css also loads the faces. Keep family
+   names so existing theme intent remains if faces are present globally. */

@@ -146,6 +146,8 @@ func (s *Server) RegisterRoutes() {
 				r.Get("/downloads", s.handleDownloadManager)
 				r.Get("/subscriptions", s.handleSubscriptionManager)
 				r.Get("/missing", s.handleMissingItems)
+				// Placeholder route for the React + Vite foundation shell.
+				r.Get("/react-preview", s.handleReactPreview)
 			})
 
 			r.Route("/api", func(r chi.Router) {

@@ -1,0 +1,285 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--mango-font-body);
+  color: var(--mango-text-primary);
+  background: var(--mango-bg-base);
+}
+
+html.comic-theme body,
+html.comic-theme-dark body {
+  font-family: var(--mango-font-body);
+}
+
+.mango-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--mango-topbar-height);
+  padding: 0 4vw;
+  border-bottom: 1px solid var(--mango-border);
+  background: color-mix(in srgb, var(--mango-bg-surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+html.comic-theme .mango-topbar,
+html.comic-theme-dark .mango-topbar {
+  border-bottom-width: 3px;
+  border-bottom-color: #000;
+  background: var(--mango-bg-surface);
+}
+
+.mango-topbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+html.comic-theme .mango-topbar__brand,
+html.comic-theme-dark .mango-topbar__brand {
+  font-family: var(--mango-font-comic);
+}
+
+.mango-topbar__nav {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mango-topbar__nav a {
+  color: var(--mango-text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.mango-topbar__nav a:hover {
+  color: var(--mango-accent);
+}
+
+.mango-shell {
+  padding: 1.25rem 4vw 3rem;
+}
+
+.mango-page-header {
+  margin-bottom: 1.25rem;
+}
+
+.mango-page-header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.6rem;
+}
+
+html.comic-theme .mango-page-header h1,
+html.comic-theme-dark .mango-page-header h1 {
+  font-family: var(--mango-font-comic);
+}
+
+.mango-page-header p {
+  margin: 0;
+  color: var(--mango-text-muted);
+}
+
+.mango-panel {
+  background: var(--mango-bg-surface);
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  padding: 1rem 1.1rem;
+}
+
+html.comic-theme .mango-panel,
+html.comic-theme-dark .mango-panel {
+  border-width: 3px;
+  border-color: #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.mango-btn {
+  appearance: none;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-base);
+  color: var(--mango-text-primary);
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mango-btn:hover {
+  border-color: var(--mango-accent);
+  color: var(--mango-accent);
+}
+
+.mango-btn--primary {
+  background: var(--mango-accent);
+  border-color: var(--mango-accent);
+  color: #fff;
+}
+
+.mango-btn--primary:hover {
+  background: var(--mango-accent-hover);
+  border-color: var(--mango-accent-hover);
+  color: #fff;
+}
+
+.mango-btn--danger {
+  background: transparent;
+  border-color: var(--mango-accent);
+  color: var(--mango-accent);
+}
+
+.mango-state {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--mango-text-secondary);
+}
+
+.mango-state--error {
+  color: var(--mango-accent);
+}
+
+.mango-alert-stack {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: min(24rem, calc(100vw - 2rem));
+}
+
+.mango-alert {
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-surface);
+  color: var(--mango-text-primary);
+  padding: 0.75rem 0.9rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.mango-alert--danger {
+  border-color: var(--mango-accent);
+  color: var(--mango-accent);
+}
+
+.mango-alert--success {
+  border-color: #2ecc40;
+}
+
+.mango-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 1rem;
+}
+
+.mango-modal {
+  width: min(28rem, 100%);
+  background: var(--mango-bg-surface);
+  color: var(--mango-text-primary);
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+html.comic-theme .mango-modal,
+html.comic-theme-dark .mango-modal {
+  border-width: 3px;
+  border-color: #000;
+  box-shadow: 5px 5px 0 #000;
+}
+
+.mango-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.mango-meta {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.mango-meta div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mango-meta dt {
+  min-width: 6rem;
+  color: var(--mango-text-muted);
+  font-weight: 600;
+}
+
+.mango-meta dd {
+  margin: 0;
+}
+
+.mango-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.mango-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.mango-table th,
+.mango-table td {
+  text-align: left;
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid var(--mango-border);
+  vertical-align: top;
+}
+
+html.comic-theme .mango-table th,
+html.comic-theme .mango-table td,
+html.comic-theme-dark .mango-table th,
+html.comic-theme-dark .mango-table td {
+  border-bottom-width: 2px;
+  border-bottom-color: #000;
+}
+
+.mango-badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--mango-radius);
+  background: color-mix(in srgb, var(--mango-accent) 16%, transparent);
+  color: var(--mango-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.mango-badge--muted {
+  background: color-mix(in srgb, var(--mango-text-muted) 18%, transparent);
+  color: var(--mango-text-secondary);
+}
