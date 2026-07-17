@@ -475,3 +475,36 @@ Implemented and verified auth/HTTP hardening: logout token revoke, safe login re
 ### Next Steps
 
 - None - task complete
+
+
+## Session 13: Config deploy docs cleanup
+
+**Date**: 2026-07-17
+**Task**: Config deploy docs cleanup
+**Branch**: `fix/config-deploy-docs-cleanup`
+
+### Summary
+
+Implemented BaseURL mount, wired log_level/download_timeout/cache_enabled, fixed Compose/env/Makefile, removed broken API ReDoc and Crystal spec/, updated README and backend Trellis index. Quality gate passed.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ad02a53` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
