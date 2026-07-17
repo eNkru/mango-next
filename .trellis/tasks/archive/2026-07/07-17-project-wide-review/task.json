@@ -1,0 +1,31 @@
+{
+  "id": "project-wide-review",
+  "name": "project-wide-review",
+  "title": "Project-wide review",
+  "description": "",
+  "status": "completed",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "howard.ju",
+  "assignee": "howard.ju",
+  "createdAt": "2026-07-17",
+  "completedAt": "2026-07-17",
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-17-auth-http-hardening",
+    "07-17-test-ci-baseline",
+    "07-17-frontend-deps-build",
+    "07-17-config-deploy-docs-cleanup"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}

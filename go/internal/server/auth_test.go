@@ -299,9 +299,10 @@ func TestAuthMiddlewareProxyHeaderInvalidUser(t *testing.T) {
 
 func TestSetAndClearAuthTokenCookie(t *testing.T) {
 	cfg := &config.Config{BaseURL: "/", Port: 9090}
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
 
 	rec := httptest.NewRecorder()
-	SetAuthTokenCookie(rec, cfg, "test-token-123")
+	SetAuthTokenCookie(rec, req, cfg, "test-token-123")
 
 	cookies := rec.Result().Cookies()
 	var found *http.Cookie
@@ -320,10 +321,13 @@ func TestSetAndClearAuthTokenCookie(t *testing.T) {
 	if found.HttpOnly != true {
 		t.Error("cookie should be HttpOnly")
 	}
+	if found.Secure {
+		t.Error("cookie should not be Secure on plain HTTP")
+	}
 
 	// Clear.
 	rec2 := httptest.NewRecorder()
-	ClearAuthTokenCookie(rec2, cfg)
+	ClearAuthTokenCookie(rec2, req, cfg)
 	cookies2 := rec2.Result().Cookies()
 	for _, c := range cookies2 {
 		if strings.Contains(c.Name, "mango-token") {
@@ -334,6 +338,24 @@ func TestSetAndClearAuthTokenCookie(t *testing.T) {
 		}
 	}
 	t.Error("no clear cookie found")
+}
+
+func TestSetAuthTokenCookieSecureFromForwardedProto(t *testing.T) {
+	cfg := &config.Config{BaseURL: "/", Port: 9090}
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("X-Forwarded-Proto", "https")
+
+	rec := httptest.NewRecorder()
+	SetAuthTokenCookie(rec, req, cfg, "secure-token")
+	for _, c := range rec.Result().Cookies() {
+		if strings.Contains(c.Name, "mango-token") {
+			if !c.Secure {
+				t.Error("cookie should be Secure when X-Forwarded-Proto=https")
+			}
+			return
+		}
+	}
+	t.Fatal("no auth token cookie set")
 }
 
 func TestExtractTokenFromCookie(t *testing.T) {

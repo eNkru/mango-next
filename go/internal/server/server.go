@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/eNkru/mango-next/internal/config"
 	"github.com/eNkru/mango-next/internal/library"
@@ -38,6 +39,7 @@ func NewServer(deps *Dependencies) *Server {
 		Router: chi.NewRouter(),
 		Deps:   deps,
 	}
+	s.Router.Use(SecurityHeadersMiddleware)
 	s.Router.Use(CORSMiddleware)
 	s.Router.Use(LoggingMiddleware)
 	s.Router.Use(UploadHandler(deps.Config.UploadPath))
@@ -49,15 +51,26 @@ func (s *Server) Start(ctx context.Context) error {
 	cfg := s.Deps.Config
 	addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
 	log.Printf("Starting server on %s", addr)
+	if cfg.AuthProxyHeaderName != "" {
+		log.Printf("WARNING: auth_proxy_header_name is set to %q. Do not expose this process directly; put it behind a reverse proxy that strips or overwrites that header for every request.", cfg.AuthProxyHeaderName)
+	}
 
 	srv := &http.Server{
-		Addr:    addr,
-		Handler: s.Router,
+		Addr:              addr,
+		Handler:           s.Router,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      60 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	go func() {
 		<-ctx.Done()
-		srv.Close()
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(shutdownCtx); err != nil {
+			log.Printf("HTTP server shutdown: %v", err)
+		}
 	}()
 
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend package map, auth/routes contracts"}
+{"file": ".trellis/spec/backend/user-management.md", "reason": "Auth/user storage contracts"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Cross-layer auth/HTTP trust boundaries"}
+{"file": ".trellis/tasks/archive/2026-07/07-17-project-wide-review/review.md", "reason": "P0 evidence for auth/HTTP findings"}

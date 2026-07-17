@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 10
-- **Last Active**: 2026-07-16
+- **Total Sessions**: 12
+- **Last Active**: 2026-07-17
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~411 | Active |
+| `journal-1.md` | ~477 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,8 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 12 | 2026-07-17 | Auth and HTTP hardening | `f3c1def` | `fix/auth-http-hardening` |
+| 11 | 2026-07-17 | Project-wide review wrap-up | `2807b4b` | `chore/project-wide-review` |
 | 10 | 2026-07-16 | Fix nested titles missing from library TitleHash | `d5c5ade` | `fix/nested-title-hash` |
 | 9 | 2026-07-16 | Fix thumbnail RIFF/WebP decode failure | `6350380` | `fix/thumbnail-riff-decode` |
 | 8 | 2026-07-16 | Comic Netflix layout | `259c5b5` | `ui/comic-netflix-layout` |

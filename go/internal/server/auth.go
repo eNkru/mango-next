@@ -123,7 +123,8 @@ func GetIsAdmin(r *http.Request) bool {
 
 // SetAuthTokenCookie sets the auth token cookie on the response, matching
 // the cookie name pattern from the Crystal server.
-func SetAuthTokenCookie(w http.ResponseWriter, cfg *config.Config, token string) {
+// Secure is set when the request is HTTPS or X-Forwarded-Proto is https.
+func SetAuthTokenCookie(w http.ResponseWriter, r *http.Request, cfg *config.Config, token string) {
 	cookieName := cookieNamePrefix + fmt.Sprintf("%d", cfg.Port)
 	http.SetCookie(w, &http.Cookie{
 		Name:     cookieName,
@@ -133,17 +134,21 @@ func SetAuthTokenCookie(w http.ResponseWriter, cfg *config.Config, token string)
 		// MaxAge: 365*24*60*60 = 365 days, matching kemal-session timeout.
 		MaxAge:   365 * 24 * 60 * 60,
 		SameSite: http.SameSiteLaxMode,
+		Secure:   requestIsHTTPS(r),
 	})
 }
 
 // ClearAuthTokenCookie clears the auth token cookie.
-func ClearAuthTokenCookie(w http.ResponseWriter, cfg *config.Config) {
+func ClearAuthTokenCookie(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	cookieName := cookieNamePrefix + fmt.Sprintf("%d", cfg.Port)
 	http.SetCookie(w, &http.Cookie{
-		Name:   cookieName,
-		Value:  "",
-		Path:   cfg.BaseURL,
-		MaxAge: -1,
+		Name:     cookieName,
+		Value:    "",
+		Path:     cfg.BaseURL,
+		MaxAge:   -1,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+		Secure:   requestIsHTTPS(r),
 	})
 }
 

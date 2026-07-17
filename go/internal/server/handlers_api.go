@@ -22,26 +22,34 @@ import (
 // apiLogin mirrors Crystal POST /api/login (src/routes/api.cr).
 // Unauthenticated; returns token as session_id and sets auth cookie.
 func (s *Server) apiLogin(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, loginBodyLimit)
+	if !loginAllowed(r) {
+		w.WriteHeader(http.StatusForbidden)
+		sendJSON(w, map[string]any{"success": false, "error": "login failed"})
+		return
+	}
 	var body struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		recordLoginFailure(r)
 		w.WriteHeader(http.StatusForbidden)
-		sendJSON(w, map[string]any{"success": false, "error": "invalid request"})
+		sendJSON(w, map[string]any{"success": false, "error": "login failed"})
 		return
 	}
 	token, err := s.Deps.Storage.VerifyUser(body.Username, body.Password)
 	if err != nil || token == "" {
-		w.WriteHeader(http.StatusForbidden)
-		msg := "login failed"
 		if err != nil {
-			msg = err.Error()
+			log.Printf("API login error: %v", err)
 		}
-		sendJSON(w, map[string]any{"success": false, "error": msg})
+		recordLoginFailure(r)
+		w.WriteHeader(http.StatusForbidden)
+		sendJSON(w, map[string]any{"success": false, "error": "login failed"})
 		return
 	}
-	SetAuthTokenCookie(w, s.Deps.Config, token)
+	clearLoginFailures(r)
+	SetAuthTokenCookie(w, r, s.Deps.Config, token)
 	isAdmin, _ := s.Deps.Storage.UsernameIsAdmin(body.Username)
 	sendJSON(w, map[string]any{
 		"success":    true,
@@ -553,7 +561,8 @@ func (s *Server) apiAdminUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	target := chi.URLParam(r, "target")
-	if err := r.ParseMultipartForm(32 << 20); err != nil {
+	r.Body = http.MaxBytesReader(w, r.Body, uploadBodyLimit)
+	if err := r.ParseMultipartForm(uploadBodyLimit); err != nil {
 		fail("No file uploaded")
 		return
 	}
