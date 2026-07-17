@@ -31,13 +31,13 @@ complete, API-driven admin flow.
 
 ## Acceptance Criteria
 
-- [ ] `/admin/missing` is served by the React shell, not `missing-items.tmpl`.
-- [ ] Missing titles and entries load from real backend data, not empty stubs.
-- [ ] Single-item delete and bulk delete refresh the list after success.
-- [ ] Errors and empty states are shown without false success.
-- [ ] Works under root and non-root BaseURL with admin auth enforced.
-- [ ] Unrelated admin pages remain on Go templates.
-- [ ] Route-level rollback to the old template remains possible without removing
+- [x] `/admin/missing` is served by the React shell, not `missing-items.tmpl`.
+- [x] Missing titles and entries load from real backend data, not empty stubs.
+- [x] Single-item delete and bulk delete refresh the list after success.
+- [x] Errors and empty states are shown without false success.
+- [x] Works under root and non-root BaseURL with admin auth enforced.
+- [x] Unrelated admin pages remain on Go templates.
+- [x] Route-level rollback to the old template remains possible without removing
       the React foundation.
 
 ## Dependencies

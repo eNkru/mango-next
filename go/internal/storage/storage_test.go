@@ -1006,6 +1006,86 @@ func TestHashPasswordAndVerify(t *testing.T) {
 	}
 }
 
+func TestMissingItemsCRUD(t *testing.T) {
+	dir := t.TempDir()
+	st, err := Open(filepath.Join(dir, "mango.db"), filepath.Join(dir, "library"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+
+	_, err = st.DB().Exec(
+		`INSERT INTO titles (id, path, signature, unavailable) VALUES
+			('t-missing', 'gone/title', '1', 1),
+			('t-ok', 'still/here', '1', 0)`,
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = st.DB().Exec(
+		`INSERT INTO ids (id, path, signature, unavailable) VALUES
+			('e-missing', 'gone/entry.cbz', '1', 1),
+			('e-ok', 'still/entry.cbz', '1', 0)`,
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = st.DB().Exec(`INSERT INTO tags (id, tag) VALUES ('t-missing', 'shonen')`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	titles, err := st.ListMissingTitles()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(titles) != 1 || titles[0].ID != "t-missing" {
+		t.Fatalf("missing titles = %+v, want only t-missing", titles)
+	}
+	entries, err := st.ListMissingEntries()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entries) != 1 || entries[0].ID != "e-missing" {
+		t.Fatalf("missing entries = %+v, want only e-missing", entries)
+	}
+
+	if err := st.DeleteMissingTitle("t-missing"); err != nil {
+		t.Fatal(err)
+	}
+	if err := st.DeleteMissingEntry("e-missing"); err != nil {
+		t.Fatal(err)
+	}
+	titles, _ = st.ListMissingTitles()
+	entries, _ = st.ListMissingEntries()
+	if len(titles) != 0 || len(entries) != 0 {
+		t.Fatalf("after single deletes titles=%+v entries=%+v", titles, entries)
+	}
+
+	// Bulk delete path.
+	_, _ = st.DB().Exec(`INSERT INTO titles (id, path, signature, unavailable) VALUES ('t2', 'x', '1', 1)`)
+	_, _ = st.DB().Exec(`INSERT INTO ids (id, path, signature, unavailable) VALUES ('e2', 'y', '1', 1)`)
+	if err := st.DeleteAllMissingTitles(); err != nil {
+		t.Fatal(err)
+	}
+	if err := st.DeleteAllMissingEntries(); err != nil {
+		t.Fatal(err)
+	}
+	titles, _ = st.ListMissingTitles()
+	entries, _ = st.ListMissingEntries()
+	if len(titles) != 0 || len(entries) != 0 {
+		t.Fatalf("after bulk deletes titles=%+v entries=%+v", titles, entries)
+	}
+
+	// Available rows remain.
+	var titleCount, entryCount int
+	_ = st.DB().QueryRow(`SELECT COUNT(*) FROM titles WHERE id = 't-ok'`).Scan(&titleCount)
+	_ = st.DB().QueryRow(`SELECT COUNT(*) FROM ids WHERE id = 'e-ok'`).Scan(&entryCount)
+	if titleCount != 1 || entryCount != 1 {
+		t.Fatalf("available rows removed: titles=%d entries=%d", titleCount, entryCount)
+	}
+}
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------

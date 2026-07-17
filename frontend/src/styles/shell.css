@@ -246,3 +246,40 @@ html.comic-theme-dark .mango-modal {
   gap: 0.5rem;
   margin-top: 1rem;
 }
+
+.mango-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.mango-table th,
+.mango-table td {
+  text-align: left;
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid var(--mango-border);
+  vertical-align: top;
+}
+
+html.comic-theme .mango-table th,
+html.comic-theme .mango-table td,
+html.comic-theme-dark .mango-table th,
+html.comic-theme-dark .mango-table td {
+  border-bottom-width: 2px;
+  border-bottom-color: #000;
+}
+
+.mango-badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--mango-radius);
+  background: color-mix(in srgb, var(--mango-accent) 16%, transparent);
+  color: var(--mango-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.mango-badge--muted {
+  background: color-mix(in srgb, var(--mango-text-muted) 18%, transparent);
+  color: var(--mango-text-secondary);
+}
