@@ -1,13 +1,13 @@
 {
-  "id": "frontend-deps-build",
-  "name": "frontend-deps-build",
-  "title": "Frontend dependencies and build pipeline",
+  "id": "frontend-react-vite",
+  "name": "frontend-react-vite",
+  "title": "React Vite frontend migration",
   "description": "",
   "status": "planning",
   "dev_type": null,
   "scope": null,
   "package": null,
-  "priority": "P1",
+  "priority": "P2",
   "creator": "howard.ju",
   "assignee": "howard.ju",
   "createdAt": "2026-07-17",
@@ -19,8 +19,8 @@
   "pr_url": null,
   "subtasks": [],
   "children": [
-    "07-17-frontend-queue-contract",
-    "07-17-frontend-asset-pipeline"
+    "07-18-frontend-react-foundation",
+    "07-18-frontend-react-missing-items"
   ],
   "parent": null,
   "relatedFiles": [],

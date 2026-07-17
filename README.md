@@ -29,14 +29,26 @@ Mango is a self-hosted manga server and web-based reader. The server is implemen
 
 ## 🛠️ How to Develop
 
-**Prerequisites:** Go 1.26+
+**Prerequisites:** Go 1.26+ and Node.js 24+ with npm. Node is required only to
+build the React frontend into `go/web/public/react/` before `go:embed`; the
+built Mango binary has no Node/npm or CDN runtime dependency.
 
 ```bash
-# Build and run:
+# Build React assets and run:
 make run
 
-# Or:
+# Or after an explicit frontend build:
+npm ci && npm run build
 cd go && go run ./cmd/mango/
+```
+
+Clean frontend install and production build:
+
+```bash
+npm ci
+npm run typecheck
+npm run build
+npm run check
 ```
 
 The server starts on port 9000 by default. On first launch it creates a default config and admin user (password printed to stdout).
@@ -45,13 +57,16 @@ The server starts on port 9000 by default. On first launch it creates a default 
 
 ```bash
 make test    # go test ./...
-make check   # go vet
+make check   # React typecheck/output check + go vet
 make all     # check + test + build
 ```
 
 ### Frontend / UI
 
-Templates and static assets live under `go/web/` and are embedded into the binary. See [FRONTEND_DEV_GUIDE.md](FRONTEND_DEV_GUIDE.md).
+The UI is migrating to React + Vite + TypeScript. Migrated routes use a Go HTML
+shell that loads the React bundle from `go/web/public/react/`. Unmigrated routes
+still use Go templates under `go/web/views/`. See
+[FRONTEND_DEV_GUIDE.md](FRONTEND_DEV_GUIDE.md).
 
 ---
 
@@ -68,7 +83,9 @@ Or:
 cd go && go build -o ../mango ./cmd/mango/
 ```
 
-The binary embeds HTML templates, JavaScript, CSS, and images.
+The binary embeds HTML templates, the React production bundle, legacy CSS/JS,
+fonts, and images. Docker regenerates the React assets from `package-lock.json`
+in a Node build stage before the Go stage embeds them.
 
 ### Run locally
 

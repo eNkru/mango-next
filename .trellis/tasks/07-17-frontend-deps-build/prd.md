@@ -2,53 +2,57 @@
 
 ## Goal
 
-Repair broken browser/backend contracts, then make frontend assets reproducible,
-supportable, and testable while preserving the server-rendered application and
-its offline/self-hosted deployment model.
+Coordinate the repair and reproducibility of the embedded frontend while
+preserving Mango's server-rendered, self-hosted architecture.
+
+## Confirmed Facts
+
+- Go embeds templates and runtime assets from `go/web/`; there is currently no
+  frontend package manifest, lockfile, or CI workflow.
+- The download manager calls deleted `/api/admin/mangadex/queue` HTTP and
+  WebSocket endpoints, while the Go server exposes `/api/admin/queue` with only
+  list, delete, and retry operations.
+- Runtime dependencies are committed as minified files, including jQuery 3.2.1,
+  Alpine.js 2.8.0, UIkit 3.5.9, jQuery UI 1.12.1, and Select2 4.1.0-beta.1.
+- The repository contains LESS sources alongside committed runtime CSS, but no
+  documented command that reproduces all generated assets.
+
+## Task Map
+
+- `07-17-frontend-queue-contract` (P1): closed before implementation because the
+  download feature is disabled.
+- `07-17-frontend-asset-pipeline` (P2): redirected into the React + Vite
+  foundation under `07-17-frontend-react-vite`; do not finish the old
+  jQuery/LESS inventory end state as the final architecture.
+- `07-17-frontend-react-vite` (P1): React + Vite frontend migration parent.
 
 ## Requirements
 
-- Inventory every vendored browser dependency, its version, license, runtime use,
-  and upgrade/removal path.
-- Reconcile the download-manager page with the Go queue API: route names,
-  supported actions, request bodies, response envelope/field names, polling or
-  push behavior, and error states must have one tested contract.
-- Remove or replace stale browser calls to deleted MangaDex endpoints and other
-  unreachable runtime assets discovered by a template-to-route/asset audit.
-- Upgrade or replace legacy dependencies incrementally, prioritizing security and
-  compatibility over a framework rewrite.
-- Introduce a locked, documented asset build that produces the embedded CSS/JS
-  files from source and detects generated-file drift.
-- Preserve local asset serving with no public-CDN runtime dependency.
-- Add browser smoke coverage for login, library browsing, title actions, reader
-  navigation, admin actions, responsive layouts, and both supported UI themes.
-- Improve accessibility issues encountered while touching affected components,
-  especially keyboard semantics, labels, image alternatives, and icon buttons.
-- Define how localization keys and compiled assets are validated in CI.
+- Each child task must remain independently implementable, testable, and
+  reviewable.
+- Browser compatibility targets the current and previous major releases of
+  Chromium, Firefox, and Safari; Internet Explorer 11 is no longer supported.
+- Child dependencies and CI ownership must be explicit in child artifacts.
+- Runtime assets must remain locally served; public CDNs must not be required.
+- The Go embed/build behavior and server-rendered templates must remain intact.
+- Dependency modernization must be incremental rather than a framework rewrite.
 
-## Acceptance Criteria
+## Cross-Task Acceptance Criteria
 
-- [ ] The repository has a dependency manifest and lockfile or an equivalently
-      reproducible, documented asset toolchain.
-- [ ] Download-manager list/delete/retry behavior works against the current Go
-      API, and unsupported pause/resume/WebSocket UI is removed or implemented
-      end to end.
-- [ ] jQuery 3.2.1, Alpine.js 2.8.0, Moment, UIkit, Select2, and other vendored
-      libraries are either upgraded, replaced, or explicitly justified with a
-      tracked risk decision.
-- [ ] A clean checkout can regenerate runtime assets without fetching from CDNs
-      in the browser.
-- [ ] CI fails when committed generated assets drift from their sources.
-- [ ] Browser smoke tests pass at representative desktop and mobile viewports for
-      both UI themes.
-- [ ] Existing Go embed/build behavior remains intact.
+- [ ] The active asset-pipeline child task satisfies its acceptance criteria.
+- [ ] A clean checkout can build the Go binary and reproduce its embedded
+      frontend assets using documented commands.
+- [ ] Frontend validation covers generated-file drift without duplicating
+      ownership of shared CI wiring.
+- [ ] No supported runtime flow references deleted MangaDex endpoints or public
+      CDN assets.
 
-## Notes
+## Out of Scope
 
-- Dependency: no hard dependency. The broken download-manager contract is the P1
-  first milestone; dependency modernization remains P2 and is recommended after
-  authentication hardening so browser flows target settled auth behavior.
-- Coordination: shared CI wiring belongs to `07-17-test-ci-baseline`; this task
-  owns the frontend runner, fixtures, selectors, and asset commands.
-- Constraint: do not replace the server-rendered architecture merely to modernize
-  tooling.
+- Replacing Go templates with a client-side application framework.
+- Redesigning the application or adding unrelated frontend features.
+- Browser automation and end-to-end smoke coverage; the planned child task was
+  closed before implementation because the project is not ready for that level
+  of testing.
+- Owning the repository-wide CI baseline, which remains in
+  `07-17-test-ci-baseline`.

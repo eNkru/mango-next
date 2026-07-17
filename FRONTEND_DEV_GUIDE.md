@@ -1,59 +1,89 @@
 # Frontend Development Guide
 
-Go embeds templates and static assets from `go/web/` (see `go/web/embed.go`). There is no separate Node/Gulp pipeline for the server binary.
+Go embeds templates and static assets from `go/web/` (see `go/web/embed.go`).
+The browser UI is migrating to **React + Vite + TypeScript**. Node is a
+build-time prerequisite only; the Mango binary has no Node/npm or CDN runtime
+dependency.
+
+## Architecture
+
+```text
+Migrated route  → Go HTML shell (react-shell.tmpl) + React bundle under public/react/
+Unmigrated route → existing Go templates + legacy public JS/CSS
+```
+
+Both paths are served by the same Go server with the same auth and BaseURL mount.
 
 ## Key folders
 
 | Folder | Purpose |
 |---|---|
-| **`go/web/views/`** | HTML templates (`html/template`, `*.tmpl`) |
-| **`go/web/public/css/`** | Stylesheets (including LESS sources and compiled CSS) |
-| **`go/web/public/js/`** | Client-side JavaScript |
-| **`go/web/public/img/`**, `webfonts/` | Images and fonts |
+| **`frontend/`** | React + TypeScript source (Vite app) |
+| **`go/web/public/react/`** | Generated React production assets (from `npm run build`) |
+| **`go/web/views/`** | Go HTML templates, including `react-shell.tmpl` |
+| **`go/web/public/css/`**, **`js/`**, **`webfonts/`** | Legacy template-era assets still used by unmigrated pages |
 
 ## Stack
 
 | Layer | Technology |
 |---|---|
-| **Templating** | Go `html/template` (`.tmpl`) |
-| **CSS Framework** | UIkit 3.x |
-| **Styles** | LESS sources may exist; commit compiled CSS used at runtime under `public/css/` |
-| **JS** | jQuery, Alpine.js, Moment.js, Select2, etc. (local assets) |
-| **Icons** | FontAwesome 5 |
+| **Migrated UI** | React 19 + Vite 6 + TypeScript |
+| **Shell** | Go `html/template` injects BaseURL / pageId JSON boot |
+| **Legacy pages** | Go templates + jQuery / Alpine / UIkit (until migrated) |
+| **Embed** | `//go:embed public/*` |
 
 ## Quick start
 
-1. Edit templates under `go/web/views/` (e.g. `home.tmpl`, `library.tmpl`, `reader.tmpl`).
-2. Edit CSS/JS under `go/web/public/`.
-3. Rebuild/run so embed picks up changes:
-
 ```bash
-make run
-# or
-make build && ./mango
+npm ci
+npm run build          # typecheck + Vite build + output check
+make run               # rebuild React assets, then go run
 ```
 
-Shared chrome (navbar, theme) is split across partials such as `top.tmpl` / `bottom.tmpl` / `head.tmpl`.
+Developer commands:
 
-## File map (views)
+```bash
+npm run dev            # Vite dev server (optional; still needs Go for APIs)
+npm run typecheck
+npm run build
+npm run check          # fails if go/web/public/react/assets/main.{js,css} missing
+make check             # frontend check + go vet
+make test
+make build
+```
 
-| File | Description |
-|---|---|
-| `home.tmpl` | Home |
-| `library.tmpl` | Library browse |
-| `title.tmpl` | Title detail |
-| `reader.tmpl` | Reader |
-| `login.tmpl` | Login |
-| `admin.tmpl` | Admin |
-| `tags.tmpl` / `tag.tmpl` | Tags |
-| `user.tmpl` / `user-edit.tmpl` | Users |
-| `download-manager.tmpl` | Downloads |
-| `subscription-manager.tmpl` | Subscriptions |
-| `missing-items.tmpl` | Missing titles/entries |
-| `plugin-download.tmpl` | Plugin download UI |
-| `opds/` | OPDS XML templates |
+## Migrated route contract
 
-## Notes
+1. Admin (or auth) middleware still runs in Go.
+2. Handler renders `views/react-shell` with `ReactShellData`:
+   - `BaseURL`
+   - `PageName`
+   - `BootJSON` → `<script type="application/json" id="mango-boot">…</script>`
+3. Shell loads `{{.BaseURL}}react/assets/main.css` and `main.js`.
+4. React reads boot config and mounts the page for `pageId`.
 
-- Do not reintroduce a root-level `public/` or Crystal ECR templates; the binary only embeds `go/web`.
-- After UI changes, always rebuild — embed is compile-time.
+Placeholder route used by the foundation task:
+
+- `GET /admin/react-preview` → `pageId: "react-preview"`
+
+## Theme
+
+Comic/flat and light/dark markers are applied on `<html>` before paint in
+`react-shell.tmpl`, using the same `localStorage` keys as legacy `head.tmpl`
+(`ui-style`, `theme`). React CSS tokens live under `frontend/src/styles/`.
+
+## Coexistence rules
+
+- Only routes that explicitly render `react-shell` use React.
+- Unmigrated routes keep their templates and legacy scripts.
+- Navigation may link both directions.
+- Do not delete legacy public assets until their last template consumer is gone.
+
+## Docker / embed order
+
+```text
+npm ci → npm run build → go build → go:embed public/*
+```
+
+The production Dockerfile uses a Node stage for the Vite build, then copies
+`go/web/public` into the Go builder before `go build`.

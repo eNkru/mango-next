@@ -71,6 +71,14 @@ type LayoutData struct {
 	PluginPath string
 }
 
+// ReactShellData is the Go HTML shell payload for migrated React routes.
+type ReactShellData struct {
+	BaseURL  string
+	PageName string
+	// BootJSON is raw JSON embedded in #mango-boot (already serialized).
+	BootJSON template.JS
+}
+
 type HomePageData struct {
 	LayoutData
 	ContinueReading     []storage.ContinueReadingItem

@@ -1,7 +1,9 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
@@ -685,6 +687,27 @@ func (s *Server) handleMissingItems(w http.ResponseWriter, r *http.Request) {
 		Version:  "2.0.0",
 	}
 	s.renderLayout(w, "missing-items", ld)
+}
+
+// handleReactPreview serves the React foundation placeholder under admin auth.
+func (s *Server) handleReactPreview(w http.ResponseWriter, r *http.Request) {
+	boot := map[string]any{
+		"baseUrl":  s.Deps.Config.BaseURL,
+		"pageId":   "react-preview",
+		"pageName": "react-preview",
+		"isAdmin":  true,
+		"version":  "2.0.0",
+	}
+	raw, err := json.Marshal(boot)
+	if err != nil {
+		http.Error(w, "boot config error", http.StatusInternalServerError)
+		return
+	}
+	s.renderPage(w, "views/react-shell", ReactShellData{
+		BaseURL:  s.Deps.Config.BaseURL,
+		PageName: "react-preview",
+		BootJSON: template.JS(raw),
+	})
 }
 
 func (s *Server) handleOPDSIndex(w http.ResponseWriter, r *http.Request) {

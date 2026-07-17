@@ -1,0 +1,5 @@
+{"file":".trellis/spec/frontend/ui-theme-layout.md","reason":"Check generated CSS and template changes against comic/flat theme layout and smoke contracts."}
+{"file":".trellis/spec/guides/cross-layer-thinking-guide.md","reason":"Verify npm-to-public-to-go:embed and Docker/Make data flow end to end."}
+{"file":".trellis/tasks/07-17-frontend-asset-pipeline/research/asset-inventory.md","reason":"Verify every managed or retained third-party asset and license is accounted for."}
+{"file":".trellis/tasks/07-17-frontend-asset-pipeline/research/less-build-constraints.md","reason":"Verify deterministic LESS outputs, drift behavior, and generation-before-Go ordering."}
+{"file":".trellis/tasks/07-17-frontend-asset-pipeline/research/pipeline-design-inputs.md","reason":"Verify scoped removals, local fonts, offline behavior, and full validation coverage."}
