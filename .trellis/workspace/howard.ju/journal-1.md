@@ -409,3 +409,36 @@ Nested Series/Part/vol archives now retain Children, land in TitleHash, persist 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 11: Project-wide review wrap-up
+
+**Date**: 2026-07-17
+**Task**: Project-wide review wrap-up
+**Branch**: `chore/project-wide-review`
+
+### Summary
+
+Completed project-wide review deliverables (review.md + four child PRDs), committed on chore/project-wide-review, archived 07-17-project-wide-review. Next: plan auth-http-hardening design/implement.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `2807b4b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
