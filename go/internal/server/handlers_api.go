@@ -482,6 +482,62 @@ func (s *Server) apiListTags(w http.ResponseWriter, r *http.Request) {
 	sendJSON(w, map[string]any{"success": true, "data": tags})
 }
 
+// apiTagsIndex powers the React tags home page with counts.
+// Kept separate from GET /api/tags so title-page Select2 consumers stay unchanged.
+func (s *Server) apiTagsIndex(w http.ResponseWriter, r *http.Request) {
+	isAdmin := GetIsAdmin(r)
+	tags, err := s.Deps.Storage.ListTags()
+	if err != nil {
+		sendJSONError(w, "Failed to list tags", http.StatusInternalServerError)
+		return
+	}
+	out := make([]map[string]any, 0, len(tags))
+	for _, tag := range tags {
+		titleIDs, err := s.Deps.Storage.GetTagTitles(tag, isAdmin)
+		if err != nil {
+			continue
+		}
+		out = append(out, map[string]any{
+			"tag":   tag,
+			"count": len(titleIDs),
+		})
+	}
+	sendJSON(w, map[string]any{"success": true, "tags": out})
+}
+
+// apiTagTitles returns library cards for one tag, including optional hidden titles for admins.
+func (s *Server) apiTagTitles(w http.ResponseWriter, r *http.Request) {
+	tag := chi.URLParam(r, "tag")
+	if tag == "" {
+		sendJSONError(w, "Missing tag", http.StatusBadRequest)
+		return
+	}
+	isAdmin := GetIsAdmin(r)
+	showHidden := isAdmin && r.URL.Query().Get("show_hidden") == "1"
+	data, ok := s.buildTagPageData(tag, isAdmin, showHidden)
+	if !ok {
+		sendJSONError(w, "Tag not found", http.StatusNotFound)
+		return
+	}
+	titles := make([]map[string]any, 0, len(data.Titles))
+	for _, t := range data.Titles {
+		titles = append(titles, map[string]any{
+			"id":          t.ID,
+			"name":        t.Name,
+			"cover_url":   t.CoverURL,
+			"entry_count": t.EntryCount,
+			"hidden":      t.Hidden,
+		})
+	}
+	sendJSON(w, map[string]any{
+		"success":     true,
+		"tag":         data.Tag,
+		"show_hidden": data.ShowHidden,
+		"is_admin":    isAdmin,
+		"titles":      titles,
+	})
+}
+
 func (s *Server) apiAdminScan(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		if _, err := s.Deps.Library.Scan(); err != nil {

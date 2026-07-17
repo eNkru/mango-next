@@ -21,7 +21,8 @@
   "children": [
     "07-18-frontend-react-foundation",
     "07-18-frontend-react-missing-items",
-    "07-18-frontend-react-admin-users"
+    "07-18-frontend-react-admin-users",
+    "07-18-frontend-react-tags"
   ],
   "parent": null,
   "relatedFiles": [],

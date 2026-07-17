@@ -383,38 +383,9 @@ func (s *Server) handleTitle(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleTags(w http.ResponseWriter, r *http.Request) {
-	isAdmin := GetIsAdmin(r)
-
-	tags, err := s.Deps.Storage.ListTags()
-	if err != nil {
-		http.Error(w, "Failed", http.StatusInternalServerError)
-		return
-	}
-
-	var tagList []TagInfo
-	for _, tag := range tags {
-		titleIDs, err := s.Deps.Storage.GetTagTitles(tag, isAdmin)
-		if err != nil {
-			continue
-		}
-		tagList = append(tagList, TagInfo{
-			Tag:        tag,
-			EncodedTag: tag,
-			Count:      len(titleIDs),
-		})
-	}
-
-	data := TagsPageData{
-		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  isAdmin,
-			PageName: "tags",
-			Version:  "2.0.0",
-		},
-		Tags: tagList,
-	}
-
-	s.renderLayout(w, "tags", data)
+	s.renderReactShell(w, "tags-index", "tags", map[string]any{
+		"isAdmin": GetIsAdmin(r),
+	})
 }
 
 // buildTagPageData assembles tag page data with hidden-title filtering.
@@ -438,6 +409,9 @@ func (s *Server) buildTagPageData(tag string, isAdmin bool, showHidden bool) (Ta
 	}
 
 	lib := s.Deps.Library
+	if lib == nil {
+		return TagPageData{}, false
+	}
 	lib.RLock()
 	var titles []LibraryTitle
 	for _, id := range titleIDs {
@@ -474,14 +448,18 @@ func (s *Server) buildTagPageData(tag string, isAdmin bool, showHidden bool) (Ta
 
 func (s *Server) handleTag(w http.ResponseWriter, r *http.Request) {
 	tag := chi.URLParam(r, "tag")
+	// Validate existence with the same visibility rules before mounting React.
 	isAdmin := GetIsAdmin(r)
 	showHidden := r.URL.Query().Get("show_hidden") == "1"
-	data, ok := s.buildTagPageData(tag, isAdmin, showHidden)
-	if !ok {
+	if _, ok := s.buildTagPageData(tag, isAdmin, showHidden); !ok {
 		http.Error(w, "Tag not found", http.StatusNotFound)
 		return
 	}
-	s.renderLayout(w, "tag", data)
+	s.renderReactShell(w, "tag-detail", "tag", map[string]any{
+		"tag":        tag,
+		"showHidden": isAdmin && showHidden,
+		"isAdmin":    isAdmin,
+	})
 }
 
 func (s *Server) handleReaderNoPage(w http.ResponseWriter, r *http.Request) {
