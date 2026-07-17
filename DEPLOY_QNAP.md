@@ -273,10 +273,19 @@ db_path: /root/mango/mango.db       # ⚠️ Must be inside /root/mango volume! 
 scan_interval_minutes: 5           # How often to re-scan the library
 thumbnail_generation_interval_hours: 24
 disable_login: false               # Set to true + set default_username to skip login
+# auth_proxy_header_name: X-Remote-User  # ONLY behind reverse proxy that strips/overwrites header
 log_level: info                     # debug, info, warn, error
 cache_enabled: true
 cache_size_mbs: 50
 ```
+
+**Auth / reverse proxy notes**
+
+- Prefer keeping Mango on a private network; if TLS terminates at a reverse proxy,
+  set `X-Forwarded-Proto: https` and strip client-supplied values so the auth
+  cookie `Secure` flag is correct.
+- Do not enable `auth_proxy_header_name` unless the proxy overwrites that header
+  and the container is not reachable directly from untrusted clients.
 
 > **After editing config, restart the container:**
 > ```bash

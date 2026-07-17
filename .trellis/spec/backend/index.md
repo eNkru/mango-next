@@ -53,16 +53,17 @@ go/
 │   ├── tasks/            # Background task runner (scan/thumbnail/updater/downloader)
 │   └── server/           # HTTP server: routes, middleware, handlers, templates
 │       ├── auth.go           # AuthMiddleware/AdminMiddleware (cookie/bearer/proxy)
-│       ├── middleware.go     # CORS, logging, upload handler
+│       ├── security.go       # Safe redirect, Secure cookie, login rate limit helpers
+│       ├── middleware.go     # Security headers, CORS, logging, upload containment
 │       ├── response.go       # sendJSON/sendError/sendImage/sendAttachment
-│       ├── server.go         # Server struct, RegisterRoutes, embed.FS static serving
+│       ├── server.go         # Server struct, timeouts/Shutdown, RegisterRoutes
 │       ├── web.go            # TemplateManager, TemplateData structs
 │       ├── handlers_api.go   # 46 API handlers (library/book/page/cover/progress/etc.)
 │       └── handlers_pages.go # 20+ page handlers + OPDS XML
 ```
 
 ### Cross-Layer Contracts
-- **Auth**: Middleware extracts token from `mango-token-{port}` cookie or `Authorization: Bearer` header; stores username in request context. Falls back to legacy `mango-sessid-{port}` cookie. Also supports `disable_login` + `auth_proxy_header`.
+- **Auth**: Middleware extracts token from `mango-token-{port}` cookie or `Authorization: Bearer` header; stores username in request context. Falls back to legacy `mango-sessid-{port}` cookie. Also supports `disable_login` + `auth_proxy_header` (startup warning; only safe behind a reverse proxy that strips/overwrites the header). Cookie is `HttpOnly` + `SameSite=Lax`; `Secure` is set for HTTPS or `X-Forwarded-Proto=https`. Logout calls `Storage.Logout` then clears the cookie. Form login callbacks are restricted to same-app relative paths. Failed logins are rate-limited per `RemoteAddr` IP (~5/min).
 - **DB**: Single writer (`SetMaxOpenConns(1)`), `PRAGMA foreign_keys=1`, version via `PRAGMA user_version`.
 - **Progress**: Table `progress` (migration 14) stores per-user per-entry reading progress with page + updated_at.
 - **Queue**: Separate SQLite DB at `queue_db_path` config key.

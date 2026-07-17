@@ -18,31 +18,41 @@ func (s *Server) handleLoginPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, loginBodyLimit)
+	if !loginAllowed(r) {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+	if err := r.ParseForm(); err != nil {
+		recordLoginFailure(r)
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 
 	token, err := s.Deps.Storage.VerifyUser(username, password)
-	if err != nil {
-		log.Printf("Login error: %v", err)
-		http.Redirect(w, r, "/login", http.StatusFound)
-		return
-	}
-	if token == "" {
+	if err != nil || token == "" {
+		if err != nil {
+			log.Printf("Login error: %v", err)
+		}
+		recordLoginFailure(r)
 		http.Redirect(w, r, "/login", http.StatusFound)
 		return
 	}
 
-	SetAuthTokenCookie(w, s.Deps.Config, token)
-
-	callback := r.FormValue("callback")
-	if callback == "" {
-		callback = "/"
-	}
-	http.Redirect(w, r, callback, http.StatusFound)
+	clearLoginFailures(r)
+	SetAuthTokenCookie(w, r, s.Deps.Config, token)
+	http.Redirect(w, r, safeRedirectPath(r.FormValue("callback")), http.StatusFound)
 }
 
 func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
-	ClearAuthTokenCookie(w, s.Deps.Config)
+	cfg := s.Deps.Config
+	if token := extractToken(r, cfg); token != "" {
+		_ = s.Deps.Storage.Logout(token)
+	}
+	ClearAuthTokenCookie(w, r, cfg)
 	http.Redirect(w, r, "/login", http.StatusFound)
 }
 

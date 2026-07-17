@@ -11,14 +11,23 @@ import (
 
 func CORSMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Same-origin browser use only; do not advertise Access-Control-Allow-Origin: *.
 		w.Header().Set("Access-Control-Allow-Methods", "HEAD,GET,PUT,POST,DELETE,OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "X-Requested-With,X-HTTP-Method-Override, Content-Type, Cache-Control, Accept, Authorization")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusOK)
+			w.WriteHeader(http.StatusNoContent)
 			return
 		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func SecurityHeadersMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
+		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
 		next.ServeHTTP(w, r)
 	})
 }
@@ -42,6 +51,14 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func underUploadRoot(absPath, absUpload string) bool {
+	rel, err := filepath.Rel(absUpload, absPath)
+	if err != nil {
+		return false
+	}
+	return rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator))
+}
+
 func UploadHandler(uploadPath string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -52,8 +69,12 @@ func UploadHandler(uploadPath string) func(http.Handler) http.Handler {
 					http.Error(w, "Bad request", http.StatusBadRequest)
 					return
 				}
-				absUpload, _ := filepath.Abs(uploadPath)
-				if !strings.HasPrefix(absPath, absUpload) {
+				absUpload, err := filepath.Abs(uploadPath)
+				if err != nil {
+					http.Error(w, "Bad request", http.StatusBadRequest)
+					return
+				}
+				if !underUploadRoot(absPath, absUpload) {
 					http.Error(w, "Forbidden", http.StatusForbidden)
 					return
 				}

@@ -97,7 +97,24 @@ db_path: /path/to/mango.db
 queue_db_path: /path/to/queue.db
 log_level: info
 disable_login: false
+# auth_proxy_header_name: X-Remote-User  # only behind a reverse proxy that strips/overwrites this header
 ```
+
+#### Auth and reverse proxies
+
+- Auth cookies are `HttpOnly` + `SameSite=Lax`. `Secure` is set automatically when
+  the request is HTTPS or `X-Forwarded-Proto: https` is present (plain local HTTP
+  keeps working).
+- If you terminate TLS at a reverse proxy, set `X-Forwarded-Proto` correctly and
+  **strip/overwrite client-supplied** `X-Forwarded-Proto` values.
+- `auth_proxy_header_name` trusts that header for any existing username. Only
+  enable it when Mango is not directly reachable and the proxy overwrites the
+  header on every request. The process logs a startup warning when this option
+  is set.
+- Login failures are rate-limited per client IP (`RemoteAddr`, ~5/minute). Edge
+  proxies should apply their own limits as well.
+- Browser CORS no longer sends `Access-Control-Allow-Origin: *`; same-origin UI
+  and non-browser Bearer/OPDS clients are unchanged.
 
 ### Admin CLI
 
