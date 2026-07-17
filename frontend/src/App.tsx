@@ -1,6 +1,8 @@
 import { readBoot } from './lib/boot';
 import { MissingItemsPage } from './pages/MissingItemsPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
+import { TagDetailPage } from './pages/TagDetailPage';
+import { TagsIndexPage } from './pages/TagsIndexPage';
 import { UserEditPage } from './pages/UserEditPage';
 import { UserListPage } from './pages/UserListPage';
 import { AppShell } from './shell/AppShell';
@@ -18,6 +20,10 @@ export function App() {
       return <UserListPage />;
     case 'user-edit':
       return <UserEditPage />;
+    case 'tags-index':
+      return <TagsIndexPage />;
+    case 'tag-detail':
+      return <TagDetailPage />;
     default:
       return (
         <AppShell title="未知页面" subtitle={boot.pageId}>

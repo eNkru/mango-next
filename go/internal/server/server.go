@@ -164,8 +164,11 @@ func (s *Server) RegisterRoutes() {
 				r.Get("/download/{tid}/{eid}", s.apiDownload)
 				r.Put("/progress/{tid}/{page}", s.apiSaveProgress)
 				r.Put("/bulk_progress/{action}/{tid}", s.apiBulkProgress)
-				r.Get("/tags/{tid}", s.apiGetTitleTags)
+				// Static / multi-segment tag API paths must register before /tags/{tid}.
 				r.Get("/tags", s.apiListTags)
+				r.Get("/tags/index", s.apiTagsIndex)
+				r.Get("/tags/{tag}/titles", s.apiTagTitles)
+				r.Get("/tags/{tid}", s.apiGetTitleTags)
 
 				r.Route("/admin", func(r chi.Router) {
 					r.Use(AdminMiddleware)

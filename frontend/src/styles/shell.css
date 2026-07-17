@@ -334,3 +334,119 @@ a.mango-btn {
   justify-content: center;
   text-decoration: none;
 }
+
+.mango-tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.mango-tag-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--mango-border);
+  border-radius: 999px;
+  background: var(--mango-bg-base);
+  color: var(--mango-text-primary);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+html.comic-theme .mango-tag-pill,
+html.comic-theme-dark .mango-tag-pill {
+  border-radius: 0;
+  border-width: 2px;
+  border-color: #000;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.mango-tag-pill:hover {
+  border-color: var(--mango-accent);
+  color: var(--mango-accent);
+}
+
+.mango-tag-pill small {
+  color: var(--mango-text-muted);
+  font-weight: 600;
+}
+
+.mango-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.mango-card {
+  position: relative;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-surface);
+  overflow: hidden;
+}
+
+html.comic-theme .mango-card,
+html.comic-theme-dark .mango-card {
+  border-width: 3px;
+  border-color: #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.mango-card--hidden {
+  opacity: 0.72;
+}
+
+.mango-card__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.mango-card__media {
+  aspect-ratio: 2 / 3;
+  background: color-mix(in srgb, var(--mango-text-muted) 12%, transparent);
+  overflow: hidden;
+}
+
+.mango-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mango-card__placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--mango-accent) 18%, transparent),
+    transparent
+  );
+}
+
+.mango-card__body {
+  padding: 0.7rem 0.75rem 0.85rem;
+}
+
+.mango-card__title {
+  margin: 0 0 0.25rem;
+  font-size: 0.98rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+.mango-card__meta {
+  margin: 0;
+  color: var(--mango-text-muted);
+  font-size: 0.85rem;
+}
+
+.mango-card__actions {
+  padding: 0 0.75rem 0.75rem;
+}

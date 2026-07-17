@@ -6,6 +6,9 @@ export type MangoBoot = {
   version: string;
   /** Optional page-specific payload, e.g. edit-target username. */
   username?: string;
+  /** Optional tag name for tag detail pages. */
+  tag?: string;
+  showHidden?: boolean;
 };
 
 const DEFAULT_BOOT: MangoBoot = {
@@ -30,6 +33,8 @@ export function readBoot(): MangoBoot {
       isAdmin: Boolean(parsed.isAdmin),
       version: parsed.version ?? DEFAULT_BOOT.version,
       username: typeof parsed.username === 'string' ? parsed.username : undefined,
+      tag: typeof parsed.tag === 'string' ? parsed.tag : undefined,
+      showHidden: Boolean(parsed.showHidden),
     };
   } catch {
     return DEFAULT_BOOT;
