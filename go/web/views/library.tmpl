@@ -48,7 +48,6 @@
                   <div class="card-progress-bar">
                     <div class="card-progress-fill" style="width: {{printf "%.1f" (index $.Percentage $i)}}%"></div>
                   </div>
-                  <span class="card-progress-percent">{{printf "%.0f" (index $.Percentage $i)}}%</span>
                 {{end}}
               {{end}}
               {{if $.IsAdmin}}

@@ -730,6 +730,95 @@ func TestLoadFromCacheRejectsDifferentDatabaseWithoutWriting(t *testing.T) {
 	}
 }
 
+// Unreadable archives keep empty entry IDs in memory; cache must not persist
+// them or restart LoadFromCache discards the whole cache every boot.
+func TestLibraryCacheSkipsEmptyEntryIDs(t *testing.T) {
+	libDir := t.TempDir()
+	titleDir := filepath.Join(libDir, "Mixed Title")
+	if err := os.MkdirAll(titleDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	createFakeCBZ(t, filepath.Join(titleDir, "good.cbz"), 3)
+	if err := os.WriteFile(filepath.Join(titleDir, "broken.cbz"), []byte("not-a-zip"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	dbPath := filepath.Join(t.TempDir(), "mango.db")
+	cachePath := filepath.Join(t.TempDir(), "library.yml.gz")
+	st, err := storage.Open(dbPath, libDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer st.Close()
+
+	lib := NewLibrary(libDir, st, cachePath)
+	if _, err := lib.Scan(); err != nil {
+		t.Fatal(err)
+	}
+
+	lib.RLock()
+	var emptyIDs, totalEntries int
+	for _, id := range lib.TitleIDs {
+		t := lib.TitleHash[id]
+		if t == nil {
+			continue
+		}
+		for _, e := range t.Entries {
+			totalEntries++
+			if e.ID() == "" {
+				emptyIDs++
+			}
+		}
+	}
+	lib.RUnlock()
+	if emptyIDs == 0 {
+		t.Fatal("expected unreadable archive to leave an empty-ID entry in memory")
+	}
+	if totalEntries < 2 {
+		t.Fatalf("entries = %d, want >= 2 (good + broken)", totalEntries)
+	}
+
+	cf, err := readLibraryCache(cachePath)
+	if err != nil {
+		t.Fatalf("read cache: %v", err)
+	}
+	for _, ct := range cf.Titles {
+		for _, ce := range ct.Entries {
+			if ce.ID == "" {
+				t.Fatalf("cache wrote empty entry id for path %q", ce.Path)
+			}
+		}
+	}
+
+	// Legacy file that still contains empty entry rows must load, not discard.
+	if len(cf.Titles) == 0 {
+		t.Fatal("cache has no titles")
+	}
+	cf.Titles[0].Entries = append(cf.Titles[0].Entries, cachedEntry{
+		Kind: "archive",
+		ID:   "",
+		Name: "legacy-broken",
+		Path: filepath.Join(titleDir, "legacy-broken.cbz"),
+	})
+	if err := writeLibraryCache(cachePath, cf); err != nil {
+		t.Fatal(err)
+	}
+
+	lib2 := NewLibrary(libDir, st, cachePath)
+	if err := lib2.LoadFromCache(); err != nil {
+		t.Fatalf("LoadFromCache: %v", err)
+	}
+	if _, err := os.Stat(cachePath); err != nil {
+		t.Fatalf("cache should remain after load with empty entry rows: %v", err)
+	}
+	lib2.RLock()
+	n := len(lib2.TitleIDs)
+	lib2.RUnlock()
+	if n != 1 {
+		t.Fatalf("TitleIDs after LoadFromCache = %d, want 1", n)
+	}
+}
+
 type blockingThumbnailEntry struct {
 	started chan struct{}
 	release chan struct{}

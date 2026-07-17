@@ -81,6 +81,12 @@ func titleToCached(t *Title) cachedTitle {
 		Entries:     make([]cachedEntry, 0, len(t.Entries)),
 	}
 	for _, e := range t.Entries {
+		// Unreadable archives/dirs keep an in-memory entry with empty ID
+		// (New*Entry returns before GetOrCreate*ID). Never persist those —
+		// empty IDs fail identity checks and force a cache discard every boot.
+		if e == nil || e.ID() == "" {
+			continue
+		}
 		ce := cachedEntry{
 			ID:        e.ID(),
 			Name:      e.Name(),
@@ -145,17 +151,28 @@ func titlesFromCache(cf libraryCacheFile) ([]*Title, error) {
 
 func cacheIdentitiesValid(cf libraryCacheFile, st *storage.Storage) (bool, error) {
 	for _, ct := range cf.Titles {
+		if ct.ID == "" {
+			return false, nil
+		}
 		matches, err := st.TitleIdentityMatches(ct.ID, ct.Dir)
 		if err != nil || !matches {
 			return matches, err
 		}
 		for _, id := range ct.TitleIDs {
+			if id == "" {
+				continue
+			}
 			exists, err := st.TitleIDExists(id)
 			if err != nil || !exists {
 				return exists, err
 			}
 		}
 		for _, ce := range ct.Entries {
+			// Empty IDs are dropped on load/save; ignore legacy bad rows here so
+			// a single unreadable volume does not invalidate the whole cache.
+			if ce.ID == "" {
+				continue
+			}
 			matches, err := st.EntryIdentityMatches(ce.ID, ce.Path)
 			if err != nil || !matches {
 				return matches, err
@@ -178,6 +195,9 @@ func titleFromCached(ct cachedTitle) (*Title, error) {
 		Entries:     make([]Entry, 0, len(ct.Entries)),
 	}
 	for _, ce := range ct.Entries {
+		if ce.ID == "" {
+			continue
+		}
 		switch ce.Kind {
 		case "dir":
 			e := &DirEntry{
