@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 12
+- **Total Sessions**: 13
 - **Last Active**: 2026-07-17
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~477 | Active |
+| `journal-1.md` | ~510 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 13 | 2026-07-17 | Config deploy docs cleanup | `ad02a53` | `fix/config-deploy-docs-cleanup` |
 | 12 | 2026-07-17 | Auth and HTTP hardening | `f3c1def` | `fix/auth-http-hardening` |
 | 11 | 2026-07-17 | Project-wide review wrap-up | `2807b4b` | `chore/project-wide-review` |
 | 10 | 2026-07-16 | Fix nested titles missing from library TitleHash | `d5c5ade` | `fix/nested-title-hash` |

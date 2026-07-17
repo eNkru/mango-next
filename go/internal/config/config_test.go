@@ -82,6 +82,13 @@ func TestPreprocessRejectsBadBaseURL(t *testing.T) {
 	}
 }
 
+func TestApplyLogLevelDoesNotPanic(t *testing.T) {
+	for _, lv := range []string{"debug", "info", "warn", "error", "bogus"} {
+		ApplyLogLevel(lv)
+	}
+	ApplyLogLevel("info")
+}
+
 func TestDumpsDefaultWhenMissing(t *testing.T) {
 	dir := t.TempDir()
 	cfgPath := filepath.Join(dir, "sub", "config.yml")

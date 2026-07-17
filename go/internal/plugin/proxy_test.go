@@ -11,7 +11,7 @@ import (
 
 func TestSandboxHTTPClientUsesProxyFromEnvironment(t *testing.T) {
 	dir := t.TempDir()
-	sb, err := NewSandbox(filepath.Join(dir, "store.json"), dir)
+	sb, err := NewSandbox(filepath.Join(dir, "store.json"), dir, 30)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,7 +28,7 @@ func TestDownloaderHTTPClientUsesProxyFromEnvironment(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer q.Close()
-	d := NewDownloader(q, filepath.Join(dir, "lib"), dir)
+	d := NewDownloader(q, filepath.Join(dir, "lib"), dir, 30)
 	if d.httpClient.Timeout != 30*time.Second {
 		t.Fatalf("timeout = %v", d.httpClient.Timeout)
 	}

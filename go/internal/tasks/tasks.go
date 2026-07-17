@@ -25,6 +25,7 @@ type Runner struct {
 	pluginDir                 string
 	pluginUpdateIntervalHours int
 	libraryPath               string
+	downloadTimeoutSeconds    int
 }
 
 // NewRunner creates a Runner attached to the given Library and plugin system.
@@ -37,12 +38,13 @@ func NewRunner(lib *library.Library, scanIntervalMinutes, thumbnailIntervalHours
 }
 
 // SetPluginTasks configures the plugin update checking and download queue
-// processing. Must be called before Start.
-func (r *Runner) SetPluginTasks(q *queue.Queue, pluginDir, libraryPath string, pluginUpdateIntervalHours int) {
+// processing. Must be called before Start. downloadTimeoutSeconds <= 0 uses 30s.
+func (r *Runner) SetPluginTasks(q *queue.Queue, pluginDir, libraryPath string, pluginUpdateIntervalHours, downloadTimeoutSeconds int) {
 	r.queue = q
 	r.pluginDir = pluginDir
 	r.libraryPath = libraryPath
 	r.pluginUpdateIntervalHours = pluginUpdateIntervalHours
+	r.downloadTimeoutSeconds = downloadTimeoutSeconds
 }
 
 // Start launches all background goroutines. Blocks until ctx is cancelled.
@@ -99,7 +101,7 @@ func (r *Runner) Start(ctx context.Context) {
 	// --- Download queue processor ---
 	if r.queue != nil {
 		go func() {
-			downloader := plugin.NewDownloader(r.queue, r.libraryPath, r.pluginDir)
+			downloader := plugin.NewDownloader(r.queue, r.libraryPath, r.pluginDir, r.downloadTimeoutSeconds)
 			downloader.Start(ctx)
 		}()
 	}

@@ -51,6 +51,7 @@ func main() {
 				return err
 			}
 			cfg.SetCurrent()
+			config.ApplyLogLevel(cfg.LogLevel)
 
 			st, err := storage.Open(cfg.DBPath, cfg.LibraryPath)
 			if err != nil {
@@ -62,7 +63,11 @@ func main() {
 			fmt.Printf("Config loaded from %s\n", cfg.Path())
 			fmt.Printf("Database ready at %s (schema version %d)\n", cfg.DBPath, ver)
 
-			lib := library.NewLibrary(cfg.LibraryPath, st, cfg.LibraryCachePath)
+			cachePath := cfg.LibraryCachePath
+			if !cfg.CacheEnabled {
+				cachePath = ""
+			}
+			lib := library.NewLibrary(cfg.LibraryPath, st, cachePath)
 			if err := lib.LoadFromCache(); err != nil {
 				fmt.Printf("Library cache not loaded: %v\n", err)
 			}
@@ -87,7 +92,7 @@ func main() {
 			}()
 
 			runner := tasks.NewRunner(lib, cfg.ScanIntervalMinutes, cfg.ThumbnailGenerationIntervalHours)
-			runner.SetPluginTasks(queueDB, cfg.PluginPath, cfg.LibraryPath, cfg.PluginUpdateIntervalHours)
+			runner.SetPluginTasks(queueDB, cfg.PluginPath, cfg.LibraryPath, cfg.PluginUpdateIntervalHours, cfg.DownloadTimeoutSeconds)
 			go runner.Start(ctx)
 
 			tm, err := loadTemplates()

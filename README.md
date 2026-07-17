@@ -90,14 +90,17 @@ PORT=9001 DB_PATH=/tmp/mango.db ./mango
 ```yaml
 host: 0.0.0.0
 port: 9000
-base_url: /
-session_secret: your-secret-here
+base_url: /                          # non-root e.g. /mango/ mounts all routes under that prefix
 library_path: /path/to/your/manga/collection
 db_path: /path/to/mango.db
 queue_db_path: /path/to/queue.db
-log_level: info
+log_level: info                      # debug | info | warn | error
+download_timeout_seconds: 30         # plugin HTTP / page download timeout
+cache_enabled: true                  # false skips library cache load/save
 disable_login: false
 # auth_proxy_header_name: X-Remote-User  # only behind a reverse proxy that strips/overwrites this header
+# session_secret: ignored in Go (DB-backed tokens)
+# cache_size_mbs / cache_log_enabled: parsed for compatibility, unused in Go
 ```
 
 #### Auth and reverse proxies
@@ -133,17 +136,26 @@ disable_login: false
 docker build -t mango .
 docker run -d \
   -p 9000:9000 \
-  -v /path/to/your/manga:/library \
-  -v /path/to/config.yml:/config.yml \
+  -v /path/to/data:/root/mango \
+  -v /path/to/config:/root/.config/mango \
   --name mango \
-  mango -c /config.yml
+  mango
 ```
 
-Or:
+Or with Compose (container always listens on **9000** inside the image):
 
 ```bash
+cp env.example .env   # edit MAIN_DIRECTORY_PATH / CONFIG_DIRECTORY_PATH / PORT
+docker compose config # should succeed
 docker compose up -d
 ```
+
+`env.example` defaults to `./data` and `./config`. Host `PORT` only controls the
+published host port (`${PORT}:9000`).
+
+**Backup / rollback (disposable check):** stop the container, copy the data and
+config directories, pull or rebuild a previous image tag, restart. First-admin
+password is printed once to the container log on empty DB.
 
 See [DOCKER_HUB.md](DOCKER_HUB.md) for publishing. For QNAP NAS, see [DEPLOY_QNAP.md](DEPLOY_QNAP.md).
 
@@ -161,6 +173,8 @@ See [DOCKER_HUB.md](DOCKER_HUB.md) for publishing. For QNAP NAS, see [DEPLOY_QNA
 - SQLite DB schema and plugin directory layout are stable; existing data directories continue to work.
 - On first launch the server creates an admin user with a random password (printed to stdout). **Save this password**.
 - Static binary (`make static`) has no runtime C dependencies.
+- JSON API routes live under `{base_url}api/...` (authenticated). There is no embedded OpenAPI/ReDoc UI in this build.
+- Tests: `cd go && go test ./...` (Crystal `spec/` was removed; Go is the only suite).
 
 ## Special thanks
 [LINUX DO](https://linux.do/)

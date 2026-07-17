@@ -41,7 +41,7 @@ go/
 ├── internal/
 │   ├── config/           # YAML+env config loading
 │   ├── storage/          # SQLite + migrations + CRUD (users/tags/thumbnails/progress)
-│   │   └── migration/    # Versioned migrations (latest: 14)
+│   │   └── migration/    # Versioned migrations (latest: 15)
 │   ├── archive/          # zip/cbz/rar/cbr/7z reader (Reader interface)
 │   ├── thumbnail/        # Image size + thumbnail generation (200w/300h)
 │   ├── plugin/           # goja sandbox + mango.* helpers + v1/v2 lifecycle
@@ -108,19 +108,15 @@ Default config paths (`~/mango/library`, `~/mango.db`, etc.) expand to `/root/ma
 
 ## Pre-Development Checklist
 
-### For Crystal changes
-- Read [User Management](./user-management.md) before modifying user storage.
-
 ### For Go changes
 - Go module: `cd go/` and run `go build ./... && go vet ./... && go test ./...`.
-- Template changes: ECR → `.tmpl` Go html/template; run `go build ./...` to verify embed patterns.
-- New routes: Register in `internal/server/server.go` `RegisterRoutes()` and add handler to `handlers_api.go` or `handlers_pages.go`.
+- Template changes: `.tmpl` Go html/template under `go/web/views/`; run `go build ./...` to verify embed patterns.
+- New routes: Register in `internal/server/server.go` `RegisterRoutes()` (under `BaseURL` mount) and add handler to `handlers_api.go` or `handlers_pages.go`.
 - Storage changes: Add migration in `internal/storage/migration/migrations.go` and bump `LatestVersion()`. Run full test suite.
-- Test count baseline: 170 tests (increase with every new feature/route).
+- Config: document implemented vs deprecated keys; wire new knobs with tests.
 
 ## Quality Check
 
-- Run `crystal spec` after Crystal backend behavior changes.
-- Run `crystal tool format --check` on changed Crystal files.
-- For Go: `go build ./... && go vet ./... && go test ./...` (170+ tests).
-- Add or update specs when changing storage invariants, validation errors, or API behavior.
+- For Go: `go build ./... && go vet ./... && go test ./...` (and `go test -race ./...` for concurrent paths).
+- Add or update Trellis specs when changing storage invariants, validation errors, or API behavior.
+- Crystal is no longer an implementation or test suite in this repository.
