@@ -1,4 +1,5 @@
 import { readBoot } from './lib/boot';
+import { LoginPage } from './pages/LoginPage';
 import { MissingItemsPage } from './pages/MissingItemsPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { TagDetailPage } from './pages/TagDetailPage';
@@ -14,6 +15,8 @@ export function App() {
   switch (boot.pageId) {
     case 'react-preview':
       return <PlaceholderPage />;
+    case 'login':
+      return <LoginPage />;
     case 'missing-items':
       return <MissingItemsPage />;
     case 'user-list':

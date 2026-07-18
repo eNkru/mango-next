@@ -171,6 +171,84 @@ func TestAPILoginGenericErrorAndRateLimit(t *testing.T) {
 	}
 }
 
+func TestRequireAuthPageRedirectIncludesCallback(t *testing.T) {
+	_, cfg, _ := setupTest(t)
+	cfg.SetCurrent()
+
+	req := httptest.NewRequest(http.MethodGet, "/library?sort=name", nil)
+	rec := httptest.NewRecorder()
+	requireAuth(rec, req)
+
+	if rec.Code != http.StatusFound {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusFound)
+	}
+	loc := rec.Header().Get("Location")
+	if !strings.HasPrefix(loc, "/login?callback=") {
+		t.Fatalf("Location = %q, want /login?callback=...", loc)
+	}
+	if !strings.Contains(loc, "callback=%2Flibrary") && !strings.Contains(loc, "callback=/library") {
+		// QueryEscape encodes / as %2F
+		if !strings.Contains(loc, "%2Flibrary") {
+			t.Fatalf("Location missing library callback: %q", loc)
+		}
+	}
+}
+
+func TestRequireAuthAPIStillUnauthorized(t *testing.T) {
+	_, cfg, _ := setupTest(t)
+	cfg.SetCurrent()
+
+	req := httptest.NewRequest(http.MethodGet, "/api/library", nil)
+	rec := httptest.NewRecorder()
+	requireAuth(rec, req)
+
+	if rec.Code != http.StatusUnauthorized {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusUnauthorized)
+	}
+}
+
+func TestHandleLoginPageRedirectsWhenAuthenticated(t *testing.T) {
+	st, cfg, _ := setupTest(t)
+	token, err := st.VerifyUser("testuser", "password123")
+	if err != nil || token == "" {
+		t.Fatal(err)
+	}
+	s := &Server{Deps: &Dependencies{Config: cfg, Storage: st}}
+
+	req := httptest.NewRequest(http.MethodGet, "/login?callback=/library", nil)
+	req.AddCookie(&http.Cookie{Name: "mango-token-9000", Value: token})
+	rec := httptest.NewRecorder()
+	s.handleLoginPage(rec, req)
+
+	if rec.Code != http.StatusFound {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusFound)
+	}
+	if loc := rec.Header().Get("Location"); loc != "/library" {
+		t.Fatalf("Location = %q, want /library", loc)
+	}
+}
+
+func TestHandleLoginPageRejectsOpenRedirectWhenAuthenticated(t *testing.T) {
+	st, cfg, _ := setupTest(t)
+	token, err := st.VerifyUser("testuser", "password123")
+	if err != nil || token == "" {
+		t.Fatal(err)
+	}
+	s := &Server{Deps: &Dependencies{Config: cfg, Storage: st}}
+
+	req := httptest.NewRequest(http.MethodGet, "/login?callback=https://evil.example/", nil)
+	req.AddCookie(&http.Cookie{Name: "mango-token-9000", Value: token})
+	rec := httptest.NewRecorder()
+	s.handleLoginPage(rec, req)
+
+	if rec.Code != http.StatusFound {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusFound)
+	}
+	if loc := rec.Header().Get("Location"); loc != "/" {
+		t.Fatalf("Location = %q, want /", loc)
+	}
+}
+
 func TestCORSAndSecurityHeaders(t *testing.T) {
 	h := SecurityHeadersMiddleware(CORSMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
