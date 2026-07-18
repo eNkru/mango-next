@@ -11,6 +11,8 @@ export type MangoBoot = {
   showHidden?: boolean;
   /** Optional post-login redirect path (same-app relative). */
   callback?: string;
+  /** Title id for the React title-detail route. */
+  titleId?: string;
 };
 
 const DEFAULT_BOOT: MangoBoot = {
@@ -38,6 +40,7 @@ export function readBoot(): MangoBoot {
       tag: typeof parsed.tag === 'string' ? parsed.tag : undefined,
       showHidden: Boolean(parsed.showHidden),
       callback: typeof parsed.callback === 'string' ? parsed.callback : undefined,
+      titleId: typeof parsed.titleId === 'string' ? parsed.titleId : undefined,
     };
   } catch {
     return DEFAULT_BOOT;

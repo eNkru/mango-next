@@ -87,6 +87,12 @@ func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {
 //	empty_library = titles.size == 0
 //	plus continue_reading / start_reading / recently_added sections.
 func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
+	s.renderReactShell(w, "home", "home", map[string]any{"isAdmin": GetIsAdmin(r)})
+}
+
+// handleHomeLegacy retains the server-rendered rollback implementation while
+// the React browse routes coexist with legacy pages.
+func (s *Server) handleHomeLegacy(w http.ResponseWriter, r *http.Request) {
 	username := GetUsername(r)
 	base := s.Deps.Config.BaseURL
 	lib := s.Deps.Library
@@ -293,12 +299,21 @@ func (s *Server) buildLibraryPageData(isAdmin bool, showHidden bool) LibraryPage
 }
 
 func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
-	isAdmin := GetIsAdmin(r)
-	showHidden := r.URL.Query().Get("show_hidden") == "1"
-	s.renderLayout(w, "library", s.buildLibraryPageData(isAdmin, showHidden))
+	s.renderReactShell(w, "library", "library", map[string]any{
+		"isAdmin": GetIsAdmin(r),
+	})
 }
 
 func (s *Server) handleTitle(w http.ResponseWriter, r *http.Request) {
+	titleID := chi.URLParam(r, "title")
+	s.renderReactShell(w, "title-detail", "title", map[string]any{
+		"isAdmin": GetIsAdmin(r),
+		"titleId": titleID,
+	})
+}
+
+// handleTitleLegacy retains the server-rendered rollback implementation.
+func (s *Server) handleTitleLegacy(w http.ResponseWriter, r *http.Request) {
 	titleID := chi.URLParam(r, "title")
 	username := GetUsername(r)
 	lib := s.Deps.Library

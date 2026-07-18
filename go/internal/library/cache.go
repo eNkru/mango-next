@@ -224,6 +224,9 @@ func titleFromCached(ct cachedTitle) (*Title, error) {
 			t.Entries = append(t.Entries, e)
 		}
 	}
+	if err := t.ApplyDisplayNames(); err != nil {
+		return nil, err
+	}
 	return t, nil
 }
 

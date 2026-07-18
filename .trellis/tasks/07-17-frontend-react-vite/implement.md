@@ -34,11 +34,34 @@ docker build -t mango-react-check .
 - After pilot: restore Go `missing-items` template handler if React page fails.
 - Do not delete legacy templates until later migrations explicitly retire them.
 
-## Follow-up children (not created yet)
+## Follow-up children
 
 - login shell
-- home / library / title browse
+- `07-18-frontend-react-browse`: home / library / title browse (created)
 - reader
 - users / admin settings
 - subscriptions / plugin download
 - retirement of remaining jQuery/Alpine/UIkit pages
+
+## Recommended next child: reader
+
+Plan `frontend-react-reader` as the next independently reviewed child after the
+browse migration:
+
+1. Define one reader bootstrap contract for entry identity, page count,
+   dimensions, current progress, adjacent entries, exit URL, and reading
+   preferences. Keep image bytes on the existing page endpoint.
+2. Migrate both reader routes to `pageId=reader`, preserving direct page URLs,
+   keyboard/touch navigation, right-to-left and long-strip modes, preload,
+   progress saving, adjacent-entry navigation, and BaseURL behavior.
+3. Reuse the shared React language/theme providers and error UI; isolate reader
+   state in a reducer so URL page, loaded page, and persisted progress cannot
+   drift independently.
+4. Add Go contract tests for missing/corrupt entries and adjacent navigation,
+   pure frontend tests for the reducer/navigation math, then browser smoke on
+   desktop and mobile with one archive and one loose-image directory.
+5. Keep `reader.tmpl`, `reader-error.tmpl`, and `reader.js` as route-local
+   rollback assets until the child passes production build and browser smoke.
+
+Do not combine admin settings, subscriptions, plugin download, or OPDS into
+this child; they have separate authorization and data-contract boundaries.

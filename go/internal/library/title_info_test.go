@@ -72,3 +72,50 @@ func TestLoadMissingInfoJSON(t *testing.T) {
 		t.Fatalf("expected empty map, got %v", m)
 	}
 }
+
+func TestDisplayNamesPersistAndApply(t *testing.T) {
+	dir := t.TempDir()
+	entryPath := filepath.Join(dir, "chapter-01.cbz")
+	title := &Title{Dir: dir, Name: "Original"}
+	entry := &ArchiveEntry{title: "chapter-01", path: entryPath, book: title}
+	title.Entries = []Entry{entry}
+
+	if err := title.SetDisplayName("Displayed title"); err != nil {
+		t.Fatal(err)
+	}
+	if err := title.SetEntryDisplayName(entry, "Displayed chapter"); err != nil {
+		t.Fatal(err)
+	}
+	if title.Name != "Displayed title" || entry.Name() != "Displayed chapter" {
+		t.Fatalf("in-memory names = %q / %q", title.Name, entry.Name())
+	}
+
+	reloaded := &Title{Dir: dir, Name: "Original"}
+	reloadedEntry := &ArchiveEntry{title: "chapter-01", path: entryPath, book: reloaded}
+	reloaded.Entries = []Entry{reloadedEntry}
+	if err := reloaded.ApplyDisplayNames(); err != nil {
+		t.Fatal(err)
+	}
+	if reloaded.Name != "Displayed title" || reloadedEntry.Name() != "Displayed chapter" {
+		t.Fatalf("reloaded names = %q / %q", reloaded.Name, reloadedEntry.Name())
+	}
+
+	m, err := LoadTitleInfoMap(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if m["display_name"] != "Displayed title" {
+		t.Fatalf("display_name = %v", m["display_name"])
+	}
+	entryNames, ok := m["entry_display_name"].(map[string]any)
+	if !ok || entryNames["chapter-01"] != "Displayed chapter" {
+		t.Fatalf("entry_display_name = %#v", m["entry_display_name"])
+	}
+}
+
+func TestDisplayNameRejectsEmptyValues(t *testing.T) {
+	title := &Title{Dir: t.TempDir()}
+	if err := title.SetDisplayName("  "); err == nil {
+		t.Fatal("empty title display name accepted")
+	}
+}

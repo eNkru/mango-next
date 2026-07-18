@@ -558,6 +558,10 @@ func NewTitle(absPath, parentID string, st *storage.Storage) *Title {
 		}
 	}
 
+	// Metadata is applied after filesystem-name sorting so presentation
+	// overrides do not silently change natural reading order.
+	_ = t.ApplyDisplayNames()
+
 	return t
 }
 

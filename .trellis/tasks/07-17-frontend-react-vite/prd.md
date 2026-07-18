@@ -39,6 +39,14 @@ authenticator, and single-binary deployment target.
 - `07-18-frontend-react-missing-items` (P1): migrate `/admin/missing` to React,
   implement real missing-items JSON contracts, and prove the foundation with one
   complete page.
+- `07-18-frontend-react-browse` (P1): migrate the authenticated home, library,
+  and title-detail browsing flow with complete title administrator parity and
+  shared React localization.
+
+The recommended next child is `frontend-react-reader`. It closes the core
+browse-to-read workflow before lower-frequency administration pages and keeps
+the migration boundary to the two existing `/reader/{title}/{entry}[/{page}]`
+routes plus their reader-specific APIs.
 
 Later page migrations remain follow-up children and are out of the first
 delivery.
