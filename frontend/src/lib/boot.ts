@@ -9,6 +9,8 @@ export type MangoBoot = {
   /** Optional tag name for tag detail pages. */
   tag?: string;
   showHidden?: boolean;
+  /** Optional post-login redirect path (same-app relative). */
+  callback?: string;
 };
 
 const DEFAULT_BOOT: MangoBoot = {
@@ -35,6 +37,7 @@ export function readBoot(): MangoBoot {
       username: typeof parsed.username === 'string' ? parsed.username : undefined,
       tag: typeof parsed.tag === 'string' ? parsed.tag : undefined,
       showHidden: Boolean(parsed.showHidden),
+      callback: typeof parsed.callback === 'string' ? parsed.callback : undefined,
     };
   } catch {
     return DEFAULT_BOOT;

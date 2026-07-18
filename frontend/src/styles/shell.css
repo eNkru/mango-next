@@ -450,3 +450,115 @@ html.comic-theme-dark .mango-card {
 .mango-card__actions {
   padding: 0 0.75rem 0.75rem;
 }
+
+.mango-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem 1rem;
+  background: var(--mango-bg-base);
+}
+
+.mango-login__card {
+  width: min(24rem, 100%);
+  background: var(--mango-bg-surface);
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  padding: 1.75rem 1.5rem 1.25rem;
+}
+
+html.comic-theme .mango-login__card,
+html.comic-theme-dark .mango-login__card {
+  border-width: 3px;
+  border-color: #000;
+  box-shadow: 6px 6px 0 #000;
+}
+
+.mango-login__header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.mango-login__header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.55rem;
+}
+
+html.comic-theme .mango-login__header h1,
+html.comic-theme-dark .mango-login__header h1 {
+  font-family: var(--mango-font-comic);
+}
+
+.mango-login__header p {
+  margin: 0;
+  color: var(--mango-text-muted);
+}
+
+.mango-login__form {
+  display: grid;
+  gap: 1rem;
+}
+
+.mango-login__error {
+  border: 1px solid var(--mango-accent);
+  border-radius: var(--mango-radius);
+  color: var(--mango-accent);
+  background: color-mix(in srgb, var(--mango-accent) 10%, transparent);
+  padding: 0.65rem 0.75rem;
+  font-weight: 600;
+}
+
+html.comic-theme .mango-login__error,
+html.comic-theme-dark .mango-login__error {
+  border-width: 2px;
+  border-color: #000;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.mango-login__password-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.mango-login__toggle {
+  appearance: none;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-base);
+  color: var(--mango-text-secondary);
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mango-login__toggle:hover:not(:disabled) {
+  color: var(--mango-accent);
+  border-color: var(--mango-accent);
+}
+
+.mango-login__toggle:disabled,
+.mango-login__submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.mango-login__submit {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.mango-login__footer {
+  margin-top: 1.25rem;
+  text-align: center;
+  color: var(--mango-text-muted);
+  font-size: 0.9rem;
+}
+
+.mango-login__footer p {
+  margin: 0;
+}

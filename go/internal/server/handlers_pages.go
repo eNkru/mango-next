@@ -14,10 +14,31 @@ import (
 )
 
 func (s *Server) handleLoginPage(w http.ResponseWriter, r *http.Request) {
-	s.renderPage(w, "views/login", map[string]any{
-		"BaseURL":  s.Deps.Config.BaseURL,
-		"PageName": "login",
-	})
+	cfg := s.Deps.Config
+	if token := extractToken(r, cfg); token != "" {
+		if username, err := s.Deps.Storage.VerifyToken(token); err == nil && username != "" {
+			http.Redirect(w, r, s.resolvePostLoginRedirect(r.URL.Query().Get("callback")), http.StatusFound)
+			return
+		}
+	}
+
+	extra := map[string]any{"isAdmin": false}
+	if raw := strings.TrimSpace(r.URL.Query().Get("callback")); raw != "" {
+		extra["callback"] = safeRedirectPath(raw)
+	}
+	s.renderReactShell(w, "login", "login", extra)
+}
+
+// resolvePostLoginRedirect maps a raw callback to a BaseURL-aware app path.
+func (s *Server) resolvePostLoginRedirect(callback string) string {
+	cb := safeRedirectPath(callback)
+	if cb == "/" {
+		return s.appPath("")
+	}
+	if s.Deps.Config != nil && s.Deps.Config.BaseURL != "/" && strings.HasPrefix(cb, "/") && !strings.HasPrefix(cb, s.Deps.Config.BaseURL) {
+		return strings.TrimSuffix(s.Deps.Config.BaseURL, "/") + cb
+	}
+	return cb
 }
 
 func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -48,14 +69,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	clearLoginFailures(r)
 	SetAuthTokenCookie(w, r, s.Deps.Config, token)
-	cb := safeRedirectPath(r.FormValue("callback"))
-	if cb == "/" {
-		cb = s.appPath("")
-	} else if s.Deps.Config != nil && s.Deps.Config.BaseURL != "/" && strings.HasPrefix(cb, "/") && !strings.HasPrefix(cb, s.Deps.Config.BaseURL) {
-		// Relative app path under non-root base.
-		cb = strings.TrimSuffix(s.Deps.Config.BaseURL, "/") + cb
-	}
-	http.Redirect(w, r, cb, http.StatusFound)
+	http.Redirect(w, r, s.resolvePostLoginRedirect(r.FormValue("callback")), http.StatusFound)
 }
 
 func (s *Server) handleLogout(w http.ResponseWriter, r *http.Request) {

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/eNkru/mango-next/internal/config"
@@ -208,6 +209,13 @@ func requireAuth(w http.ResponseWriter, r *http.Request) {
 		if cfg.BaseURL == "/" {
 			login = "/login"
 		}
+	}
+	cb := path
+	if r.URL.RawQuery != "" {
+		cb = path + "?" + r.URL.RawQuery
+	}
+	if safe := safeRedirectPath(cb); safe != "" {
+		login += "?callback=" + url.QueryEscape(safe)
 	}
 	http.Redirect(w, r, login, http.StatusFound)
 }
