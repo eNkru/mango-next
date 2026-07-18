@@ -508,3 +508,36 @@ Implemented BaseURL mount, wired log_level/download_timeout/cache_enabled, fixed
 ### Next Steps
 
 - None - task complete
+
+
+## Session 14: React login migration
+
+**Date**: 2026-07-18
+**Task**: React login migration
+**Branch**: `main`
+
+### Summary
+
+Migrated GET /login to React shell with POST /api/login, safe callback redirects via requireAuth, already-authenticated bounce, dual-theme login card; archived 07-18-frontend-react-login after PR merge.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9ec992d` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
