@@ -541,3 +541,36 @@ Migrated GET /login to React shell with POST /api/login, safe callback redirects
 ### Next Steps
 
 - None - task complete
+
+
+## Session 15: Finish React browse migration
+
+**Date**: 2026-07-19
+**Task**: Finish React browse migration
+**Branch**: `main`
+
+### Summary
+
+Completed and archived frontend-react-browse: home/library/title React migration already committed (488bcad) and merged via PR #44. Working tree was clean; archived task and recorded session.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `488bcad` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
