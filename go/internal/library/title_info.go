@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // LoadTitleInfoMap reads title Dir/info.json into a map, preserving all keys.
@@ -74,6 +75,108 @@ func (t *Title) SetEntryCoverURL(entryName, url string) error {
 	entryMap[entryName] = url
 	m["entry_cover_url"] = entryMap
 	return SaveTitleInfoMap(t.Dir, m)
+}
+
+// CoverURL returns the optional title cover override from info.json.
+func (t *Title) CoverURL() string {
+	m, err := LoadTitleInfoMap(t.Dir)
+	if err != nil {
+		return ""
+	}
+	url, _ := m["cover_url"].(string)
+	return url
+}
+
+// EntryCoverURL returns the optional direct-entry cover override.
+func (t *Title) EntryCoverURL(entry Entry) string {
+	m, err := LoadTitleInfoMap(t.Dir)
+	if err != nil {
+		return ""
+	}
+	entryURLs, _ := m["entry_cover_url"].(map[string]any)
+	url, _ := entryURLs[entryFileName(entry)].(string)
+	return url
+}
+
+// ApplyDisplayNames loads title and entry display-name overrides from info.json.
+// Entry keys use their filesystem names so display-name changes remain reversible.
+func (t *Title) ApplyDisplayNames() error {
+	m, err := LoadTitleInfoMap(t.Dir)
+	if err != nil {
+		return err
+	}
+	if name, ok := m["display_name"].(string); ok && strings.TrimSpace(name) != "" {
+		t.Name = name
+	}
+	entryNames, _ := m["entry_display_name"].(map[string]any)
+	for _, entry := range t.Entries {
+		name, _ := entryNames[entryFileName(entry)].(string)
+		if strings.TrimSpace(name) != "" {
+			setEntryName(entry, name)
+		}
+	}
+	return nil
+}
+
+// SetDisplayName persists and applies a title display name.
+func (t *Title) SetDisplayName(name string) error {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return fmt.Errorf("display name cannot be empty")
+	}
+	m, err := LoadTitleInfoMap(t.Dir)
+	if err != nil {
+		return err
+	}
+	m["display_name"] = name
+	if err := SaveTitleInfoMap(t.Dir, m); err != nil {
+		return err
+	}
+	t.Name = name
+	return nil
+}
+
+// SetEntryDisplayName persists and applies a direct entry display name.
+func (t *Title) SetEntryDisplayName(entry Entry, name string) error {
+	name = strings.TrimSpace(name)
+	if entry == nil || entry.Book() != t {
+		return fmt.Errorf("entry not found")
+	}
+	if name == "" {
+		return fmt.Errorf("display name cannot be empty")
+	}
+	m, err := LoadTitleInfoMap(t.Dir)
+	if err != nil {
+		return err
+	}
+	entryNames, _ := m["entry_display_name"].(map[string]any)
+	if entryNames == nil {
+		entryNames = map[string]any{}
+	}
+	entryNames[entryFileName(entry)] = name
+	m["entry_display_name"] = entryNames
+	if err := SaveTitleInfoMap(t.Dir, m); err != nil {
+		return err
+	}
+	setEntryName(entry, name)
+	return nil
+}
+
+func entryFileName(entry Entry) string {
+	name := filepath.Base(entry.Path())
+	if _, ok := entry.(*ArchiveEntry); ok {
+		name = strings.TrimSuffix(name, filepath.Ext(name))
+	}
+	return name
+}
+
+func setEntryName(entry Entry, name string) {
+	switch value := entry.(type) {
+	case *ArchiveEntry:
+		value.title = name
+	case *DirEntry:
+		value.title = name
+	}
 }
 
 // EntryByID returns the direct entry with the given ID, or nil.

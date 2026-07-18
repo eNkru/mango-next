@@ -151,11 +151,12 @@ func (s *Server) RegisterRoutes() {
 			})
 
 			r.Route("/api", func(r chi.Router) {
-				r.Get("/library", s.apiLibrary)
+				r.Get("/home", s.apiHome)
+				r.Get("/library", s.apiBrowseLibrary)
 				r.Get("/library/continue_reading", s.apiContinueReading)
 				r.Get("/library/start_reading", s.apiStartReading)
 				r.Get("/library/recently_added", s.apiRecentlyAdded)
-				r.Get("/book/{tid}", s.apiBook)
+				r.Get("/book/{tid}", s.apiBrowseBook)
 				r.Get("/sort_opt", s.apiGetSortOpt)
 				r.Put("/sort_opt", s.apiPutSortOpt)
 				r.Get("/page/{tid}/{eid}/{page}", s.apiPage)
@@ -179,6 +180,7 @@ func (s *Server) RegisterRoutes() {
 					r.Post("/users", s.apiAdminCreateUser)
 					r.Put("/users/{username}", s.apiAdminUpdateUser)
 					r.Delete("/user/delete/{username}", s.apiAdminDeleteUser)
+					r.Put("/display_name/{tid}", s.apiAdminSetDisplayName)
 					r.Put("/display_name/{tid}/{name}", s.apiAdminSetDisplayName)
 					r.Put("/sort_title/{tid}", s.apiAdminSetSortTitle)
 					r.Post("/upload/{target}", s.apiAdminUpload)

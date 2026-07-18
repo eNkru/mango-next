@@ -75,6 +75,42 @@ html.comic-theme-dark .mango-topbar__brand {
   color: var(--mango-accent);
 }
 
+.mango-topbar__tools,
+.mango-language {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.mango-language select {
+  max-width: 8rem;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-base);
+  color: var(--mango-text-primary);
+  padding: 0.4rem 0.5rem;
+  font: inherit;
+}
+
+.mango-topbar__logout {
+  color: var(--mango-text-secondary);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .mango-shell {
   padding: 1.25rem 4vw 3rem;
 }
@@ -419,11 +455,7 @@ html.comic-theme-dark .mango-card {
 .mango-card__placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--mango-accent) 18%, transparent),
-    transparent
-  );
+  background: color-mix(in srgb, var(--mango-accent) 16%, var(--mango-bg-base));
 }
 
 .mango-card__body {
@@ -561,4 +593,315 @@ html.comic-theme-dark .mango-login__error {
 
 .mango-login__footer p {
   margin: 0;
+}
+
+.mango-progress {
+  width: 100%;
+  height: 0.35rem;
+  overflow: hidden;
+  border-radius: var(--mango-radius);
+  background: color-mix(in srgb, var(--mango-text-muted) 22%, transparent);
+  margin: 0.55rem 0;
+}
+
+.mango-progress span {
+  display: block;
+  height: 100%;
+  background: var(--mango-accent);
+}
+
+.mango-browse-section {
+  margin-top: 2rem;
+}
+
+.mango-browse-section > h2,
+.mango-section-heading h2,
+.mango-welcome h2,
+.mango-empty-hero h2 {
+  margin: 0 0 0.85rem;
+  font-size: 1.25rem;
+}
+
+.mango-poster-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(150px, 16vw, 210px);
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.1rem 0.3rem 0.8rem 0;
+  scroll-snap-type: x proximity;
+}
+
+.mango-poster-rail > * {
+  scroll-snap-align: start;
+}
+
+.mango-continue-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 1rem;
+}
+
+.mango-continue-card {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  min-height: 180px;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  overflow: hidden;
+  background: var(--mango-bg-surface);
+}
+
+.mango-continue-card > img {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  object-fit: cover;
+}
+
+.mango-continue-card > div {
+  min-width: 0;
+  padding: 1rem;
+}
+
+.mango-continue-card h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.mango-continue-card p,
+.mango-welcome p,
+.mango-empty-hero p,
+.mango-file-name {
+  color: var(--mango-text-muted);
+}
+
+.mango-welcome,
+.mango-empty-hero {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--mango-border);
+}
+
+.mango-empty-hero code {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 0.45rem 0.6rem;
+  background: var(--mango-bg-surface);
+}
+
+.mango-browse-toolbar {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.mango-browse-toolbar > input {
+  flex: 1 1 14rem;
+  max-width: 24rem;
+}
+
+.mango-browse-toolbar label {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--mango-text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.mango-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  color: var(--mango-text-muted);
+}
+
+.mango-breadcrumb a,
+.mango-tag-pill a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mango-title-overview {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.mango-title-cover {
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-surface);
+}
+
+.mango-title-cover img,
+.mango-entry-card__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mango-title-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.mango-title-heading h2 {
+  margin: 0;
+  font-size: 1.45rem;
+  overflow-wrap: anywhere;
+}
+
+.mango-tag-list,
+.mango-inline-form,
+.mango-selection-bar,
+.mango-section-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mango-tag-list {
+  margin-top: 0.75rem;
+}
+
+.mango-tag-pill button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--mango-accent);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.mango-inline-form {
+  margin-top: 0.75rem;
+}
+
+.mango-inline-form .mango-input {
+  max-width: 16rem;
+}
+
+.mango-section-heading {
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.mango-entry-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.mango-entry-card {
+  display: grid;
+  grid-template-columns: auto 92px minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  min-height: 138px;
+  padding: 0.75rem;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-surface);
+}
+
+.mango-entry-card__cover {
+  display: block;
+  width: 92px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: var(--mango-bg-base);
+}
+
+.mango-entry-card__body {
+  min-width: 0;
+}
+
+.mango-entry-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.mango-entry-card p {
+  margin: 0.35rem 0;
+  color: var(--mango-text-muted);
+}
+
+.mango-edit-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+html.comic-theme .mango-continue-card,
+html.comic-theme-dark .mango-continue-card,
+html.comic-theme .mango-title-cover,
+html.comic-theme-dark .mango-title-cover,
+html.comic-theme .mango-entry-card,
+html.comic-theme-dark .mango-entry-card {
+  border-width: 3px;
+  border-color: #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+@media (max-width: 820px) {
+  .mango-topbar {
+    height: auto;
+    min-height: var(--mango-topbar-height);
+    padding: 0.65rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+  }
+
+  .mango-topbar__nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .mango-topbar__tools {
+    margin-left: auto;
+  }
+
+  .mango-topbar__logout {
+    display: none;
+  }
+
+  .mango-shell {
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .mango-title-overview {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .mango-entry-card {
+    grid-template-columns: auto 64px minmax(0, 1fr);
+    gap: 0.55rem;
+  }
+
+  .mango-entry-card__cover {
+    width: 64px;
+  }
+
+  .mango-entry-card .mango-actions {
+    grid-column: 1 / -1;
+  }
+
+  .mango-continue-card {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
 }

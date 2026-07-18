@@ -645,6 +645,51 @@ func (s *Server) apiAdminDeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) apiAdminSetDisplayName(w http.ResponseWriter, r *http.Request) {
+	tid := chi.URLParam(r, "tid")
+	name := strings.TrimSpace(chi.URLParam(r, "name"))
+	eid := strings.TrimSpace(r.URL.Query().Get("eid"))
+	if chi.URLParam(r, "name") == "" {
+		var body struct {
+			Name string `json:"name"`
+			EID  string `json:"eid"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			sendJSONError(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+		name = strings.TrimSpace(body.Name)
+		if eid == "" {
+			eid = strings.TrimSpace(body.EID)
+		}
+	}
+	if name == "" {
+		sendJSONError(w, "Display name cannot be empty", http.StatusBadRequest)
+		return
+	}
+
+	lib := s.Deps.Library
+	lib.Lock()
+	defer lib.Unlock()
+	title := lib.TitleHash[tid]
+	if title == nil {
+		sendJSONError(w, "Title not found", http.StatusNotFound)
+		return
+	}
+	var err error
+	if eid == "" {
+		err = title.SetDisplayName(name)
+	} else {
+		entry := library.EntryByID(title, eid)
+		if entry == nil {
+			sendJSONError(w, "Entry not found", http.StatusNotFound)
+			return
+		}
+		err = title.SetEntryDisplayName(entry, name)
+	}
+	if err != nil {
+		sendJSONError(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	sendJSON(w, map[string]any{"success": true})
 }
 
@@ -652,17 +697,46 @@ func (s *Server) apiAdminSetSortTitle(w http.ResponseWriter, r *http.Request) {
 	tid := chi.URLParam(r, "tid")
 	var body struct {
 		SortTitle string `json:"sort_title"`
+		SortName  string `json:"sort_name"`
+		EID       string `json:"eid"`
 	}
-	json.NewDecoder(r.Body).Decode(&body)
+	_ = json.NewDecoder(r.Body).Decode(&body)
+	eid := strings.TrimSpace(r.URL.Query().Get("eid"))
+	if eid == "" {
+		eid = strings.TrimSpace(body.EID)
+	}
+	name := body.SortTitle
+	if body.SortName != "" {
+		name = body.SortName
+	}
+	if queryName, ok := r.URL.Query()["name"]; ok && len(queryName) > 0 {
+		name = queryName[0]
+	}
 
-	st := body.SortTitle
-	if st == "" {
-		if err := s.Deps.Storage.SetTitleSortTitle(tid, nil); err != nil {
+	lib := s.Deps.Library
+	lib.RLock()
+	title := lib.TitleHash[tid]
+	lib.RUnlock()
+	if title == nil {
+		sendJSONError(w, "Title not found", http.StatusNotFound)
+		return
+	}
+
+	var value *string
+	if strings.TrimSpace(name) != "" {
+		value = &name
+	}
+	if eid == "" {
+		if err := s.Deps.Storage.SetTitleSortTitle(tid, value); err != nil {
 			sendJSONError(w, "Failed", http.StatusInternalServerError)
 			return
 		}
 	} else {
-		if err := s.Deps.Storage.SetTitleSortTitle(tid, &st); err != nil {
+		if library.EntryByID(title, eid) == nil {
+			sendJSONError(w, "Entry not found", http.StatusNotFound)
+			return
+		}
+		if err := s.Deps.Storage.SetEntrySortTitle(eid, value); err != nil {
 			sendJSONError(w, "Failed", http.StatusInternalServerError)
 			return
 		}
@@ -752,7 +826,7 @@ func (s *Server) apiAdminUpload(w http.ResponseWriter, r *http.Request) {
 				fail("Entry not found")
 				return
 			}
-			if err := t.SetEntryCoverURL(entry.Name(), urlPath); err != nil {
+			if err := t.SetEntryCoverURL(entryFileName(entry), urlPath); err != nil {
 				fail(err.Error())
 				return
 			}

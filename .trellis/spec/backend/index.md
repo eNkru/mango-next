@@ -103,6 +103,7 @@ Default config paths (`~/mango/library`, `~/mango.db`, etc.) expand to `/root/ma
 |-------|-------------|--------|
 | [User Management](./user-management.md) | Admin/user storage and API invariants | Active |
 | [Library Background Jobs](./library-background-jobs.md) | Cache identity, thumbnail locking, progress, and startup ordering | Active |
+| [React Browse API](./react-browse-api.md) | Browse DTOs, legacy coexistence, metadata mutations | Active |
 
 ---
 
@@ -112,6 +113,8 @@ Default config paths (`~/mango/library`, `~/mango.db`, etc.) expand to `/root/ma
 - Go module: `cd go/` and run `go build ./... && go vet ./... && go test ./...`.
 - Template changes: `.tmpl` Go html/template under `go/web/views/`; run `go build ./...` to verify embed patterns.
 - New routes: Register in `internal/server/server.go` `RegisterRoutes()` (under `BaseURL` mount) and add handler to `handlers_api.go` or `handlers_pages.go`.
+- React browse/API changes: read `react-browse-api.md`; preserve legacy `data`
+  envelope semantics while adding typed top-level DTOs.
 - Storage changes: Add migration in `internal/storage/migration/migrations.go` and bump `LatestVersion()`. Run full test suite.
 - Config: document implemented vs deprecated keys; wire new knobs with tests.
 

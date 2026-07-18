@@ -1,11 +1,14 @@
 import { readBoot } from './lib/boot';
 import { LoginPage } from './pages/LoginPage';
+import { HomePage } from './pages/HomePage';
+import { LibraryPage } from './pages/LibraryPage';
 import { MissingItemsPage } from './pages/MissingItemsPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { TagDetailPage } from './pages/TagDetailPage';
 import { TagsIndexPage } from './pages/TagsIndexPage';
 import { UserEditPage } from './pages/UserEditPage';
 import { UserListPage } from './pages/UserListPage';
+import { TitleDetailPage } from './pages/TitleDetailPage';
 import { AppShell } from './shell/AppShell';
 import { ErrorState } from './shell/StatePanels';
 
@@ -17,6 +20,12 @@ export function App() {
       return <PlaceholderPage />;
     case 'login':
       return <LoginPage />;
+    case 'home':
+      return <HomePage />;
+    case 'library':
+      return <LibraryPage />;
+    case 'title-detail':
+      return <TitleDetailPage />;
     case 'missing-items':
       return <MissingItemsPage />;
     case 'user-list':
