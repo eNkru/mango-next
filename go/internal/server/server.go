@@ -162,6 +162,7 @@ func (s *Server) RegisterRoutes() {
 				r.Get("/page/{tid}/{eid}/{page}", s.apiPage)
 				r.Get("/cover/{tid}/{eid}", s.apiCover)
 				r.Get("/dimensions/{tid}/{eid}", s.apiDimensions)
+				r.Get("/reader/{tid}/{eid}", s.apiReader)
 				r.Get("/download/{tid}/{eid}", s.apiDownload)
 				r.Put("/progress/{tid}/{page}", s.apiSaveProgress)
 				r.Put("/bulk_progress/{action}/{tid}", s.apiBulkProgress)

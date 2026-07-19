@@ -509,60 +509,19 @@ func (s *Server) handleReader(w http.ResponseWriter, r *http.Request) {
 	entryID := chi.URLParam(r, "entry")
 	pageStr := chi.URLParam(r, "page")
 
-	page := 0
+	page := 1
 	fmt.Sscanf(pageStr, "%d", &page)
-
-	entry, err := s.findEntry(titleID, entryID)
-	if err != nil {
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
+	if page < 1 {
+		page = 1
 	}
 
-	lib := s.Deps.Library
-	lib.RLock()
-	t, ok := lib.TitleHash[titleID]
-	lib.RUnlock()
-
-	if !ok {
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
-	}
-
-	var entries []EntryDetail
-	for _, e := range t.Entries {
-		entries = append(entries, EntryDetail{
-			ID:   e.ID(),
-			Name: e.Name(),
-		})
-	}
-
-	var nextEntryURL, prevEntryURL string
-	for i, e := range t.Entries {
-		if e.ID() == entryID {
-			if i+1 < len(t.Entries) {
-				nextEntryURL = fmt.Sprintf("/reader/%s/%s/1", titleID, t.Entries[i+1].ID())
-			}
-			if i > 0 {
-				prevEntryURL = fmt.Sprintf("/reader/%s/%s/1", titleID, t.Entries[i-1].ID())
-			}
-			break
-		}
-	}
-
-	data := ReaderPageData{
-		BaseURL:          s.Deps.Config.BaseURL,
-		PageName:         "reader",
-		Title:            TitleDetail{ID: t.ID, Name: t.Name},
-		Entry:            EntryDetail{ID: entryID, Name: entry.Name()},
-		PageIdx:          page,
-		Entries:          entries,
-		ExitURL:          fmt.Sprintf("/book/%s", titleID),
-		NextEntryURL:     nextEntryURL,
-		PreviousEntryURL: prevEntryURL,
-		Version:          "2.0.0",
-	}
-
-	s.renderPage(w, "views/reader", data)
+	// Missing/corrupt entry surfaces as React error state after shell boot.
+	s.renderReactShell(w, "reader", "reader", map[string]any{
+		"isAdmin": GetIsAdmin(r),
+		"tid":     titleID,
+		"eid":     entryID,
+		"page":    page,
+	})
 }
 
 func (s *Server) handlePluginDownload(w http.ResponseWriter, r *http.Request) {

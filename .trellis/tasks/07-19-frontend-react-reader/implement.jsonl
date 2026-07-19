@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend guideline index and active UI theme layout pointer"}
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Comic/flat dual shell and layout tokens for reader chrome"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend package conventions for new reader bootstrap API"}
+{"file": ".trellis/tasks/07-19-frontend-react-reader/prd.md", "reason": "Reader migration requirements and acceptance criteria"}
+{"file": ".trellis/tasks/07-19-frontend-react-reader/design.md", "reason": "Bootstrap contract, immersive chrome, data flow, rollback"}
+{"file": ".trellis/tasks/07-19-frontend-react-reader/implement.md", "reason": "Ordered implementation checklist and validation commands"}

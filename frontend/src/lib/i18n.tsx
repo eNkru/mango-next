@@ -20,6 +20,12 @@ const messages = {
     markRead: '标记已读', markUnread: '标记未读', addTag: '添加标签', remove: '移除',
     titleDetail: '标题详情', librarySubtitle: '浏览全部漫画', homeSubtitle: '继续你的阅读',
     page: '页', begin: '从头阅读', continue: '继续', actions: '操作',
+    reader: '阅读器', readerControls: '阅读设置', exitReader: '退出阅读',
+    jumpToPage: '跳转到页面', jumpToEntry: '跳转条目', readingMode: '阅读模式',
+    modeContinuous: '连续', modePaged: '分页', fitPage: '适合页面', fitHeight: '高度',
+    fitWidth: '宽度', fitOriginal: '原始', pageMargin: '页间距', preloadLookahead: '预加载',
+    flipAnimation: '翻页动画', rightToLeft: '从右到左', nextEntry: '下一项',
+    previousEntry: '上一项', readerError: '无法打开阅读器',
   },
   'zh-tw': {
     home: '首頁', library: '資料庫', tags: '標籤', admin: '管理員', logout: '登出',
@@ -38,6 +44,12 @@ const messages = {
     markRead: '標記已讀', markUnread: '標記未讀', addTag: '加入標籤', remove: '移除',
     titleDetail: '標題詳情', librarySubtitle: '瀏覽全部漫畫', homeSubtitle: '繼續你的閱讀',
     page: '頁', begin: '從頭閱讀', continue: '繼續', actions: '操作',
+    reader: '閱讀器', readerControls: '閱讀設定', exitReader: '退出閱讀',
+    jumpToPage: '跳到頁面', jumpToEntry: '跳轉條目', readingMode: '閱讀模式',
+    modeContinuous: '連續', modePaged: '分頁', fitPage: '適合頁面', fitHeight: '高度',
+    fitWidth: '寬度', fitOriginal: '原始', pageMargin: '頁間距', preloadLookahead: '預載入',
+    flipAnimation: '翻頁動畫', rightToLeft: '從右到左', nextEntry: '下一項',
+    previousEntry: '上一項', readerError: '無法開啟閱讀器',
   },
   en: {
     home: 'Home', library: 'Library', tags: 'Tags', admin: 'Admin', logout: 'Log out',
@@ -56,6 +68,12 @@ const messages = {
     markRead: 'Mark read', markUnread: 'Mark unread', addTag: 'Add tag', remove: 'Remove',
     titleDetail: 'Title details', librarySubtitle: 'Browse every title', homeSubtitle: 'Pick up where you left off',
     page: 'pages', begin: 'Read from start', continue: 'Continue', actions: 'Actions',
+    reader: 'Reader', readerControls: 'Reading settings', exitReader: 'Exit reader',
+    jumpToPage: 'Jump to page', jumpToEntry: 'Jump to entry', readingMode: 'Reading mode',
+    modeContinuous: 'Continuous', modePaged: 'Paged', fitPage: 'Fit page', fitHeight: 'Height',
+    fitWidth: 'Width', fitOriginal: 'Original', pageMargin: 'Page margin', preloadLookahead: 'Preload',
+    flipAnimation: 'Flip animation', rightToLeft: 'Right to left', nextEntry: 'Next entry',
+    previousEntry: 'Previous entry', readerError: 'Unable to open reader',
   },
 } as const;
 
