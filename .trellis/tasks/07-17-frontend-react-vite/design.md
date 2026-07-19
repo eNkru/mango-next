@@ -52,21 +52,24 @@ the old jQuery/LESS copy inventory as the final frontend architecture.
 - Do not adopt MUI/Ant Design or another full component library in the first
   delivery.
 
-## Pilot API boundary
+## Pilot API boundary (completed)
 
-The missing-items pilot depends on real admin JSON contracts, not empty stubs:
+Missing-items pilot and later children landed real JSON contracts for browse,
+tags, users, login, and reader bootstrap. See:
 
-- list missing titles
-- list missing entries
-- delete one missing title
-- delete one missing entry
-- delete all missing titles
-- delete all missing entries
+- `.trellis/spec/backend/react-browse-api.md`
+- `.trellis/spec/backend/react-reader-api.md`
+- `.trellis/spec/frontend/react-reader.md`
 
-Current handlers return empty success payloads. The pilot child must implement
-storage/library-backed behavior and a stable response envelope before or with the
-React page. The page must handle loading, empty, error, confirm-delete, and
-refresh after mutation.
+## Remaining migration boundaries
+
+| Surface | Handler today | Suggested ownership |
+|---------|---------------|---------------------|
+| `/admin` | `handleAdmin` template | Next child: React admin home |
+| `/admin/subscriptions` | template + plugin APIs | Later child |
+| `/download/plugins` | template + plugin APIs | Later child |
+| `/opds` | XML | Keep Go unless product change |
+| `/admin/downloads` | disabled product | Out of scope |
 
 ## Security and BaseURL
 

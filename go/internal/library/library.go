@@ -24,6 +24,64 @@ type Library struct {
 	mu           sync.RWMutex
 	scanMu       sync.Mutex // serializes Scan() so only one disk walk runs
 	thumbnailCtx ThumbnailContext
+	scanCtx      ScanContext
+}
+
+// ScanContext tracks background library scan job status for admin polling.
+type ScanContext struct {
+	mu           sync.Mutex
+	running      bool
+	titles       int
+	milliseconds int
+	errMsg       string
+}
+
+// Start claims the scan job. Returns false if a scan is already running.
+func (sc *ScanContext) Start() bool {
+	sc.mu.Lock()
+	defer sc.mu.Unlock()
+	if sc.running {
+		return false
+	}
+	sc.running = true
+	sc.errMsg = ""
+	return true
+}
+
+// Finish records the last scan outcome and clears the running flag.
+func (sc *ScanContext) Finish(titles, milliseconds int, err error) {
+	sc.mu.Lock()
+	defer sc.mu.Unlock()
+	sc.running = false
+	sc.titles = titles
+	sc.milliseconds = milliseconds
+	if err != nil {
+		sc.errMsg = err.Error()
+	} else {
+		sc.errMsg = ""
+	}
+}
+
+// Status returns last/current scan job fields for API polling.
+func (sc *ScanContext) Status() (running bool, titles, milliseconds int, errMsg string) {
+	sc.mu.Lock()
+	defer sc.mu.Unlock()
+	return sc.running, sc.titles, sc.milliseconds, sc.errMsg
+}
+
+// StartScanJob claims the background scan slot.
+func (lib *Library) StartScanJob() bool {
+	return lib.scanCtx.Start()
+}
+
+// FinishScanJob stores scan metrics after a background Scan completes.
+func (lib *Library) FinishScanJob(titles, milliseconds int, err error) {
+	lib.scanCtx.Finish(titles, milliseconds, err)
+}
+
+// ScanStatus returns running flag and last completed scan metrics.
+func (lib *Library) ScanStatus() (running bool, titles, milliseconds int, errMsg string) {
+	return lib.scanCtx.Status()
 }
 
 // ThumbnailContext tracks thumbnail generation progress (matching Crystal).

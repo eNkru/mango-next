@@ -175,6 +175,7 @@ func (s *Server) RegisterRoutes() {
 				r.Route("/admin", func(r chi.Router) {
 					r.Use(AdminMiddleware)
 					r.Post("/scan", s.apiAdminScan)
+					r.Get("/scan_progress", s.apiAdminScanProgress)
 					r.Get("/thumbnail_progress", s.apiAdminThumbnailProgress)
 					r.Post("/generate_thumbnails", s.apiAdminGenerateThumbnails)
 					r.Get("/users", s.apiAdminListUsers)

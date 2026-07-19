@@ -9,6 +9,7 @@ import { TagsIndexPage } from './pages/TagsIndexPage';
 import { UserEditPage } from './pages/UserEditPage';
 import { UserListPage } from './pages/UserListPage';
 import { TitleDetailPage } from './pages/TitleDetailPage';
+import { AdminPage } from './pages/AdminPage';
 import { ReaderPage } from './pages/reader/ReaderPage';
 import { AppShell } from './shell/AppShell';
 import { ErrorState } from './shell/StatePanels';
@@ -29,6 +30,8 @@ export function App() {
       return <TitleDetailPage />;
     case 'reader':
       return <ReaderPage />;
+    case 'admin':
+      return <AdminPage />;
     case 'missing-items':
       return <MissingItemsPage />;
     case 'user-list':

@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend guideline index and React reader pointer"}
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Comic/flat dual shell markers for theme apply"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend package conventions for admin APIs"}
+{"file": ".trellis/spec/backend/library-background-jobs.md", "reason": "Thumbnail/scan job locking patterns if present"}
+{"file": ".trellis/tasks/07-19-frontend-react-admin/prd.md", "reason": "Admin home requirements and decisions"}
+{"file": ".trellis/tasks/07-19-frontend-react-admin/design.md", "reason": "Scan progress contract and AppShell theme design"}
+{"file": ".trellis/tasks/07-19-frontend-react-admin/implement.md", "reason": "Ordered checklist and validation"}
