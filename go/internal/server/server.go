@@ -132,19 +132,11 @@ func (s *Server) RegisterRoutes() {
 			r.Get("/opds", s.handleOPDSIndex)
 			r.Get("/opds/book/{title_id}", s.handleOPDSTitle)
 
-			if deps.Config.PluginPath != "" {
-				r.Get("/download/plugins", s.handlePluginDownload)
-			}
-
 			r.Route("/admin", func(r chi.Router) {
 				r.Use(AdminMiddleware)
 				r.Get("/", s.handleAdmin)
 				r.Get("/user", s.handleUserList)
 				r.Get("/user/edit", s.handleUserEdit)
-				r.Post("/user/edit", s.handleUserEditPost)
-				r.Post("/user/edit/{original_username}", s.handleUserEditPost)
-				r.Get("/downloads", s.handleDownloadManager)
-				r.Get("/subscriptions", s.handleSubscriptionManager)
 				r.Get("/missing", s.handleMissingItems)
 				// Placeholder route for the React + Vite foundation shell.
 				r.Get("/react-preview", s.handleReactPreview)
@@ -249,14 +241,6 @@ func (s *Server) servePublic(r chi.Router) {
 		r2.URL.Path = path
 		fileServer.ServeHTTP(w, r2)
 	})
-}
-
-func (s *Server) renderLayout(w http.ResponseWriter, page string, data any) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := s.Deps.Templates.Render(w, "views/"+page, data); err != nil {
-		log.Printf("Template render error: %v", err)
-		http.Error(w, "Template error", http.StatusInternalServerError)
-	}
 }
 
 func (s *Server) renderPage(w http.ResponseWriter, name string, data any) {

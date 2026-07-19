@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/eNkru/mango-next/internal/library"
-	"github.com/eNkru/mango-next/internal/storage"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -90,159 +88,6 @@ func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
 	s.renderReactShell(w, "home", "home", map[string]any{"isAdmin": GetIsAdmin(r)})
 }
 
-// handleHomeLegacy retains the server-rendered rollback implementation while
-// the React browse routes coexist with legacy pages.
-func (s *Server) handleHomeLegacy(w http.ResponseWriter, r *http.Request) {
-	username := GetUsername(r)
-	base := s.Deps.Config.BaseURL
-	lib := s.Deps.Library
-	st := s.Deps.Storage
-
-	lib.RLock()
-	titleCount := len(lib.TitleIDs)
-	lib.RUnlock()
-	emptyLibrary := titleCount == 0
-
-	// Crystal: new_user if no title has load_percentage > 0 for this user.
-	hasProgress, err := st.UserHasProgress(username)
-	if err != nil {
-		log.Printf("home UserHasProgress: %v", err)
-	}
-	newUser := !hasProgress
-
-	continueReading, err := st.GetContinueReading(username)
-	if err != nil {
-		log.Printf("home GetContinueReading: %v", err)
-		continueReading = nil
-	}
-	continueReading = s.enrichContinueReading(base, continueReading)
-
-	startReading, err := st.GetStartReading(username)
-	if err != nil {
-		log.Printf("home GetStartReading: %v", err)
-		startReading = nil
-	}
-	startReading = s.enrichStartReading(base, startReading)
-
-	recentlyAdded, err := st.GetRecentlyAdded(username)
-	if err != nil {
-		log.Printf("home GetRecentlyAdded: %v", err)
-		recentlyAdded = nil
-	}
-	recentlyAdded = s.enrichRecentlyAdded(base, recentlyAdded)
-
-	// Cap sections (Crystal ENTRIES_IN_HOME_SECTIONS = 8)
-	const homeLimit = 8
-	if len(continueReading) > homeLimit {
-		continueReading = continueReading[:homeLimit]
-	}
-	if len(startReading) > homeLimit {
-		startReading = startReading[:homeLimit]
-	}
-	if len(recentlyAdded) > homeLimit {
-		recentlyAdded = recentlyAdded[:homeLimit]
-	}
-
-	data := HomePageData{
-		LayoutData: LayoutData{
-			BaseURL:  base,
-			IsAdmin:  GetIsAdmin(r),
-			PageName: "home",
-			Version:  "2.0.0",
-		},
-		ContinueReading:     continueReading,
-		StartReading:        startReading,
-		RecentlyAdded:       recentlyAdded,
-		NewUser:             newUser,
-		EmptyLibrary:        emptyLibrary,
-		ConfigLibraryPath:   s.Deps.Config.LibraryPath,
-		ConfigPath:          s.Deps.Config.DBPath,
-		ScanIntervalMinutes: s.Deps.Config.ScanIntervalMinutes,
-	}
-	s.renderLayout(w, "home", data)
-}
-
-func (s *Server) enrichContinueReading(base string, items []storage.ContinueReadingItem) []storage.ContinueReadingItem {
-	lib := s.Deps.Library
-	out := make([]storage.ContinueReadingItem, 0, len(items))
-	for _, it := range items {
-		lib.RLock()
-		t, ok := lib.TitleHash[it.TitleID]
-		lib.RUnlock()
-		if !ok || t == nil {
-			continue
-		}
-		it.TitleName = t.Name
-		coverEID := firstEntryID(t)
-		if it.EntryID != "" {
-			if e := library.EntryByID(t, it.EntryID); e != nil {
-				it.EntryName = e.Name()
-				coverEID = e.ID()
-				it.PageCount = e.PageCount()
-				if pages := it.PageCount; pages > 0 && it.Page > 0 {
-					pct := float64(it.Page) / float64(pages) * 100
-					if pct > 100 {
-						pct = 100
-					}
-					it.Percentage = pct
-				}
-			}
-		}
-		if it.EntryName == "" {
-			it.EntryName = t.Name
-		}
-		if coverEID != "" {
-			it.CoverURL = fmt.Sprintf("%sapi/cover/%s/%s", base, t.ID, coverEID)
-		}
-		out = append(out, it)
-	}
-	return out
-}
-
-func (s *Server) enrichStartReading(base string, items []storage.StartReadingItem) []storage.StartReadingItem {
-	lib := s.Deps.Library
-	out := make([]storage.StartReadingItem, 0, len(items))
-	for _, it := range items {
-		lib.RLock()
-		t, ok := lib.TitleHash[it.TitleID]
-		lib.RUnlock()
-		if !ok || t == nil {
-			continue
-		}
-		it.TitleName = t.Name
-		if eid := firstEntryID(t); eid != "" {
-			it.CoverURL = fmt.Sprintf("%sapi/cover/%s/%s", base, t.ID, eid)
-		}
-		out = append(out, it)
-	}
-	return out
-}
-
-func (s *Server) enrichRecentlyAdded(base string, items []storage.RecentlyAddedItem) []storage.RecentlyAddedItem {
-	lib := s.Deps.Library
-	out := make([]storage.RecentlyAddedItem, 0, len(items))
-	for _, it := range items {
-		lib.RLock()
-		t, ok := lib.TitleHash[it.TitleID]
-		lib.RUnlock()
-		if !ok || t == nil {
-			continue
-		}
-		it.TitleName = t.Name
-		it.EntryName = t.Name
-		if len(t.Entries) > 0 {
-			it.EntryID = t.Entries[0].ID()
-			it.EntryName = t.Entries[0].Name()
-			it.PageCount = t.Entries[0].PageCount()
-		}
-		if eid := firstEntryID(t); eid != "" {
-			it.CoverURL = fmt.Sprintf("%sapi/cover/%s/%s", base, t.ID, eid)
-		}
-		out = append(out, it)
-	}
-	return out
-}
-
 // buildLibraryPageData assembles library page data with hidden-title filtering.
 // showHidden is only effective for admins.
 func (s *Server) buildLibraryPageData(isAdmin bool, showHidden bool) LibraryPageData {
@@ -310,105 +155,6 @@ func (s *Server) handleTitle(w http.ResponseWriter, r *http.Request) {
 		"isAdmin": GetIsAdmin(r),
 		"titleId": titleID,
 	})
-}
-
-// handleTitleLegacy retains the server-rendered rollback implementation.
-func (s *Server) handleTitleLegacy(w http.ResponseWriter, r *http.Request) {
-	titleID := chi.URLParam(r, "title")
-	username := GetUsername(r)
-	lib := s.Deps.Library
-
-	lib.RLock()
-	t, ok := lib.TitleHash[titleID]
-	lib.RUnlock()
-
-	if !ok {
-		http.Error(w, "Title not found", http.StatusNotFound)
-		return
-	}
-
-	// Build sorted sub-titles
-	var sortedTitles []TitleDetail
-	lib.RLock()
-	for _, subID := range t.TitleIDs {
-		subT, subOk := lib.TitleHash[subID]
-		if !subOk {
-			continue
-		}
-		sortedTitles = append(sortedTitles, TitleDetail{
-			ID:       subT.ID,
-			Name:     subT.Name,
-			CoverURL: fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, subT.ID, firstEntryID(subT)),
-		})
-	}
-
-	// Build entries
-	var entries []EntryDetail
-	for _, e := range t.Entries {
-		entries = append(entries, EntryDetail{
-			ID:        e.ID(),
-			Name:      e.Name(),
-			PageCount: e.PageCount(),
-			CoverURL:  fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, e.ID()),
-		})
-	}
-
-	// Build parent IDs for breadcrumb
-	var parentIDs []string
-	if t.ParentID != "" {
-		parentIDs = append(parentIDs, t.ParentID)
-	}
-
-	// Compute percentages
-	percentage := make([]float64, len(entries))
-	for i, entry := range entries {
-		prog, _ := s.Deps.Storage.LoadProgress(username, t.ID, strPtr(entry.ID))
-		if entry.PageCount > 0 {
-			percentage[i] = float64(prog) / float64(entry.PageCount) * 100
-		}
-	}
-
-	titlePercentage := make([]float64, len(sortedTitles))
-	for i, st := range sortedTitles {
-		subT, subOk := lib.TitleHash[st.ID]
-		if !subOk {
-			continue
-		}
-		prog, _ := s.Deps.Storage.LoadProgress(username, st.ID, nil)
-		totalPages := 0
-		for _, e := range subT.DeepEntries() {
-			totalPages += e.PageCount()
-		}
-		if totalPages > 0 {
-			titlePercentage[i] = float64(prog) / float64(totalPages) * 100
-		}
-	}
-	lib.RUnlock()
-
-	hidden, _ := s.Deps.Storage.GetTitleHidden(t.ID)
-
-	data := TitlePageData{
-		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  GetIsAdmin(r),
-			PageName: "title",
-			Version:  "2.0.0",
-		},
-		Title: TitleDetail{
-			ID:        t.ID,
-			Name:      t.Name,
-			CoverURL:  fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, firstEntryID(t)),
-			ParentIDs: parentIDs,
-			Hidden:    hidden == 1,
-		},
-		SortedTitles:    sortedTitles,
-		Entries:         entries,
-		Percentage:      percentage,
-		TitlePercentage: titlePercentage,
-		IsHidden:        hidden == 1,
-	}
-
-	s.renderLayout(w, "title", data)
 }
 
 func (s *Server) handleTags(w http.ResponseWriter, r *http.Request) {
@@ -524,17 +270,6 @@ func (s *Server) handleReader(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (s *Server) handlePluginDownload(w http.ResponseWriter, r *http.Request) {
-	ld := LayoutData{
-		BaseURL:    s.Deps.Config.BaseURL,
-		IsAdmin:    GetIsAdmin(r),
-		PageName:   "plugin-download",
-		Version:    "2.0.0",
-		PluginPath: s.Deps.Config.PluginPath,
-	}
-	s.renderLayout(w, "plugin-download", ld)
-}
-
 func (s *Server) handleAdmin(w http.ResponseWriter, r *http.Request) {
 	s.renderReactShell(w, "admin", "admin", map[string]any{
 		"isAdmin": true,
@@ -552,49 +287,6 @@ func (s *Server) handleUserEdit(w http.ResponseWriter, r *http.Request) {
 		extra["username"] = username
 	}
 	s.renderReactShell(w, "user-edit", "user-edit", extra)
-}
-
-func (s *Server) handleUserEditPost(w http.ResponseWriter, r *http.Request) {
-	originalUsername := chi.URLParam(r, "original_username")
-	username := r.FormValue("username")
-	password := r.FormValue("password")
-	admin := r.FormValue("admin") == "1"
-
-	if originalUsername == "" {
-		if err := s.Deps.Storage.NewUser(username, password, admin); err != nil {
-			http.Redirect(w, r, s.appPath("admin/user/edit")+"?error="+err.Error(), http.StatusFound)
-			return
-		}
-	} else {
-		if err := s.Deps.Storage.UpdateUser(originalUsername, username, password, admin); err != nil {
-			http.Redirect(w, r, s.appPath("admin/user/edit")+"?username="+originalUsername+"&error="+err.Error(), http.StatusFound)
-			return
-		}
-	}
-
-	http.Redirect(w, r, s.appPath("admin/user"), http.StatusFound)
-}
-
-func (s *Server) handleDownloadManager(w http.ResponseWriter, r *http.Request) {
-	ld := LayoutData{
-		BaseURL:    s.Deps.Config.BaseURL,
-		IsAdmin:    true,
-		PageName:   "download-manager",
-		Version:    "2.0.0",
-		PluginPath: s.Deps.Config.PluginPath,
-	}
-	s.renderLayout(w, "download-manager", ld)
-}
-
-func (s *Server) handleSubscriptionManager(w http.ResponseWriter, r *http.Request) {
-	ld := LayoutData{
-		BaseURL:    s.Deps.Config.BaseURL,
-		IsAdmin:    true,
-		PageName:   "subscription-manager",
-		Version:    "2.0.0",
-		PluginPath: s.Deps.Config.PluginPath,
-	}
-	s.renderLayout(w, "subscription-manager", ld)
 }
 
 func (s *Server) handleMissingItems(w http.ResponseWriter, r *http.Request) {

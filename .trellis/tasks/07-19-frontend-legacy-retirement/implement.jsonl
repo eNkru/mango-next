@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend guideline index"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Embed/route conventions"}
+{"file": ".trellis/tasks/07-19-frontend-legacy-retirement/prd.md", "reason": "Retirement requirements"}
+{"file": ".trellis/tasks/07-19-frontend-legacy-retirement/design.md", "reason": "Inventory and deletion order"}
+{"file": ".trellis/tasks/07-19-frontend-legacy-retirement/implement.md", "reason": "Execution checklist"}

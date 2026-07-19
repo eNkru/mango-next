@@ -5,8 +5,6 @@ import (
 	"io/fs"
 	"path/filepath"
 	"strings"
-
-	"github.com/eNkru/mango-next/internal/storage"
 )
 
 type TemplateManager struct {
@@ -63,14 +61,6 @@ func (tm *TemplateManager) Lookup(name string) *template.Template {
 	return tm.templates.Lookup(name)
 }
 
-type LayoutData struct {
-	BaseURL    string
-	IsAdmin    bool
-	PageName   string
-	Version    string
-	PluginPath string
-}
-
 // ReactShellData is the Go HTML shell payload for migrated React routes.
 type ReactShellData struct {
 	BaseURL  string
@@ -79,16 +69,14 @@ type ReactShellData struct {
 	BootJSON template.JS
 }
 
-type HomePageData struct {
-	LayoutData
-	ContinueReading     []storage.ContinueReadingItem
-	RecentlyAdded       []storage.RecentlyAddedItem
-	StartReading        []storage.StartReadingItem
-	NewUser             bool
-	EmptyLibrary        bool
-	ConfigLibraryPath   string
-	ConfigPath          string
-	ScanIntervalMinutes int
+// LayoutData is shared metadata for internal page-data helpers still used by
+// visibility filters (library/tag), not for full HTML layouts.
+type LayoutData struct {
+	BaseURL    string
+	IsAdmin    bool
+	PageName   string
+	Version    string
+	PluginPath string
 }
 
 type LibraryPageData struct {
@@ -106,105 +94,9 @@ type LibraryTitle struct {
 	Hidden     bool
 }
 
-type TitlePageData struct {
-	LayoutData
-	Title           TitleDetail
-	SortedTitles    []TitleDetail
-	Entries         []EntryDetail
-	Percentage      []float64
-	TitlePercentage []float64
-	IsHidden        bool
-}
-
-type TitleDetail struct {
-	ID        string
-	Name      string
-	CoverURL  string
-	ParentIDs []string
-	Hidden    bool
-}
-
-type EntryDetail struct {
-	ID        string
-	Name      string
-	PageCount int
-	CoverURL  string
-	MimeType  string
-}
-
-type ReaderPageData struct {
-	BaseURL          string
-	PageName         string
-	Title            TitleDetail
-	Entry            EntryDetail
-	PageIdx          int
-	Entries          []EntryDetail
-	ExitURL          string
-	NextEntryURL     string
-	PreviousEntryURL string
-	Version          string
-}
-
-type ReaderErrorPageData struct {
-	BaseURL      string
-	PageName     string
-	EntryName    string
-	EntryError   string
-	ExitURL      string
-	NextEntryURL string
-	Version      string
-}
-
-type AdminPageData struct {
-	LayoutData
-	MissingCount int
-}
-
-type UserPageData struct {
-	LayoutData
-	Users    [][2]string
-	Username string
-}
-
-type UserEditPageData struct {
-	LayoutData
-	Username string
-	Admin    bool
-	Error    string
-	NewUser  bool
-}
-
 type TagPageData struct {
 	LayoutData
 	Tag        string
 	Titles     []LibraryTitle
 	ShowHidden bool
-}
-
-type TagsPageData struct {
-	LayoutData
-	Tags []TagInfo
-}
-
-type TagInfo struct {
-	Tag        string
-	EncodedTag string
-	Count      int
-}
-
-type OPDSTitleEntry struct {
-	ID   string
-	Name string
-}
-
-type OPDSIndexPageData struct {
-	BaseURL string
-	Titles  []OPDSTitleEntry
-}
-
-type OPDSTitlePageData struct {
-	BaseURL   string
-	Title     TitleDetail
-	SubTitles []TitleDetail
-	Entries   []EntryDetail
 }

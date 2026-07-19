@@ -8,18 +8,13 @@ authenticator, and single-binary deployment target.
 
 ## Confirmed Facts
 
-- The current UI is server-rendered Go `html/template` under `go/web/views/`,
-  with page scripts under `go/web/public/js/` and styles under
-  `go/web/public/css/`.
-- Runtime dependencies include jQuery, Alpine, UIkit, Select2, Moment, Font
-  Awesome, and dual comic/flat theme CSS.
-- Go embeds `go/web/views` and `go/web/public` at compile time; the production
-  binary does not depend on a Node runtime.
-- Authentication, authorization, `BaseURL` mounting, SQLite, library scanning,
-  queue storage, and background tasks already live in Go.
 - React shell + dual-theme tokens + BaseURL-aware assets are in place.
 - Core authenticated browse → read loop is React: home, library, title, tags,
-  login, admin users, missing-items, and reader.
+  login, admin users, missing-items, reader, and admin home.
+- Go remains the only long-running backend; production binary needs no Node.
+- Product decision (2026-07-19): **subscriptions** and **plugin download** UI
+  will not be migrated; features are not needed. Routes may stay as legacy
+  templates or unused until a later product change.
 
 ## Task Map (children)
 
@@ -34,18 +29,17 @@ authenticator, and single-binary deployment target.
 | `07-18-frontend-react-login` | login + safe redirects |
 | `07-18-frontend-react-browse` | home / library / title-detail |
 | `07-19-frontend-react-reader` | immersive reader + bootstrap API |
+| `07-19-frontend-react-admin` | `/admin` ops + AppShell theme controls |
 
-### Remaining (follow-up children — not yet created)
+### Explicitly deferred / out of product scope
 
-| Priority | Proposed child | Routes / surface | Notes |
-|----------|----------------|------------------|-------|
-| P1 | `frontend-react-admin` | `/admin` | Scan, thumbnails, library health, settings-ish admin home |
-| P2 | `frontend-react-subscriptions` | `/admin/subscriptions` + plugin subscription APIs | Queue-coupled |
-| P2 | `frontend-react-plugin-download` | `/download/plugins` + plugin search/download APIs | Optional when plugin path set |
-| P3 | `frontend-react-opds` | n/a (or keep XML) | OPDS is XML clients, not browser UI; usually leave as-is |
-| P3 | `frontend-legacy-retirement` | delete unused tmpl/js/css after full cutover | Only after smoke on all migrated routes |
-
-Disabled download manager stays product-out-of-scope cleanup.
+| Item | Decision |
+|------|----------|
+| Subscriptions UI (`/admin/subscriptions`) | **Won't migrate** — feature not needed |
+| Plugin download UI (`/download/plugins`) | **Won't migrate** — feature not needed |
+| Download manager | Already product-disabled; out of scope |
+| OPDS | Keep Go XML clients; not a React page |
+| Legacy asset retirement | Child `07-19-frontend-legacy-retirement` (in progress / done on branch): disable deferred UIs + delete dead assets |
 
 ## Requirements (parent, still valid)
 
@@ -54,41 +48,38 @@ Disabled download manager stays product-out-of-scope cleanup.
 - Build React assets at dev/release time; embed/serve via Go; no public CDN runtime.
 - Support non-root `BaseURL` for routes and static assets.
 - Child tasks independently verifiable; parent owns task map + cross-child AC.
-- Migrated routes: Go HTML shell + React; unmigrated keep templates.
+- Migrated routes: Go HTML shell + React; unmigrated keep templates if still mounted.
 - Style with local CSS/tokens; no full component library requirement.
-- Stable JSON contracts per migrated page.
-- Leave disabled download-manager product cleanup separate.
 
 ## Cross-Task Acceptance Criteria
 
-### First-wave (met by completed children)
+### First-wave (met)
 
 - [x] Foundation shell embedded under root/non-root BaseURL.
 - [x] Missing-items pilot against real JSON.
 - [x] Browse + reader close authenticated read loop.
 - [x] Login, tags, admin users migrated.
-- [x] Unmigrated routes still template-render.
+- [x] Admin home migrated (scan / thumbnails / theme in shell).
 - [x] No Node runtime in final binary.
 - [x] Comic/flat light/dark in React shell.
+- [x] Subscriptions + plugin download **deferred by product** (not required).
 
-### Still open (parent-level)
+### Still open (optional)
 
-- [ ] Admin home (`/admin`) migrated or explicitly deferred with docs.
-- [ ] Subscriptions + plugin download migrated or deferred.
-- [ ] Legacy jQuery/Alpine/UIkit assets retired only after remaining pages done.
-- [ ] Parent integration review / archive when remaining scope is deferred or done.
+- [ ] Parent integration review / archive (all required children done).
+- [ ] Optional: legacy jQuery/Alpine/UIkit asset retirement when ready.
+- [ ] Unmigrated template routes (subscriptions/plugin) either left as-is or
+      unlinked from nav (admin home already omits them).
 
 ## Out of Scope (parent)
 
 - Rewriting Go backend into Node/Next/etc.
 - Full design-system rewrite or public CDN assets.
-- Completing every page in one change set.
-- Product removal of the disabled download manager (unless a dedicated task).
-- Rewriting OPDS XML protocol into React (clients expect OPDS, not SPA).
+- Migrating subscriptions, plugin download, OPDS, or download manager.
+- Completing every historical template page.
 
-## Recommended next child
+## Recommended next
 
-**`frontend-react-admin`** — migrate `/admin` (scan / thumbnail generation /
-status surface). Highest remaining browser frequency after the read loop, admin
-auth already proven on users/missing-items, and it unblocks day-2 ops without
-plugin/queue complexity of subscriptions.
+**Archive this parent** after a short integration note (all required migration
+children are done). Optional follow-up only: `frontend-legacy-retirement` if
+you want to delete unused tmpl/js later — not required for product use.

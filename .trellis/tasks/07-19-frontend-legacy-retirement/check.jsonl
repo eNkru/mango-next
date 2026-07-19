@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend compliance"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Route/embed safety"}
+{"file": ".trellis/tasks/07-19-frontend-legacy-retirement/prd.md", "reason": "Acceptance criteria"}
+{"file": ".trellis/tasks/07-19-frontend-legacy-retirement/design.md", "reason": "Keep vs delete inventory"}
+{"file": ".trellis/tasks/07-19-frontend-legacy-retirement/implement.md", "reason": "Validation gates"}
