@@ -674,3 +674,69 @@ Disabled subscriptions/downloads/plugin-download routes; deleted jQuery/Alpine/U
 ### Next Steps
 
 - None - task complete
+
+
+## Session 19: Remove plugin/subscription APIs
+
+**Date**: 2026-07-20
+**Task**: Remove plugin/subscription APIs
+**Branch**: `feature/remove-plugin-apis`
+
+### Summary
+
+Removed plugin/queue packages, admin plugin/subscription/queue HTTP APIs, background updater/downloader, and related config keys. go test 185 green. Pushed feature/remove-plugin-apis.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `04c4f37` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 20: Close React Vite frontend migration parent
+
+**Date**: 2026-07-20
+**Task**: Close React Vite frontend migration parent
+**Branch**: `feature/remove-plugin-apis`
+
+### Summary
+
+Archived parent 07-17-frontend-react-vite after 10/10 children. Product React UI complete; legacy chrome and plugin/subscription/queue removed.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0df3d30` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

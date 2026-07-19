@@ -3,7 +3,7 @@
   "name": "frontend-react-vite",
   "title": "React Vite frontend migration",
   "description": "",
-  "status": "in_progress",
+  "status": "completed",
   "dev_type": null,
   "scope": null,
   "package": null,
@@ -11,7 +11,7 @@
   "creator": "howard.ju",
   "assignee": "howard.ju",
   "createdAt": "2026-07-17",
-  "completedAt": null,
+  "completedAt": "2026-07-20",
   "branch": null,
   "base_branch": "main",
   "worktree_path": null,
@@ -27,7 +27,8 @@
     "07-18-frontend-react-browse",
     "07-19-frontend-react-reader",
     "07-19-frontend-react-admin",
-    "07-19-frontend-legacy-retirement"
+    "07-19-frontend-legacy-retirement",
+    "07-20-remove-plugin-subscription-apis"
   ],
   "parent": null,
   "relatedFiles": [],

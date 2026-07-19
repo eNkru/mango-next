@@ -76,7 +76,6 @@ type LayoutData struct {
 	IsAdmin    bool
 	PageName   string
 	Version    string
-	PluginPath string
 }
 
 type LibraryPageData struct {

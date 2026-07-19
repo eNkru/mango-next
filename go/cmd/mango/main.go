@@ -9,7 +9,6 @@ import (
 
 	"github.com/eNkru/mango-next/internal/config"
 	"github.com/eNkru/mango-next/internal/library"
-	"github.com/eNkru/mango-next/internal/queue"
 	"github.com/eNkru/mango-next/internal/server"
 	"github.com/eNkru/mango-next/internal/storage"
 	"github.com/eNkru/mango-next/internal/tasks"
@@ -72,13 +71,6 @@ func main() {
 				fmt.Printf("Library cache not loaded: %v\n", err)
 			}
 
-			// Initialize download queue
-			queueDB, err := queue.NewQueue(cfg.QueueDBPath)
-			if err != nil {
-				return fmt.Errorf("init queue: %w", err)
-			}
-			defer queueDB.Close()
-
 			// Start background tasks (scan runs async; does not block HTTP)
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
@@ -92,7 +84,6 @@ func main() {
 			}()
 
 			runner := tasks.NewRunner(lib, cfg.ScanIntervalMinutes, cfg.ThumbnailGenerationIntervalHours)
-			runner.SetPluginTasks(queueDB, cfg.PluginPath, cfg.LibraryPath, cfg.PluginUpdateIntervalHours, cfg.DownloadTimeoutSeconds)
 			go runner.Start(ctx)
 
 			tm, err := loadTemplates()
@@ -104,7 +95,6 @@ func main() {
 				Config:    cfg,
 				Storage:   st,
 				Library:   lib,
-				Queue:     queueDB,
 				Runner:    runner,
 				Templates: tm,
 			}

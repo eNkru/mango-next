@@ -10,8 +10,6 @@ import (
 
 	"github.com/eNkru/mango-next/internal/config"
 	"github.com/eNkru/mango-next/internal/library"
-	"github.com/eNkru/mango-next/internal/plugin"
-	"github.com/eNkru/mango-next/internal/queue"
 	"github.com/eNkru/mango-next/internal/storage"
 	"github.com/eNkru/mango-next/internal/tasks"
 	"github.com/eNkru/mango-next/web"
@@ -22,8 +20,6 @@ type Dependencies struct {
 	Config    *config.Config
 	Storage   *storage.Storage
 	Library   *library.Library
-	Queue     *queue.Queue
-	Plugins   map[string]*plugin.Plugin
 	Runner    *tasks.Runner
 	Templates *TemplateManager
 }
@@ -178,17 +174,6 @@ func (s *Server) RegisterRoutes() {
 					r.Put("/display_name/{tid}/{name}", s.apiAdminSetDisplayName)
 					r.Put("/sort_title/{tid}", s.apiAdminSetSortTitle)
 					r.Post("/upload/{target}", s.apiAdminUpload)
-					r.Get("/plugin", s.apiAdminListPlugins)
-					r.Get("/plugin/info", s.apiAdminPluginInfo)
-					r.Get("/plugin/search", s.apiAdminPluginSearch)
-					r.Post("/plugin/subscriptions", s.apiAdminCreateSubscription)
-					r.Get("/plugin/subscriptions", s.apiAdminListSubscriptions)
-					r.Delete("/plugin/subscriptions", s.apiAdminDeleteSubscription)
-					r.Post("/plugin/subscriptions/update", s.apiAdminUpdateSubscription)
-					r.Get("/plugin/list", s.apiAdminPluginList)
-					r.Post("/plugin/download", s.apiAdminPluginDownload)
-					r.Get("/queue", s.apiAdminQueue)
-					r.Post("/queue/{action}", s.apiAdminQueueAction)
 					r.Put("/tags/{tid}/{tag}", s.apiAdminAddTag)
 					r.Delete("/tags/{tid}/{tag}", s.apiAdminDeleteTag)
 					r.Get("/titles/missing", s.apiAdminMissingTitles)
