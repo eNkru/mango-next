@@ -5,9 +5,9 @@
 - [x] Keep the parent PRD as the source requirement set and task map.
 - [x] Ensure child tasks remain independently implementable and reviewable.
 - [x] Redirect `07-17-frontend-asset-pipeline` into the foundation child.
-- [ ] Review child completion against parent cross-task acceptance criteria.
-- [ ] Create follow-up children only after consent; do not implement on parent.
-- [ ] Archive parent when remaining scope is deferred or completed.
+- [x] Required children completed (foundation → admin home).
+- [x] Subscriptions + plugin download explicitly deferred (product: not needed).
+- [ ] Parent integration review / archive.
 
 ## Child order (completed)
 
@@ -18,43 +18,26 @@
 5. [x] `07-18-frontend-react-login`
 6. [x] `07-18-frontend-react-browse`
 7. [x] `07-19-frontend-react-reader`
+8. [x] `07-19-frontend-react-admin`
 
-## Next child order (proposed)
+## Cancelled / deferred children (do not create)
 
-1. `frontend-react-admin` (P1) — `/admin` ops home
-2. `frontend-react-subscriptions` (P2) — subscription manager
-3. `frontend-react-plugin-download` (P2) — plugin browser download UI
-4. `frontend-legacy-retirement` (P3) — remove unused legacy assets after smoke
+- ~~`frontend-react-subscriptions`~~ — product skip
+- ~~`frontend-react-plugin-download`~~ — product skip
+- OPDS — keep Go XML
+- `07-19-frontend-legacy-retirement` — planned: disable deferred UIs + delete dead assets
 
-OPDS stays Go XML unless a separate product decision says otherwise.
+## Close-out checklist
 
-## Validation commands (parent integration)
+1. Confirm PRD task map matches archived children.
+2. Note unmigrated routes remain template-backed if still registered.
+3. Archive parent task when user approves close-out.
+4. Optional later: retire unused legacy assets in a dedicated cleanup task.
+
+## Validation (parent integration — when archiving)
 
 ```bash
-npm ci
-npm run build
 npm run typecheck
-make check
-make test
-make build
+npm run build
+cd go && go test ./...
 ```
-
-## Rollback points
-
-- Per-child route-local: restore that route’s template handler.
-- Do not delete legacy templates until `frontend-legacy-retirement`.
-
-## Recommended next child: admin home
-
-Plan `frontend-react-admin` as the next independently reviewed child:
-
-1. Inventory `/admin` template + related admin APIs (scan, thumbnails progress,
-   generate thumbnails, any settings surface still on the page).
-2. Define bootstrap or thin JSON contracts needed for first paint; reuse existing
-   admin APIs where present.
-3. React page under shared AppShell + admin nav; loading/error/empty for jobs.
-4. Focused Go tests for any new/changed contracts; frontend typecheck/build.
-5. Keep `admin.tmpl` (and related scripts) for rollback until smoke passes.
-
-Do not fold subscriptions or plugin download into this child — separate auth
-surfaces and queue/plugin boundaries.

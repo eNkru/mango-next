@@ -109,7 +109,7 @@ func configCurrentBase() string {
 }
 
 func (s *Server) isStaticFile(path string) bool {
-	staticDirs := []string{"/css", "/js", "/img", "/webfonts"}
+	staticDirs := []string{"/img", "/react"}
 	for _, dir := range staticDirs {
 		if strings.HasPrefix(path, dir) {
 			return true

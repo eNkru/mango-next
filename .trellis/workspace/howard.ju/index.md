@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 17
-- **Last Active**: 2026-07-19
+- **Total Sessions**: 18
+- **Last Active**: 2026-07-20
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~643 | Active |
+| `journal-1.md` | ~676 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 18 | 2026-07-20 | Legacy frontend asset retirement | `3238dc7` | `feature/legacy-retirement` |
 | 17 | 2026-07-19 | React admin home migration | `ac65317` | `feature/react-admin` |
 | 16 | 2026-07-19 | React reader migration | `e822a72`, `fbe6f9b` | `feature/react-reader` |
 | 15 | 2026-07-19 | Finish React browse migration | `488bcad` | `main` |

@@ -63,13 +63,14 @@ tags, users, login, and reader bootstrap. See:
 
 ## Remaining migration boundaries
 
-| Surface | Handler today | Suggested ownership |
-|---------|---------------|---------------------|
-| `/admin` | `handleAdmin` template | Next child: React admin home |
-| `/admin/subscriptions` | template + plugin APIs | Later child |
-| `/download/plugins` | template + plugin APIs | Later child |
-| `/opds` | XML | Keep Go unless product change |
-| `/admin/downloads` | disabled product | Out of scope |
+| Surface | Status |
+|---------|--------|
+| Core browse/read/admin React surfaces | Done via children |
+| `/admin/subscriptions` | **Deferred** — product will not migrate |
+| `/download/plugins` | **Deferred** — product will not migrate |
+| `/opds` | Keep Go XML |
+| `/admin/downloads` | Disabled product; out of scope |
+| Legacy tmpl/js retirement | Optional cleanup only |
 
 ## Security and BaseURL
 
