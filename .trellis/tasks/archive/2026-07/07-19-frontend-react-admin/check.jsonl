@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend compliance"}
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Theme class mutual exclusion"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend contracts and tests"}
+{"file": ".trellis/tasks/07-19-frontend-react-admin/prd.md", "reason": "Acceptance criteria"}
+{"file": ".trellis/tasks/07-19-frontend-react-admin/design.md", "reason": "Scan progress and shell invariants"}
+{"file": ".trellis/tasks/07-19-frontend-react-admin/implement.md", "reason": "Validation gates"}

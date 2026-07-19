@@ -1,7 +1,17 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { baseUrl } from '../lib/baseUrl';
 import { readBoot } from '../lib/boot';
 import { useI18n, type Language } from '../lib/i18n';
+import {
+  applyHtmlTheme,
+  loadThemeSetting,
+  loadUIStyle,
+  saveThemeSetting,
+  saveUIStyle,
+  watchSystemTheme,
+  type ThemeSetting,
+  type UIStyle,
+} from '../lib/theme';
 import { AlertHost } from './AlertHost';
 
 type AppShellProps = {
@@ -13,7 +23,19 @@ type AppShellProps = {
 export function AppShell({ title, subtitle, children }: AppShellProps) {
   const { language, setLanguage, t } = useI18n();
   const boot = readBoot();
-  useEffect(() => { document.title = `Mango - ${title}`; }, [language, title]);
+  const [theme, setTheme] = useState<ThemeSetting>(loadThemeSetting);
+  const [uiStyle, setUiStyle] = useState<UIStyle>(loadUIStyle);
+
+  useEffect(() => {
+    document.title = `Mango - ${title}`;
+  }, [language, title]);
+
+  useEffect(() => {
+    applyHtmlTheme(theme, uiStyle);
+  }, [theme, uiStyle]);
+
+  useEffect(() => watchSystemTheme(), []);
+
   return (
     <>
       <header className="mango-topbar" role="banner">
@@ -31,12 +53,60 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
             <li>
               <a href={baseUrl('tags')}>{t('tags')}</a>
             </li>
-            {boot.isAdmin ? <li><a href={baseUrl('admin')}>{t('admin')}</a></li> : null}
+            {boot.isAdmin ? (
+              <li>
+                <a href={baseUrl('admin')}>{t('admin')}</a>
+              </li>
+            ) : null}
           </ul>
         </nav>
         <div className="mango-topbar__tools">
-          <label className="mango-language"><span className="sr-only">{t('language')}</span><select value={language} onChange={(event) => setLanguage(event.target.value as Language)} aria-label={t('language')}><option value="zh-cn">简体中文</option><option value="zh-tw">繁體中文</option><option value="en">English</option></select></label>
-          <a className="mango-topbar__logout" href={baseUrl('logout')}>{t('logout')}</a>
+          <label className="mango-language">
+            <span className="sr-only">{t('theme')}</span>
+            <select
+              value={theme}
+              onChange={(event) => {
+                const next = event.target.value as ThemeSetting;
+                setTheme(next);
+                saveThemeSetting(next);
+              }}
+              aria-label={t('theme')}
+            >
+              <option value="system">{t('themeSystem')}</option>
+              <option value="light">{t('themeLight')}</option>
+              <option value="dark">{t('themeDark')}</option>
+            </select>
+          </label>
+          <label className="mango-language">
+            <span className="sr-only">{t('uiStyle')}</span>
+            <select
+              value={uiStyle}
+              onChange={(event) => {
+                const next = event.target.value as UIStyle;
+                setUiStyle(next);
+                saveUIStyle(next);
+              }}
+              aria-label={t('uiStyle')}
+            >
+              <option value="comic">{t('uiStyleComic')}</option>
+              <option value="flat">{t('uiStyleFlat')}</option>
+            </select>
+          </label>
+          <label className="mango-language">
+            <span className="sr-only">{t('language')}</span>
+            <select
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as Language)}
+              aria-label={t('language')}
+            >
+              <option value="zh-cn">简体中文</option>
+              <option value="zh-tw">繁體中文</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+          <a className="mango-topbar__logout" href={baseUrl('logout')}>
+            {t('logout')}
+          </a>
         </div>
       </header>
       <main className="mango-shell">

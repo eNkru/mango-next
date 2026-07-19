@@ -46,6 +46,16 @@ go/web/views/top.tmpl                    # shared chrome DOM
 go/web/public/js/common.js               # setUIStyle / setTheme class toggles
 ```
 
+## React AppShell theme controls
+
+- Runtime toggles live in `frontend/src/shell/AppShell.tsx` via
+  `frontend/src/lib/theme.ts` (not only on admin home).
+- Keys: `localStorage.theme` = `dark|light|system`,
+  `localStorage['ui-style']` = `comic|flat`.
+- `applyHtmlTheme` must clear all four markers then add the active pair,
+  matching `react-shell.tmpl` FOUC script. Never leave comic + flat together.
+- When `theme=system`, subscribe to `prefers-color-scheme` changes and re-apply.
+
 Migrated React routes boot comic/flat + light/dark markers on `<html>` from
 `go/web/views/react-shell.tmpl` (same `localStorage` keys as legacy
 `head.tmpl`: `ui-style`, `theme`). Legacy LESS/CSS pages still use

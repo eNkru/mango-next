@@ -536,15 +536,9 @@ func (s *Server) handlePluginDownload(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleAdmin(w http.ResponseWriter, r *http.Request) {
-	ld := AdminPageData{
-		LayoutData: LayoutData{
-			BaseURL:  s.Deps.Config.BaseURL,
-			IsAdmin:  true,
-			PageName: "admin",
-			Version:  "2.0.0",
-		},
-	}
-	s.renderLayout(w, "admin", ld)
+	s.renderReactShell(w, "admin", "admin", map[string]any{
+		"isAdmin": true,
+	})
 }
 
 func (s *Server) handleUserList(w http.ResponseWriter, r *http.Request) {

@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 16
+- **Total Sessions**: 17
 - **Last Active**: 2026-07-19
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~610 | Active |
+| `journal-1.md` | ~643 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 17 | 2026-07-19 | React admin home migration | `ac65317` | `feature/react-admin` |
 | 16 | 2026-07-19 | React reader migration | `e822a72`, `fbe6f9b` | `feature/react-reader` |
 | 15 | 2026-07-19 | Finish React browse migration | `488bcad` | `main` |
 | 14 | 2026-07-18 | React login migration | `9ec992d` | `main` |

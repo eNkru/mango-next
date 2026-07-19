@@ -1117,3 +1117,54 @@ html.comic-theme-dark .mango-entry-card {
   margin-top: 1rem;
   flex-wrap: wrap;
 }
+
+/* Admin home */
+.mango-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.mango-admin-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.1rem 1.15rem;
+  border: 1px solid var(--mango-border);
+  background: var(--mango-bg-surface);
+  color: inherit;
+  text-decoration: none;
+  text-align: left;
+  border-radius: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.mango-admin-card strong {
+  font-size: 1.05rem;
+}
+
+.mango-admin-card span {
+  opacity: 0.8;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.mango-admin-card--action:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+html.comic-theme .mango-admin-card,
+html.comic-theme-dark .mango-admin-card {
+  border-width: 3px;
+  border-color: #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.mango-topbar__tools {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}

@@ -22,6 +22,7 @@ This directory contains guidelines for frontend development. Fill in each file w
 | [Type Safety](./type-safety.md) | Type patterns, validation | To fill |
 | [UI Theme Layout](./ui-theme-layout.md) | Comic/Flat dual shell, rails, poster cards | Active |
 | [React Reader](./react-reader.md) | Immersive reader chrome, prefs, navigation math | Active |
+| [React Admin](./react-admin.md) | Admin home cards, scan/thumb polling | Active |
 
 ---
 

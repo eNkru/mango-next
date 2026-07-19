@@ -118,6 +118,8 @@ Default config paths (`~/mango/library`, `~/mango.db`, etc.) expand to `/root/ma
   envelope semantics while adding typed top-level DTOs.
 - React reader/API changes: read `react-reader-api.md`; keep `/api/page` 1-based
   and leave legacy `reader.tmpl` / `reader.js` until smoke passes.
+- Admin scan/thumbnail jobs: read `library-background-jobs.md` scan + thumbnail
+  sections; status must not take `scanMu`.
 - Storage changes: Add migration in `internal/storage/migration/migrations.go` and bump `LatestVersion()`. Run full test suite.
 - Config: document implemented vs deprecated keys; wire new knobs with tests.
 

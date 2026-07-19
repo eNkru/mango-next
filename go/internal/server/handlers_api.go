@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/eNkru/mango-next/internal/config"
 	"github.com/eNkru/mango-next/internal/library"
@@ -658,12 +659,46 @@ func (s *Server) apiTagTitles(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) apiAdminScan(w http.ResponseWriter, r *http.Request) {
+	lib := s.Deps.Library
+	if lib == nil {
+		sendJSONError(w, "Library unavailable", http.StatusInternalServerError)
+		return
+	}
+	if !lib.StartScanJob() {
+		sendJSON(w, map[string]any{"success": true, "running": true})
+		return
+	}
 	go func() {
-		if _, err := s.Deps.Library.Scan(); err != nil {
+		start := time.Now()
+		result, err := lib.Scan()
+		ms := int(time.Since(start).Milliseconds())
+		titles := 0
+		if result != nil {
+			titles = result.TitleCount
+		}
+		if err != nil {
 			log.Printf("Scan error: %v", err)
 		}
+		lib.FinishScanJob(titles, ms, err)
 	}()
-	sendJSON(w, map[string]any{"success": true})
+	sendJSON(w, map[string]any{"success": true, "running": true})
+}
+
+func (s *Server) apiAdminScanProgress(w http.ResponseWriter, r *http.Request) {
+	lib := s.Deps.Library
+	if lib == nil {
+		sendJSONError(w, "Library unavailable", http.StatusInternalServerError)
+		return
+	}
+	running, titles, ms, errMsg := lib.ScanStatus()
+	sendJSON(w, map[string]any{
+		"success":      true,
+		"running":      running,
+		"progress":     0,
+		"titles":       titles,
+		"milliseconds": ms,
+		"error":        errMsg,
+	})
 }
 
 func (s *Server) apiAdminThumbnailProgress(w http.ResponseWriter, r *http.Request) {

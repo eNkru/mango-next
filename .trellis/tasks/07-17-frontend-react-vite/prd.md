@@ -15,84 +15,80 @@ authenticator, and single-binary deployment target.
   Awesome, and dual comic/flat theme CSS.
 - Go embeds `go/web/views` and `go/web/public` at compile time; the production
   binary does not depend on a Node runtime.
-- Browser routes already include home, library, title, tags, reader, login,
-  admin, users, subscriptions, missing items, plugin download, OPDS, and the
-  disabled download manager.
-- Existing JSON API coverage is partial; many pages still rely on server-rendered
-  template data rather than complete client-ready contracts.
 - Authentication, authorization, `BaseURL` mounting, SQLite, library scanning,
-  queue storage, and background tasks already live in Go and do not need to be
-  rewritten for a React frontend.
-- The in-progress `07-17-frontend-asset-pipeline` work introduced npm/lockfile,
-  deterministic generation, Docker Node stages, and local font hosting. That
-  work is redirected into the React build foundation rather than treated as the
-  final jQuery/LESS inventory end state.
-- The missing-items browser page already exists at `/admin/missing`, but its
-  JSON handlers currently return empty success stubs rather than real missing
-  inventory data.
+  queue storage, and background tasks already live in Go.
+- React shell + dual-theme tokens + BaseURL-aware assets are in place.
+- Core authenticated browse → read loop is React: home, library, title, tags,
+  login, admin users, missing-items, and reader.
 
-## Task Map
+## Task Map (children)
 
-- `07-18-frontend-react-foundation` (P1): React + Vite + TypeScript app shell,
-  Go HTML shell mounting, BaseURL-aware assets, dual-theme tokens, Make/Docker
-  generation order, and replacement of the old asset-pipeline end state.
-- `07-18-frontend-react-missing-items` (P1): migrate `/admin/missing` to React,
-  implement real missing-items JSON contracts, and prove the foundation with one
-  complete page.
-- `07-18-frontend-react-browse` (P1): migrate the authenticated home, library,
-  and title-detail browsing flow with complete title administrator parity and
-  shared React localization.
+### Done (archived)
 
-The recommended next child is `frontend-react-reader`. It closes the core
-browse-to-read workflow before lower-frequency administration pages and keeps
-the migration boundary to the two existing `/reader/{title}/{entry}[/{page}]`
-routes plus their reader-specific APIs.
+| Child | Outcome |
+|-------|---------|
+| `07-18-frontend-react-foundation` | React/Vite shell, embed, themes, Make/Docker |
+| `07-18-frontend-react-missing-items` | `/admin/missing` + real APIs |
+| `07-18-frontend-react-admin-users` | `/admin/user` list/edit |
+| `07-18-frontend-react-tags` | tags index/detail |
+| `07-18-frontend-react-login` | login + safe redirects |
+| `07-18-frontend-react-browse` | home / library / title-detail |
+| `07-19-frontend-react-reader` | immersive reader + bootstrap API |
 
-Later page migrations remain follow-up children and are out of the first
-delivery.
+### Remaining (follow-up children — not yet created)
 
-## Requirements
+| Priority | Proposed child | Routes / surface | Notes |
+|----------|----------------|------------------|-------|
+| P1 | `frontend-react-admin` | `/admin` | Scan, thumbnails, library health, settings-ish admin home |
+| P2 | `frontend-react-subscriptions` | `/admin/subscriptions` + plugin subscription APIs | Queue-coupled |
+| P2 | `frontend-react-plugin-download` | `/download/plugins` + plugin search/download APIs | Optional when plugin path set |
+| P3 | `frontend-react-opds` | n/a (or keep XML) | OPDS is XML clients, not browser UI; usually leave as-is |
+| P3 | `frontend-legacy-retirement` | delete unused tmpl/js/css after full cutover | Only after smoke on all migrated routes |
+
+Disabled download manager stays product-out-of-scope cleanup.
+
+## Requirements (parent, still valid)
 
 - Use React + Vite + TypeScript as the browser UI stack.
 - Keep Go as the only long-running backend and final deployable binary.
-- Build React static assets at development and release time, then serve and embed
-  them through Go with no public CDN runtime dependency.
-- Support non-root `BaseURL` mounting for routes and static assets.
-- Structure the work as a parent migration with independently verifiable child
-  milestones.
-- First delivery is foundation shell plus one pilot page, not a multi-page
-  cutover.
-- Pilot page is the admin missing-items flow at `/admin/missing`.
-- Preserve comic/flat dual themes and light/dark switching in the React shell
-  and pilot; reuse existing visual tokens/intent rather than inventing a new
-  design system.
-- During migration, only migrated routes render React. Unmigrated routes keep Go
-  templates and the existing chrome. Navigation may link across both sides.
-- Migrated routes use a Go-served lightweight HTML shell that loads one React
-  bundle; React mounts the page for that path.
-- Style React with local CSS and tokens rather than a full component library.
-- Provide stable JSON API contracts for each migrated page.
-- Leave disabled download-manager product cleanup as separate work.
-- Document React development, build, embed, and Docker order.
+- Build React assets at dev/release time; embed/serve via Go; no public CDN runtime.
+- Support non-root `BaseURL` for routes and static assets.
+- Child tasks independently verifiable; parent owns task map + cross-child AC.
+- Migrated routes: Go HTML shell + React; unmigrated keep templates.
+- Style with local CSS/tokens; no full component library requirement.
+- Stable JSON contracts per migrated page.
+- Leave disabled download-manager product cleanup separate.
 
 ## Cross-Task Acceptance Criteria
 
-- [ ] Foundation child delivers a working React shell embedded by Go under root
-      and non-root BaseURL.
-- [ ] Missing-items child migrates `/admin/missing` to React against real JSON
-      contracts with loading, empty, error, delete, and bulk-delete behavior.
-- [ ] Unmigrated routes continue to work through Go templates.
-- [ ] No Node runtime is required in the final Mango binary or Docker runtime
-      image.
-- [ ] Comic/flat light/dark switching works in the React shell without CDN font
-      or component-library runtime dependencies.
-- [ ] Documentation describes the React build order and coexistence rules.
+### First-wave (met by completed children)
 
-## Out of Scope
+- [x] Foundation shell embedded under root/non-root BaseURL.
+- [x] Missing-items pilot against real JSON.
+- [x] Browse + reader close authenticated read loop.
+- [x] Login, tags, admin users migrated.
+- [x] Unmigrated routes still template-render.
+- [x] No Node runtime in final binary.
+- [x] Comic/flat light/dark in React shell.
 
-- Rewriting the Go backend into Node, Next.js, or another server framework.
-- Migrating home, library, title, reader, login, users, subscriptions, plugin
-  download, or OPDS in the first delivery.
+### Still open (parent-level)
+
+- [ ] Admin home (`/admin`) migrated or explicitly deferred with docs.
+- [ ] Subscriptions + plugin download migrated or deferred.
+- [ ] Legacy jQuery/Alpine/UIkit assets retired only after remaining pages done.
+- [ ] Parent integration review / archive when remaining scope is deferred or done.
+
+## Out of Scope (parent)
+
+- Rewriting Go backend into Node/Next/etc.
 - Full design-system rewrite or public CDN assets.
-- Completing every page in a single change set.
-- Product removal of the disabled download manager.
+- Completing every page in one change set.
+- Product removal of the disabled download manager (unless a dedicated task).
+- Rewriting OPDS XML protocol into React (clients expect OPDS, not SPA).
+
+## Recommended next child
+
+**`frontend-react-admin`** — migrate `/admin` (scan / thumbnail generation /
+status surface). Highest remaining browser frequency after the read loop, admin
+auth already proven on users/missing-items, and it unblocks day-2 ops without
+plugin/queue complexity of subscriptions.

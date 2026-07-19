@@ -147,4 +147,93 @@ Wrong: only encode-import `image/jpeg`, then on `image.Decode` failure call
 `webp.Decode` on every remaining buffer.
 
 Correct: register PNG/GIF/WebP; decode only via `image.Decode*`; return the
+
+## Scenario: Admin library scan job status
+
+### 1. Scope / Trigger
+
+Apply when changing `POST /api/admin/scan`, scan progress polling, or
+`Library` scan job state. Prevents fire-and-forget scans with no UI feedback
+and prevents deadlocks between `scanMu` and status reads.
+
+### 2. Signatures
+
+```text
+POST /api/admin/scan
+GET  /api/admin/scan_progress
+Library.StartScanJob() bool
+Library.FinishScanJob(titles, milliseconds int, err error)
+Library.ScanStatus() (running bool, titles, milliseconds int, errMsg string)
+Library.Scan() (*ScanResult, error)  // still holds scanMu for the disk walk
+```
+
+### 3. Contracts
+
+- `StartScanJob` claims a dedicated `ScanContext` mutex (not `scanMu`).
+  Returns false if already running; API then responds
+  `{ success: true, running: true }` without starting a second goroutine.
+- On claim success, API starts `Scan()` in a background goroutine and returns
+  `{ success: true, running: true }` immediately.
+- Goroutine records wall-clock ms and `ScanResult.TitleCount` (0 on error),
+  then `FinishScanJob`.
+- Progress JSON:
+
+```json
+{
+  "success": true,
+  "running": false,
+  "progress": 0,
+  "titles": 12,
+  "milliseconds": 340,
+  "error": ""
+}
+```
+
+- `running`, not `progress`, is the activity flag (scan has no fine-grained %).
+- Status reads must never take `scanMu`.
+
+### 4. Validation & Error Matrix
+
+| Condition | Behavior |
+|-----------|----------|
+| Idle + POST scan | Start job, `running: true` |
+| Running + POST scan | No second job; `running: true` |
+| Scan error | `running: false`, `error` non-empty, titles may be 0 |
+| Before any scan | idle metrics 0, empty error |
+
+### 5. Good/Base/Bad Cases
+
+- Good: client polls until `running=false` and shows titles/ms.
+- Base: tiny library completes within seconds in tests.
+- Bad: status under `scanMu` while Scan holds it → progress hangs.
+
+### 6. Tests Required
+
+- Idle progress endpoint success.
+- POST scan then poll until complete with `titles >= 1` on fixture library.
+- Admin page React shell registers `pageId: admin` without `admin.js`.
+
+### 7. Wrong vs Correct
+
+Wrong:
+
+```go
+go lib.Scan() // no job status
+sendJSON(w, map[string]any{"success": true})
+```
+
+Correct:
+
+```go
+if !lib.StartScanJob() {
+    sendJSON(w, map[string]any{"success": true, "running": true})
+    return
+}
+go func() {
+    start := time.Now()
+    result, err := lib.Scan()
+    // FinishScanJob(titleCount, ms, err)
+}()
+sendJSON(w, map[string]any{"success": true, "running": true})
+```
 real decode error for unsupported/corrupt data.

@@ -608,3 +608,36 @@ Migrated /reader to React immersive shell with GET /api/reader bootstrap, contin
 ### Next Steps
 
 - None - task complete
+
+
+## Session 17: React admin home migration
+
+**Date**: 2026-07-19
+**Task**: React admin home migration
+**Branch**: `feature/react-admin`
+
+### Summary
+
+Migrated /admin to React AppShell with users/missing links, async scan job + scan_progress polling, thumbnail progress, and global theme/UI-style controls. Specs updated. Browser smoke deferred. Pushed feature/react-admin.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ac65317` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
