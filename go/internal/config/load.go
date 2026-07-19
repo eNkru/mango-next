@@ -96,7 +96,7 @@ func Load(path string) (*Config, error) {
 func (c *Config) expandPaths() error {
 	for _, p := range []*string{
 		&c.LibraryPath, &c.LibraryCachePath, &c.DBPath,
-		&c.QueueDBPath, &c.UploadPath, &c.PluginPath,
+		&c.UploadPath,
 	} {
 		expanded, err := expandPath(*p)
 		if err != nil {

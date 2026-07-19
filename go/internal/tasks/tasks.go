@@ -6,29 +6,16 @@ import (
 	"time"
 
 	"github.com/eNkru/mango-next/internal/library"
-	"github.com/eNkru/mango-next/internal/plugin"
-	"github.com/eNkru/mango-next/internal/queue"
 )
 
-// Runner manages all background tasks: library scanning, thumbnail generation,
-// plugin update checking, and download queue processing.
-// Mirrors Crystal's spawn-based background jobs.
+// Runner manages background library scanning and thumbnail generation.
 type Runner struct {
-	lib *library.Library
-
-	// Library tasks
+	lib                    *library.Library
 	scanIntervalMinutes    int
 	thumbnailIntervalHours int
-
-	// Plugin tasks
-	queue                     *queue.Queue
-	pluginDir                 string
-	pluginUpdateIntervalHours int
-	libraryPath               string
-	downloadTimeoutSeconds    int
 }
 
-// NewRunner creates a Runner attached to the given Library and plugin system.
+// NewRunner creates a Runner attached to the given Library.
 func NewRunner(lib *library.Library, scanIntervalMinutes, thumbnailIntervalHours int) *Runner {
 	return &Runner{
 		lib:                    lib,
@@ -37,19 +24,8 @@ func NewRunner(lib *library.Library, scanIntervalMinutes, thumbnailIntervalHours
 	}
 }
 
-// SetPluginTasks configures the plugin update checking and download queue
-// processing. Must be called before Start. downloadTimeoutSeconds <= 0 uses 30s.
-func (r *Runner) SetPluginTasks(q *queue.Queue, pluginDir, libraryPath string, pluginUpdateIntervalHours, downloadTimeoutSeconds int) {
-	r.queue = q
-	r.pluginDir = pluginDir
-	r.libraryPath = libraryPath
-	r.pluginUpdateIntervalHours = pluginUpdateIntervalHours
-	r.downloadTimeoutSeconds = downloadTimeoutSeconds
-}
-
-// Start launches all background goroutines. Blocks until ctx is cancelled.
+// Start launches library background goroutines. Blocks until ctx is cancelled.
 func (r *Runner) Start(ctx context.Context) {
-	// --- Library scanner ---
 	initialScanDone := make(chan struct{})
 	go func() {
 		r.runScan()
@@ -68,7 +44,6 @@ func (r *Runner) Start(ctx context.Context) {
 		}
 	}()
 
-	// --- Thumbnail generator ---
 	if r.thumbnailIntervalHours >= 1 {
 		go func() {
 			select {
@@ -90,23 +65,6 @@ func (r *Runner) Start(ctx context.Context) {
 		}()
 	}
 
-	// --- Plugin update checker ---
-	if r.queue != nil && r.pluginUpdateIntervalHours > 0 {
-		go func() {
-			updater := plugin.NewUpdater(r.pluginDir, r.queue, r.pluginUpdateIntervalHours)
-			updater.Start(ctx)
-		}()
-	}
-
-	// --- Download queue processor ---
-	if r.queue != nil {
-		go func() {
-			downloader := plugin.NewDownloader(r.queue, r.libraryPath, r.pluginDir, r.downloadTimeoutSeconds)
-			downloader.Start(ctx)
-		}()
-	}
-
-	// Block until cancelled
 	<-ctx.Done()
 	log.Println("Background tasks stopped")
 }
