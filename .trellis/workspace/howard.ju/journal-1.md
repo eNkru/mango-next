@@ -641,3 +641,36 @@ Migrated /admin to React AppShell with users/missing links, async scan job + sca
 ### Next Steps
 
 - None - task complete
+
+
+## Session 18: Legacy frontend asset retirement
+
+**Date**: 2026-07-20
+**Task**: Legacy frontend asset retirement
+**Branch**: `feature/legacy-retirement`
+
+### Summary
+
+Disabled subscriptions/downloads/plugin-download routes; deleted jQuery/Alpine/UIkit templates, vendor JS/CSS/webfonts, and dead legacy handlers. Kept react-shell, public/react, PWA icons, OPDS. go test 246 + frontend typecheck green. Pushed feature/legacy-retirement.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3238dc7` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
