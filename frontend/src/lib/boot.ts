@@ -13,6 +13,10 @@ export type MangoBoot = {
   callback?: string;
   /** Title id for the React title-detail route. */
   titleId?: string;
+  /** Reader route identity (title / entry / one-based page). */
+  tid?: string;
+  eid?: string;
+  page?: number;
 };
 
 const DEFAULT_BOOT: MangoBoot = {
@@ -41,6 +45,9 @@ export function readBoot(): MangoBoot {
       showHidden: Boolean(parsed.showHidden),
       callback: typeof parsed.callback === 'string' ? parsed.callback : undefined,
       titleId: typeof parsed.titleId === 'string' ? parsed.titleId : undefined,
+      tid: typeof parsed.tid === 'string' ? parsed.tid : undefined,
+      eid: typeof parsed.eid === 'string' ? parsed.eid : undefined,
+      page: typeof parsed.page === 'number' && Number.isFinite(parsed.page) ? parsed.page : undefined,
     };
   } catch {
     return DEFAULT_BOOT;

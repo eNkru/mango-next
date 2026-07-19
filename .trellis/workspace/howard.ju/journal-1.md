@@ -574,3 +574,37 @@ Completed and archived frontend-react-browse: home/library/title React migration
 ### Next Steps
 
 - None - task complete
+
+
+## Session 16: React reader migration
+
+**Date**: 2026-07-19
+**Task**: React reader migration
+**Branch**: `feature/react-reader`
+
+### Summary
+
+Migrated /reader to React immersive shell with GET /api/reader bootstrap, continuous/paged modes, progress throttle, and mango.reader.* prefs. Specs updated for 1-based page API. Pushed feature/react-reader.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e822a72` | (see git log) |
+| `fbe6f9b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

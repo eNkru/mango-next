@@ -905,3 +905,215 @@ html.comic-theme-dark .mango-entry-card {
     grid-template-columns: 92px minmax(0, 1fr);
   }
 }
+
+/* Immersive reader (no AppShell) */
+.mango-reader {
+  position: relative;
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #f5f5f5;
+}
+
+.mango-reader--gate {
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.mango-reader-edge {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  z-index: 40;
+  pointer-events: auto;
+}
+
+.mango-reader-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 56px;
+  padding: 0.5rem 1rem;
+  background: color-mix(in srgb, #111 92%, transparent);
+  border-bottom: 1px solid #333;
+  transform: translateY(-110%);
+  opacity: 0;
+  transition: transform 160ms ease, opacity 160ms ease;
+  pointer-events: none;
+}
+
+.mango-reader-topbar.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mango-reader-topbar__left,
+.mango-reader-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.mango-reader-topbar__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+
+.mango-reader-topbar__brand {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mango-reader-topbar__title {
+  max-width: min(48vw, 28rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.mango-reader-topbar__progress {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.mango-btn--ghost {
+  background: transparent;
+  border: 1px solid #555;
+  color: inherit;
+}
+
+.mango-reader-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(960px, 100%);
+  margin: 0 auto;
+  padding: 1rem 0 3rem;
+}
+
+.mango-reader-strip__img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+  background: #111;
+}
+
+.mango-reader-paged {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+.mango-reader-paged__img {
+  display: block;
+  margin: 0 auto;
+  cursor: pointer;
+  background: #111;
+}
+
+.mango-reader-page--flip-left {
+  animation: mango-reader-flip-left 0.35s ease;
+}
+
+.mango-reader-page--flip-right {
+  animation: mango-reader-flip-right 0.35s ease;
+}
+
+@keyframes mango-reader-flip-left {
+  from {
+    transform: translateX(-24px);
+    opacity: 0.4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes mango-reader-flip-right {
+  from {
+    transform: translateX(24px);
+    opacity: 0.4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.mango-reader-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 28%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.mango-reader-zone--left {
+  left: 0;
+}
+
+.mango-reader-zone--right {
+  right: 0;
+}
+
+.mango-reader-footer {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.mango-reader-modal-backdrop {
+  z-index: 60;
+}
+
+.mango-reader-controls {
+  max-width: 28rem;
+  width: min(92vw, 28rem);
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.mango-reader-controls__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.mango-reader-controls__progress {
+  margin: 0.5rem 0 1rem;
+}
+
+.mango-field--row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.mango-reader-controls__actions {
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}

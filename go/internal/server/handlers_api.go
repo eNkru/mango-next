@@ -333,17 +333,137 @@ func (s *Server) apiDimensions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sig := strconv.FormatUint(entry.Signature(), 10)
-	if cached, ok, err := s.Deps.Storage.GetEntryDimensions(entry.ID(), sig); err == nil && ok {
-		sendJSON(w, map[string]any{"success": true, "dimensions": cached})
-		return
-	}
-
-	pageDims, err := library.ReadPageDimensions(entry)
+	out, err := s.entryDimensions(entry)
 	if err != nil {
 		log.Printf("Read page dimensions error: %v", err)
 		sendJSONError(w, "Failed to read dimensions", http.StatusInternalServerError)
 		return
+	}
+
+	sendJSON(w, map[string]any{"success": true, "dimensions": out})
+}
+
+// apiReader returns bootstrap metadata for the React immersive reader.
+func (s *Server) apiReader(w http.ResponseWriter, r *http.Request) {
+	tid := chi.URLParam(r, "tid")
+	eid := chi.URLParam(r, "eid")
+	username := GetUsername(r)
+
+	lib := s.Deps.Library
+	lib.RLock()
+	title, ok := lib.TitleHash[tid]
+	lib.RUnlock()
+	if !ok {
+		sendJSONError(w, "title not found", http.StatusNotFound)
+		return
+	}
+
+	entry, err := s.findEntry(tid, eid)
+	if err != nil {
+		sendJSONError(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	pages := entry.PageCount()
+	if pages <= 0 {
+		sendJSONError(w, "entry has no pages", http.StatusBadRequest)
+		return
+	}
+
+	dims, err := s.entryDimensions(entry)
+	if err != nil {
+		log.Printf("Reader bootstrap dimensions error: %v", err)
+		sendJSONError(w, "Failed to read dimensions", http.StatusInternalServerError)
+		return
+	}
+	if len(dims) == 0 {
+		sendJSONError(w, "entry has no pages", http.StatusBadRequest)
+		return
+	}
+	// Prefer dimensions length as the image list source of truth for the reader.
+	if pages != len(dims) {
+		pages = len(dims)
+	}
+
+	progress, _ := s.Deps.Storage.LoadProgress(username, tid, strPtr(eid))
+
+	type entryDTO struct {
+		ID       string `json:"id"`
+		Name     string `json:"name"`
+		Pages    int    `json:"pages"`
+		Progress int    `json:"progress"`
+	}
+
+	entries := make([]entryDTO, 0, len(title.Entries))
+	entryIdx := -1
+	for i, e := range title.Entries {
+		ep, _ := s.Deps.Storage.LoadProgress(username, tid, strPtr(e.ID()))
+		entries = append(entries, entryDTO{
+			ID:       e.ID(),
+			Name:     e.Name(),
+			Pages:    e.PageCount(),
+			Progress: ep,
+		})
+		if e.ID() == eid {
+			entryIdx = i
+		}
+	}
+	if entryIdx < 0 {
+		// Entry may live under a nested title; still expose siblings of parent title when available.
+		entries = []entryDTO{{
+			ID:       eid,
+			Name:     entry.Name(),
+			Pages:    pages,
+			Progress: progress,
+		}}
+	}
+
+	nextEntryURL := ""
+	prevEntryURL := ""
+	if entryIdx >= 0 {
+		if entryIdx+1 < len(title.Entries) {
+			nextEntryURL = s.appPath(fmt.Sprintf("reader/%s/%s/1", tid, title.Entries[entryIdx+1].ID()))
+		}
+		if entryIdx > 0 {
+			prevEntryURL = s.appPath(fmt.Sprintf("reader/%s/%s/1", tid, title.Entries[entryIdx-1].ID()))
+		}
+	}
+
+	sendJSON(w, map[string]any{
+		"success": true,
+		"data": map[string]any{
+			"title": map[string]any{
+				"id":   title.ID,
+				"name": title.Name,
+			},
+			"entry": map[string]any{
+				"id":       eid,
+				"name":     entry.Name(),
+				"pages":    pages,
+				"progress": progress,
+			},
+			"dimensions":         dims,
+			"entries":            entries,
+			"exit_url":           s.appPath(fmt.Sprintf("book/%s", tid)),
+			"next_entry_url":     nextEntryURL,
+			"previous_entry_url": prevEntryURL,
+		},
+	})
+}
+
+func (s *Server) entryDimensions(entry library.Entry) ([]map[string]any, error) {
+	sig := strconv.FormatUint(entry.Signature(), 10)
+	if cached, ok, err := s.Deps.Storage.GetEntryDimensions(entry.ID(), sig); err == nil && ok {
+		out := make([]map[string]any, len(cached))
+		for i, d := range cached {
+			out[i] = map[string]any{"width": d.Width, "height": d.Height}
+		}
+		return out, nil
+	}
+
+	pageDims, err := library.ReadPageDimensions(entry)
+	if err != nil {
+		return nil, err
 	}
 
 	stored := make([]storage.PageDimension, len(pageDims))
@@ -355,8 +475,7 @@ func (s *Server) apiDimensions(w http.ResponseWriter, r *http.Request) {
 	if err := s.Deps.Storage.SaveEntryDimensions(entry.ID(), sig, stored); err != nil {
 		log.Printf("Save entry dimensions error: %v", err)
 	}
-
-	sendJSON(w, map[string]any{"success": true, "dimensions": out})
+	return out, nil
 }
 
 func (s *Server) apiDownload(w http.ResponseWriter, r *http.Request) {
