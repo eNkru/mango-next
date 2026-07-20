@@ -1,0 +1,3 @@
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Verify comic/flat continue-reading styling still coherent"}
+{"file": ".trellis/tasks/07-20-continue-reading-layout/prd.md", "reason": "Acceptance criteria for hero+list layout"}
+{"file": ".trellis/tasks/07-20-continue-reading-layout/design.md", "reason": "Design contracts for expand preview and class names"}

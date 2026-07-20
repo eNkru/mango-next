@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Comic/Flat shell geometry and continue-reading layout contracts"}
+{"file": ".trellis/tasks/07-20-continue-reading-layout/prd.md", "reason": "Requirements and acceptance criteria"}
+{"file": ".trellis/tasks/07-20-continue-reading-layout/design.md", "reason": "Hero+list layout, CSS classes, expand behavior"}
+{"file": ".trellis/tasks/07-20-continue-reading-layout/implement.md", "reason": "Ordered checklist and validation"}
