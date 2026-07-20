@@ -13,6 +13,12 @@ type HomeResponse = {
   continue_reading: BrowseEntry[]; start_reading: BrowseTitle[]; recently_added: BrowseTitle[];
 };
 
+const LIST_PREVIEW = 3;
+
+function readerUrl(item: BrowseEntry) {
+  return baseUrl(`reader/${encodeURIComponent(item.title_id)}/${encodeURIComponent(item.id)}`);
+}
+
 export function HomePage() {
   const { t } = useI18n();
   const [data, setData] = useState<HomeResponse | null>(null);
@@ -29,12 +35,31 @@ export function HomePage() {
     {error ? <><ErrorState message={error} /><button className="mango-btn" type="button" onClick={() => void load()}>{t('retry')}</button></> : null}
     {data?.empty_library ? <section className="mango-empty-hero"><h2>{t('emptyLibrary')}</h2><p>{data.is_admin ? t('emptyLibraryAdmin') : t('emptyLibraryUser')}</p>{data.is_admin ? <code>{data.library_path}</code> : null}</section> : null}
     {data && !data.empty_library && data.new_user ? <section className="mango-welcome"><h2>{t('welcome')}</h2><p>{t('welcomeBody')}</p></section> : null}
-    {data?.continue_reading.length ? <section className="mango-browse-section"><h2>{t('continueReading')}</h2><div className="mango-continue-grid">{data.continue_reading.map((item) => <article className="mango-continue-card" key={item.id}>
-      <img src={item.cover_url} alt="" /><div><h3>{item.name}</h3><p>{item.page > 0 ? `${item.page} / ${item.pages} ${t('page')}` : `${item.pages} ${t('page')}`}</p><ProgressBar value={item.progress} /><div className="mango-actions"><a className="mango-btn mango-btn--primary" href={baseUrl(`reader/${encodeURIComponent(item.title_id)}/${encodeURIComponent(item.id)}`)}>{t('continue')}</a><a className="mango-btn" href={baseUrl(`book/${encodeURIComponent(item.title_id)}`)}>{t('open')}</a></div></div>
-    </article>)}</div></section> : null}
+    {data?.continue_reading.length ? <ContinueSection items={data.continue_reading} /> : null}
     {data?.start_reading.length ? <Rail title={t('startReading')} items={data.start_reading} /> : null}
     {data?.recently_added.length ? <Rail title={t('recentlyAdded')} items={data.recently_added} /> : null}
   </AppShell>;
+}
+
+function ContinueSection({ items }: { items: BrowseEntry[] }) {
+  const { t } = useI18n();
+  const [expanded, setExpanded] = useState(false);
+  const primary = items[0];
+  const rest = items.slice(1);
+  const visible = expanded ? rest : rest.slice(0, LIST_PREVIEW);
+  return <section className="mango-browse-section"><h2>{t('continueReading')}</h2><div className="mango-continue">
+    <article className="mango-continue-hero">
+      <img src={primary.cover_url} alt="" />
+      <div>
+        <h3>{primary.name}</h3>
+        <p>{primary.page > 0 ? `${primary.page} / ${primary.pages} ${t('page')}` : `${primary.pages} ${t('page')}`}</p>
+        <ProgressBar value={primary.progress} />
+        <div className="mango-actions"><a className="mango-btn mango-btn--primary" href={readerUrl(primary)}>{t('continue')}</a></div>
+      </div>
+    </article>
+    {rest.length ? <ul className="mango-continue-list">{visible.map((item) => <li key={item.id}><a className="mango-continue-row" href={readerUrl(item)}><img src={item.cover_url} alt="" /><div><h3>{item.name}</h3><ProgressBar value={item.progress} /></div></a></li>)}</ul> : null}
+    {rest.length > LIST_PREVIEW ? <button className="mango-continue-more" type="button" aria-expanded={expanded} onClick={() => setExpanded((value) => !value)}>{expanded ? t('showLess') : t('showMore')}</button> : null}
+  </div></section>;
 }
 
 function Rail({ title, items }: { title: string; items: BrowseTitle[] }) {

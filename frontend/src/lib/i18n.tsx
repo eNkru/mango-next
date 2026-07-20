@@ -35,6 +35,7 @@ const messages = {
     thumbFailed: '缩略图任务失败', theme: '主题', themeSystem: '跟随系统',
     themeLight: '浅色', themeDark: '深色', uiStyle: 'UI风格',
     uiStyleComic: 'Comic', uiStyleFlat: 'Flat',
+    showMore: '展开更多', showLess: '收起',
   },
   'zh-tw': {
     home: '首頁', library: '資料庫', tags: '標籤', admin: '管理員', logout: '登出',
@@ -68,6 +69,7 @@ const messages = {
     thumbFailed: '縮圖任務失敗', theme: '主題', themeSystem: '跟隨系統',
     themeLight: '淺色', themeDark: '深色', uiStyle: 'UI風格',
     uiStyleComic: 'Comic', uiStyleFlat: 'Flat',
+    showMore: '展開更多', showLess: '收起',
   },
   en: {
     home: 'Home', library: 'Library', tags: 'Tags', admin: 'Admin', logout: 'Log out',
@@ -101,6 +103,7 @@ const messages = {
     thumbFailed: 'Thumbnail job failed', theme: 'Theme', themeSystem: 'System',
     themeLight: 'Light', themeDark: 'Dark', uiStyle: 'UI style',
     uiStyleComic: 'Comic', uiStyleFlat: 'Flat',
+    showMore: 'Show more', showLess: 'Show less',
   },
 } as const;
 

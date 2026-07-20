@@ -26,8 +26,26 @@ Mirror Flat for both styles:
 
 - Top bar height: `@flat-topbar-height` (68px)
 - `app-content`: `margin-left: 0`, `padding-top: calc(68px + 16px)`, horizontal `4vw` (mobile: 72px / 16px)
-- Continue-reading: single row 300/320/360px; side cards `height: 100%`; media absolute + `object-fit: cover`; body hidden on desktop
 - Poster media: `aspect-ratio: 2 / 3`; library titles reserve 2-line height for equal cards
+
+## React home: continue-reading (hero + list)
+
+Home continue-reading is **not** a poster rail (unlike start-reading / recently-added).
+
+| Piece | Classes | Behavior |
+|-------|---------|----------|
+| Stack | `.mango-continue` | Vertical stack under section heading |
+| Hero | `.mango-continue-hero` | `items[0]`: cover + title + page text + thicker progress + single **Continue** → reader |
+| List | `.mango-continue-list` / `.mango-continue-row` | `items[1..]`: compact row (thumb + title + thin progress); whole row → reader |
+| Expand | `.mango-continue-more` | When rest length > 3, toggle show more / less (`LIST_PREVIEW = 3`) |
+
+Rules:
+
+- Only one continue item → hero only; do not render empty list
+- Do **not** use `PosterCard` / `.mango-poster-rail` for continue
+- No secondary Open/book-detail button on hero in this layout
+- Comic: sharp corners on `.mango-continue-hero` and `.mango-continue-row` (same thick border/shadow pattern as other cards)
+- Source: `frontend/src/pages/HomePage.tsx` (`ContinueSection`), styles in `frontend/src/styles/shell.css`
 
 ## Skin isolation
 
@@ -68,14 +86,15 @@ Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 | Wrong | Correct |
 |-------|---------|
 | Hide topbar with `:not(.flat-theme)` only | Exclude comic markers too |
-| Comic side rail uses aspect-ratio only | Force full row height like Flat continue-reading |
+| Comic side rail uses aspect-ratio only | Full-height media where row layout requires it |
 | Library card height follows title wrap | Fixed 2-line title slot + stretch grid |
 | Change Flat accent when restyling comic | Scope comic only |
+| Continue-reading uses poster rail like start/recent | Hero + compact list (see above) |
 
 ## Smoke checklist
 
 - [ ] comic dark/light: top bar, no sidebar, full-width
 - [ ] flat dark/light: unchanged Netflix chrome
 - [ ] toggle ui-style: class mutual exclusion
-- [ ] home continue-reading side posters full height
+- [ ] home continue-reading: hero + list (not poster rail); expand when >3 secondary rows
 - [ ] library cards equal height, sharp corners
