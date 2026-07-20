@@ -773,3 +773,36 @@ Archived parent 07-17-frontend-react-vite after 10/10 children. Product React UI
 ### Next Steps
 
 - None - task complete
+
+
+## Session 22: UI consistency audit and fix
+
+**Date**: 2026-07-21
+**Task**: UI consistency audit and fix
+**Branch**: `feat/ui-consistency`
+
+### Summary
+
+Unified React shell: PosterCard/BrowseToolbar contracts, full-page i18n, ErrorState onRetry, design tokens (danger/reader/comic buttons), form field markup, removed react-preview scaffold; specs updated; typecheck/build/go server tests pass.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `c18bb42` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
