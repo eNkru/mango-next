@@ -740,3 +740,36 @@ Archived parent 07-17-frontend-react-vite after 10/10 children. Product React UI
 ### Next Steps
 
 - None - task complete
+
+
+## Session 21: 主页继续阅读布局优化
+
+**Date**: 2026-07-20
+**Task**: 主页继续阅读布局优化
+**Branch**: `main`
+
+### Summary
+
+将首页继续阅读从宽卡网格改为首项大卡+紧凑竖列表（默认3行可展开），与开始阅读poster轨差异化；更新ui-theme-layout spec；build通过并归档任务。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4502f11` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
