@@ -1,19 +1,34 @@
-type Props = {
+type LoadingProps = {
   message?: string;
 };
 
-export function LoadingState({ message = '加载中…' }: Props) {
+type EmptyProps = {
+  message?: string;
+};
+
+type ErrorProps = {
+  message?: string;
+  onRetry?: () => void;
+  retryLabel?: string;
+};
+
+export function LoadingState({ message = '…' }: LoadingProps) {
   return <div className="mango-state">{message}</div>;
 }
 
-export function EmptyState({ message = '暂无数据' }: Props) {
+export function EmptyState({ message = '…' }: EmptyProps) {
   return <div className="mango-state">{message}</div>;
 }
 
-export function ErrorState({ message = '出错了' }: Props) {
+export function ErrorState({ message = '…', onRetry, retryLabel = 'Retry' }: ErrorProps) {
   return (
     <div className="mango-state mango-state--error" role="alert">
-      {message}
+      <div>{message}</div>
+      {onRetry ? (
+        <button type="button" className="mango-btn" onClick={onRetry}>
+          {retryLabel}
+        </button>
+      ) : null}
     </div>
   );
 }

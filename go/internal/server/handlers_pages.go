@@ -293,11 +293,6 @@ func (s *Server) handleMissingItems(w http.ResponseWriter, r *http.Request) {
 	s.renderReactShell(w, "missing-items", "missing-items", nil)
 }
 
-// handleReactPreview serves the React foundation placeholder under admin auth.
-func (s *Server) handleReactPreview(w http.ResponseWriter, r *http.Request) {
-	s.renderReactShell(w, "react-preview", "react-preview", nil)
-}
-
 func (s *Server) renderReactShell(w http.ResponseWriter, pageID, pageName string, extra map[string]any) {
 	boot := map[string]any{
 		"baseUrl":  s.Deps.Config.BaseURL,

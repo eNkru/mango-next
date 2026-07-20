@@ -1,12 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { BrowseToolbar, PosterCard } from '../browse/BrowseComponents';
 import { apiFetch } from '../lib/api';
 import { baseUrl } from '../lib/baseUrl';
 import { readBoot } from '../lib/boot';
+import {
+  filterBrowseItems,
+  sortBrowseItems,
+  type BrowseTitle,
+  type SortMode,
+} from '../lib/browse';
+import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
 import { EmptyState, ErrorState, LoadingState } from '../shell/StatePanels';
 
-type TitleCard = {
+type TagApiTitle = {
   id: string;
   name: string;
   cover_url: string;
@@ -19,10 +27,28 @@ type TagDetailResponse = {
   tag?: string;
   show_hidden?: boolean;
   is_admin?: boolean;
-  titles?: TitleCard[];
+  titles?: TagApiTitle[];
 };
 
+const TAG_SORT_MODES: SortMode[] = ['natural', 'title'];
+
+function toBrowseTitle(card: TagApiTitle): BrowseTitle {
+  return {
+    id: card.id,
+    name: card.name,
+    display_name: card.name,
+    file_name: card.name,
+    sort_name: card.name,
+    cover_url: card.cover_url,
+    entry_count: card.entry_count,
+    progress: 0,
+    modified_at: 0,
+    hidden: card.hidden,
+  };
+}
+
 export function TagDetailPage() {
+  const { t } = useI18n();
   const boot = useMemo(() => readBoot(), []);
   const tag = useMemo(() => {
     if (boot.tag) return boot.tag;
@@ -32,48 +58,52 @@ export function TagDetailPage() {
     return '';
   }, [boot.tag]);
 
-  const [titles, setTitles] = useState<TitleCard[]>([]);
+  const [titles, setTitles] = useState<BrowseTitle[]>([]);
   const [isAdmin, setIsAdmin] = useState(Boolean(boot.isAdmin));
   const [showHidden, setShowHidden] = useState(Boolean(boot.showHidden));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+  const [mode, setMode] = useState<SortMode>('natural');
+  const [ascending, setAscending] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  const load = useCallback(async (hidden: boolean) => {
-    if (!tag) {
-      setError('缺少标签');
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const qs = hidden ? '?show_hidden=1' : '';
-      const res = await apiFetch<TagDetailResponse>(
-        `api/tags/${encodeURIComponent(tag)}/titles${qs}`,
-      );
-      setTitles(res.titles ?? []);
-      setIsAdmin(Boolean(res.is_admin));
-      setShowHidden(Boolean(res.show_hidden));
-    } catch (err) {
-      const message = err instanceof Error ? err.message : '加载标签失败';
-      setError(message);
-      pushAlert(message, 'danger');
-    } finally {
-      setLoading(false);
-    }
-  }, [tag]);
+  const load = useCallback(
+    async (hidden: boolean) => {
+      if (!tag) {
+        setError(t('missingTag'));
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        const qs = hidden ? '?show_hidden=1' : '';
+        const res = await apiFetch<TagDetailResponse>(
+          `api/tags/${encodeURIComponent(tag)}/titles${qs}`,
+        );
+        setTitles((res.titles ?? []).map(toBrowseTitle));
+        setIsAdmin(Boolean(res.is_admin));
+        setShowHidden(Boolean(res.show_hidden));
+      } catch (err) {
+        const message = err instanceof Error ? err.message : t('loadTagFailed');
+        setError(message);
+        pushAlert(message, 'danger');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [tag, t],
+  );
 
   useEffect(() => {
     void load(Boolean(boot.showHidden));
   }, [boot.showHidden, load]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return titles;
-    return titles.filter((t) => t.name.toLowerCase().includes(q));
-  }, [query, titles]);
+  const filtered = useMemo(
+    () => sortBrowseItems(filterBrowseItems(titles, query), mode, ascending),
+    [titles, query, mode, ascending],
+  );
 
   const toggleShowHidden = () => {
     const next = !showHidden;
@@ -85,85 +115,76 @@ export function TagDetailPage() {
     void load(next);
   };
 
-  const toggleHidden = async (tid: string, value: 0 | 1) => {
-    setBusyId(tid);
+  const toggleHidden = async (item: BrowseTitle) => {
+    setBusyId(item.id);
     try {
-      await apiFetch(`api/admin/hidden/${encodeURIComponent(tid)}/${value}`, {
+      await apiFetch(`api/admin/hidden/${encodeURIComponent(item.id)}/${item.hidden ? 0 : 1}`, {
         method: 'PUT',
       });
-      pushAlert(value === 1 ? '已隐藏' : '已显示', 'success');
+      pushAlert(item.hidden ? t('shownDone') : t('hiddenDone'), 'success');
       await load(showHidden);
     } catch (err) {
-      pushAlert(err instanceof Error ? err.message : '操作失败', 'danger');
+      pushAlert(err instanceof Error ? err.message : t('actionFailed'), 'danger');
     } finally {
       setBusyId(null);
     }
   };
 
   return (
-    <AppShell title={`标签: ${tag || '…'}`} subtitle={`${titles.length} 个标记`}>
-      <div className="mango-actions" style={{ marginTop: 0, marginBottom: '1rem' }}>
-        <a className="mango-btn" href={baseUrl('tags')}>
-          全部标签
-        </a>
-        <input
-          className="mango-input"
-          style={{ maxWidth: '16rem' }}
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="查找漫画…"
-          aria-label="查找漫画"
-        />
-        {isAdmin ? (
-          <button type="button" className="mango-btn" onClick={toggleShowHidden}>
-            {showHidden ? '隐藏已隐藏' : '显示隐藏'}
-          </button>
-        ) : null}
-      </div>
+    <AppShell
+      title={t('tagTitle', { tag: tag || '…' })}
+      subtitle={t('tagCount', { count: titles.length })}
+    >
+      <BrowseToolbar
+        query={query}
+        onQuery={setQuery}
+        mode={mode}
+        onMode={setMode}
+        ascending={ascending}
+        onAscending={setAscending}
+        modes={TAG_SORT_MODES}
+        extra={
+          <>
+            <a className="mango-btn" href={baseUrl('tags')}>
+              {t('allTags')}
+            </a>
+            {isAdmin ? (
+              <button type="button" className="mango-btn" onClick={toggleShowHidden}>
+                {showHidden ? t('hideHidden') : t('showHidden')}
+              </button>
+            ) : null}
+          </>
+        }
+      />
 
-      {loading ? <LoadingState message="正在加载…" /> : null}
-      {error ? <ErrorState message={error} /> : null}
+      {loading ? <LoadingState message={t('loading')} /> : null}
+      {error ? (
+        <ErrorState message={error} onRetry={() => void load(showHidden)} retryLabel={t('retry')} />
+      ) : null}
       {!loading && !error && filtered.length === 0 ? (
-        <EmptyState message={query ? '未找到结果' : '该标签下没有漫画'} />
+        <EmptyState message={query ? t('noResults') : t('noMangaInTag')} />
       ) : null}
 
       {!loading && !error && filtered.length > 0 ? (
         <div className="mango-card-grid">
           {filtered.map((item) => (
-            <article
+            <PosterCard
               key={item.id}
-              className={`mango-card${item.hidden && showHidden ? ' mango-card--hidden' : ''}`}
-            >
-              <a className="mango-card__link" href={baseUrl(`book/${encodeURIComponent(item.id)}`)}>
-                <div className="mango-card__media">
-                  {item.cover_url ? (
-                    <img src={item.cover_url} alt="" loading="lazy" />
-                  ) : (
-                    <div className="mango-card__placeholder" />
-                  )}
-                </div>
-                <div className="mango-card__body">
-                  <h3 className="mango-card__title">{item.name}</h3>
-                  <p className="mango-card__meta">{item.entry_count} 项</p>
-                  {item.hidden && showHidden ? (
-                    <span className="mango-badge mango-badge--muted">已隐藏</span>
-                  ) : null}
-                </div>
-              </a>
-              {isAdmin ? (
-                <div className="mango-card__actions">
+              item={item}
+              showProgress={false}
+              actions={
+                isAdmin ? (
                   <button
                     type="button"
                     className="mango-btn mango-btn--danger"
                     disabled={busyId === item.id}
-                    onClick={() => void toggleHidden(item.id, item.hidden ? 0 : 1)}
+                    onClick={() => void toggleHidden(item)}
                   >
-                    {item.hidden ? '显示' : '隐藏'}
+                    {item.hidden ? t('show') : t('hide')}
                   </button>
-                </div>
-              ) : null}
-            </article>
+                ) : undefined
+              }
+            />
           ))}
         </div>
       ) : null}

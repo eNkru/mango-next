@@ -13,6 +13,21 @@
   --mango-font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --mango-font-comic: "Fredoka One", "Comic Sans MS", cursive, sans-serif;
   --mango-font-sound: "Bangers", Impact, "Arial Black", sans-serif;
+
+  /* Semantic */
+  --mango-on-accent: #ffffff;
+  --mango-danger: #d32f2f;
+  --mango-danger-hover: #b71c1c;
+  --mango-success: #2ecc40;
+  --mango-ink: #000000;
+
+  /* Immersive reader chrome (fixed dark; not theme-switched) */
+  --mango-reader-bg: #0a0a0a;
+  --mango-reader-fg: #f5f5f5;
+  --mango-reader-chrome: #111111;
+  --mango-reader-border: #333333;
+  --mango-reader-ghost-border: #555555;
+  --mango-reader-img-bg: #111111;
 }
 
 html.flat-theme-dark,
@@ -25,6 +40,8 @@ html.flat-theme.flat-theme-dark {
   --mango-text-primary: #ffffff;
   --mango-text-secondary: #b3b3b3;
   --mango-text-muted: #8a8a8a;
+  --mango-danger: #ef5350;
+  --mango-danger-hover: #e53935;
 }
 
 html.comic-theme,
@@ -38,6 +55,8 @@ html.comic-theme-dark {
   --mango-text-secondary: #2c2c2c;
   --mango-text-muted: #555555;
   --mango-radius: 0;
+  --mango-danger: #c62828;
+  --mango-danger-hover: #b71c1c;
 }
 
 html.comic-theme-dark {
@@ -46,6 +65,8 @@ html.comic-theme-dark {
   --mango-text-primary: #fffef0;
   --mango-text-secondary: #e0dcc8;
   --mango-text-muted: #b0aa98;
+  --mango-danger: #ef5350;
+  --mango-danger-hover: #e53935;
 }
 
 /* Local comic fonts are already served from /webfonts by Go. Use absolute

@@ -36,6 +36,44 @@ const messages = {
     themeLight: '浅色', themeDark: '深色', uiStyle: 'UI风格',
     uiStyleComic: 'Comic', uiStyleFlat: 'Flat',
     showMore: '展开更多', showLess: '收起',
+    // Login
+    loginWelcome: '欢迎回来', loginSubtitle: '登录到 Mango', username: '用户名',
+    password: '密码', usernamePlaceholder: '请输入用户名', passwordPlaceholder: '请输入密码',
+    showPassword: '显示', hidePassword: '隐藏', login: '登录', loggingIn: '登录中…',
+    loginFailed: '登录失败，请检查用户名和密码', loginFooter: 'Mango · 漫画服务器',
+    // Tags
+    tagsCount: '{count} 个标签', tagCount: '{count} 个标记', filterTags: '筛选标签…',
+    refresh: '刷新', noMatchingTags: '未找到匹配标签', noTagsYet: '还没有标签',
+    loadTagsFailed: '加载标签失败', allTags: '全部标签', findManga: '查找漫画…',
+    noMangaInTag: '该标签下没有漫画', missingTag: '缺少标签', loadTagFailed: '加载标签失败',
+    tagTitle: '标签: {tag}', hiddenDone: '已隐藏', shownDone: '已显示', actionFailed: '操作失败',
+    // Users
+    userListSubtitle: '创建、编辑和管理可登录用户', loadingUsers: '正在加载用户…',
+    noUsersYet: '还没有用户', newUser: '新用户', currentUser: '当前', yes: '是', no: '否',
+    delete: '删除', confirmDeleteUser: '确认删除用户？',
+    deleteUserMessage: '将删除用户 {username}。此操作不可撤销。',
+    userDeleted: '已删除用户 {username}', deleteFailed: '删除失败', loadUsersFailed: '加载用户失败',
+    adminPermission: '管理员权限', editUser: '编辑用户', createAccount: '创建可登录账户',
+    editUserSubtitle: '编辑 {username}', newPassword: '新密码', changePassword: '更改密码',
+    userCreated: '用户已创建', userUpdated: '用户已更新', saveFailed: '保存失败',
+    saving: '保存中…', backToList: '返回列表', loadUserFailed: '加载用户失败',
+    // Missing items
+    missingTitle: '缺失条目',
+    missingSubtitle: '资料库中记录存在，但磁盘上已找不到对应文件的项目',
+    loadingMissing: '正在加载缺失条目…',
+    noMissingItems: '没有找到丢失的条目，所有条目均正常',
+    missingHelp:
+      '以下项目存在于资料库元数据中，但现在找不到对应文件。若误删，请恢复文件后重新扫描；否则可删除元数据以释放数据库空间。',
+    deleteAll: '删除全部', type: '类型', relativePath: '相对路径', id: 'ID',
+    titleKind: '标题', pathKind: '路径', deleted: '已删除',
+    deletedAllMissing: '已删除全部缺失项', bulkDeleteFailed: '批量删除失败',
+    confirmDeleteAll: '确认删除全部？',
+    confirmDeleteAllMessage: '与这些项目相关的所有元数据，包括标签和缩略图，都将从数据库中删除。',
+    confirmDeleteAllYes: '是的，删除它们', loadFailed: '加载失败',
+    // Misc
+    unknownPage: '未知页面',
+    unknownPageMessage: '没有为 pageId={pageId} 注册的 React 页面',
+    missingTitleId: '缺少标题 ID',
   },
   'zh-tw': {
     home: '首頁', library: '資料庫', tags: '標籤', admin: '管理員', logout: '登出',
@@ -70,6 +108,39 @@ const messages = {
     themeLight: '淺色', themeDark: '深色', uiStyle: 'UI風格',
     uiStyleComic: 'Comic', uiStyleFlat: 'Flat',
     showMore: '展開更多', showLess: '收起',
+    loginWelcome: '歡迎回來', loginSubtitle: '登入到 Mango', username: '使用者名稱',
+    password: '密碼', usernamePlaceholder: '請輸入使用者名稱', passwordPlaceholder: '請輸入密碼',
+    showPassword: '顯示', hidePassword: '隱藏', login: '登入', loggingIn: '登入中…',
+    loginFailed: '登入失敗，請檢查使用者名稱和密碼', loginFooter: 'Mango · 漫畫伺服器',
+    tagsCount: '{count} 個標籤', tagCount: '{count} 個標記', filterTags: '篩選標籤…',
+    refresh: '重新整理', noMatchingTags: '未找到符合標籤', noTagsYet: '還沒有標籤',
+    loadTagsFailed: '載入標籤失敗', allTags: '全部標籤', findManga: '尋找漫畫…',
+    noMangaInTag: '該標籤下沒有漫畫', missingTag: '缺少標籤', loadTagFailed: '載入標籤失敗',
+    tagTitle: '標籤: {tag}', hiddenDone: '已隱藏', shownDone: '已顯示', actionFailed: '操作失敗',
+    userListSubtitle: '建立、編輯和管理可登入使用者', loadingUsers: '正在載入使用者…',
+    noUsersYet: '還沒有使用者', newUser: '新使用者', currentUser: '目前', yes: '是', no: '否',
+    delete: '刪除', confirmDeleteUser: '確認刪除使用者？',
+    deleteUserMessage: '將刪除使用者 {username}。此操作無法復原。',
+    userDeleted: '已刪除使用者 {username}', deleteFailed: '刪除失敗', loadUsersFailed: '載入使用者失敗',
+    adminPermission: '管理員權限', editUser: '編輯使用者', createAccount: '建立可登入帳戶',
+    editUserSubtitle: '編輯 {username}', newPassword: '新密碼', changePassword: '更改密碼',
+    userCreated: '使用者已建立', userUpdated: '使用者已更新', saveFailed: '儲存失敗',
+    saving: '儲存中…', backToList: '返回列表', loadUserFailed: '載入使用者失敗',
+    missingTitle: '缺失條目',
+    missingSubtitle: '資料庫中記錄存在，但磁碟上已找不到對應檔案的項目',
+    loadingMissing: '正在載入缺失條目…',
+    noMissingItems: '沒有找到遺失的條目，所有條目均正常',
+    missingHelp:
+      '以下項目存在於資料庫中繼資料中，但現在找不到對應檔案。若誤刪，請還原檔案後重新掃描；否則可刪除中繼資料以釋放資料庫空間。',
+    deleteAll: '刪除全部', type: '類型', relativePath: '相對路徑', id: 'ID',
+    titleKind: '標題', pathKind: '路徑', deleted: '已刪除',
+    deletedAllMissing: '已刪除全部缺失項', bulkDeleteFailed: '批量刪除失敗',
+    confirmDeleteAll: '確認刪除全部？',
+    confirmDeleteAllMessage: '與這些項目相關的所有中繼資料，包括標籤和縮圖，都將從資料庫中刪除。',
+    confirmDeleteAllYes: '是的，刪除它們', loadFailed: '載入失敗',
+    unknownPage: '未知頁面',
+    unknownPageMessage: '沒有為 pageId={pageId} 註冊的 React 頁面',
+    missingTitleId: '缺少標題 ID',
   },
   en: {
     home: 'Home', library: 'Library', tags: 'Tags', admin: 'Admin', logout: 'Log out',
@@ -104,33 +175,88 @@ const messages = {
     themeLight: 'Light', themeDark: 'Dark', uiStyle: 'UI style',
     uiStyleComic: 'Comic', uiStyleFlat: 'Flat',
     showMore: 'Show more', showLess: 'Show less',
+    loginWelcome: 'Welcome back', loginSubtitle: 'Sign in to Mango', username: 'Username',
+    password: 'Password', usernamePlaceholder: 'Enter username', passwordPlaceholder: 'Enter password',
+    showPassword: 'Show', hidePassword: 'Hide', login: 'Sign in', loggingIn: 'Signing in…',
+    loginFailed: 'Sign-in failed. Check username and password.', loginFooter: 'Mango · Manga server',
+    tagsCount: '{count} tags', tagCount: '{count} items', filterTags: 'Filter tags…',
+    refresh: 'Refresh', noMatchingTags: 'No matching tags', noTagsYet: 'No tags yet',
+    loadTagsFailed: 'Failed to load tags', allTags: 'All tags', findManga: 'Find manga…',
+    noMangaInTag: 'No manga under this tag', missingTag: 'Missing tag', loadTagFailed: 'Failed to load tag',
+    tagTitle: 'Tag: {tag}', hiddenDone: 'Hidden', shownDone: 'Shown', actionFailed: 'Action failed',
+    userListSubtitle: 'Create, edit, and manage sign-in users', loadingUsers: 'Loading users…',
+    noUsersYet: 'No users yet', newUser: 'New user', currentUser: 'You', yes: 'Yes', no: 'No',
+    delete: 'Delete', confirmDeleteUser: 'Delete this user?',
+    deleteUserMessage: 'Delete user {username}? This cannot be undone.',
+    userDeleted: 'Deleted user {username}', deleteFailed: 'Delete failed', loadUsersFailed: 'Failed to load users',
+    adminPermission: 'Administrator', editUser: 'Edit user', createAccount: 'Create a sign-in account',
+    editUserSubtitle: 'Edit {username}', newPassword: 'New password', changePassword: 'Change password',
+    userCreated: 'User created', userUpdated: 'User updated', saveFailed: 'Save failed',
+    saving: 'Saving…', backToList: 'Back to list', loadUserFailed: 'Failed to load user',
+    missingTitle: 'Missing entries',
+    missingSubtitle: 'Library records whose files are no longer on disk',
+    loadingMissing: 'Loading missing entries…',
+    noMissingItems: 'No missing entries — everything looks fine',
+    missingHelp:
+      'These items exist in library metadata but the files are gone. Restore the files and rescan, or delete the metadata to free database space.',
+    deleteAll: 'Delete all', type: 'Type', relativePath: 'Relative path', id: 'ID',
+    titleKind: 'Title', pathKind: 'Entry', deleted: 'Deleted',
+    deletedAllMissing: 'Deleted all missing items', bulkDeleteFailed: 'Bulk delete failed',
+    confirmDeleteAll: 'Delete everything?',
+    confirmDeleteAllMessage: 'All related metadata for these items, including tags and thumbnails, will be removed from the database.',
+    confirmDeleteAllYes: 'Yes, delete them', loadFailed: 'Load failed',
+    unknownPage: 'Unknown page',
+    unknownPageMessage: 'No React page registered for pageId={pageId}',
+    missingTitleId: 'Missing title id',
   },
 } as const;
 
 export type MessageKey = keyof typeof messages['zh-cn'];
-type I18nValue = { language: Language; setLanguage: (language: Language) => void; t: (key: MessageKey) => string };
+type I18nValue = {
+  language: Language;
+  setLanguage: (language: Language) => void;
+  t: (key: MessageKey, vars?: Record<string, string | number>) => string;
+};
 
-const I18nContext = createContext<I18nValue>({ language: 'zh-cn', setLanguage: () => undefined, t: (key) => messages['zh-cn'][key] });
+const I18nContext = createContext<I18nValue>({
+  language: 'zh-cn',
+  setLanguage: () => undefined,
+  t: (key) => messages['zh-cn'][key],
+});
 
 function storedLanguage(): Language {
   const value = localStorage.getItem('mango-language');
   return value === 'zh-tw' || value === 'en' ? value : 'zh-cn';
 }
 
+function formatMessage(template: string, vars?: Record<string, string | number>) {
+  if (!vars) return template;
+  return template.replace(/\{(\w+)\}/g, (_, name: string) =>
+    vars[name] !== undefined ? String(vars[name]) : `{${name}}`,
+  );
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(storedLanguage);
   const value = useMemo<I18nValue>(() => ({
     language,
-    setLanguage: (next) => { localStorage.setItem('mango-language', next); setLanguageState(next); },
-    t: (key) => messages[language][key] ?? messages['zh-cn'][key],
+    setLanguage: (next) => {
+      localStorage.setItem('mango-language', next);
+      setLanguageState(next);
+    },
+    t: (key, vars) =>
+      formatMessage(messages[language][key] ?? messages['zh-cn'][key], vars),
   }), [language]);
 
   useEffect(() => {
-    document.documentElement.lang = language === 'en' ? 'en' : language === 'zh-tw' ? 'zh-Hant' : 'zh-Hans';
+    document.documentElement.lang =
+      language === 'en' ? 'en' : language === 'zh-tw' ? 'zh-Hant' : 'zh-Hans';
     document.title = `Mango - ${messages[language].library}`;
   }, [language]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
-export function useI18n() { return useContext(I18nContext); }
+export function useI18n() {
+  return useContext(I18nContext);
+}

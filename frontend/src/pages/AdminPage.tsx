@@ -4,6 +4,7 @@ import { baseUrl } from '../lib/baseUrl';
 import { useI18n } from '../lib/i18n';
 import { pushAlert } from '../shell/AlertHost';
 import { AppShell } from '../shell/AppShell';
+import { ErrorState } from '../shell/StatePanels';
 
 type ScanProgress = {
   success?: boolean;
@@ -19,6 +20,11 @@ type ThumbProgress = {
   progress?: number;
 };
 
+type ActionError = {
+  kind: 'scan' | 'thumb';
+  message: string;
+};
+
 export function AdminPage() {
   const { t } = useI18n();
   const [scanning, setScanning] = useState(false);
@@ -26,6 +32,7 @@ export function AdminPage() {
   const [scanMs, setScanMs] = useState(-1);
   const [generating, setGenerating] = useState(false);
   const [thumbProgress, setThumbProgress] = useState(0);
+  const [actionError, setActionError] = useState<ActionError | null>(null);
 
   const pollScan = useCallback(async () => {
     try {
@@ -85,12 +92,16 @@ export function AdminPage() {
     if (scanning) return;
     setScanning(true);
     setScanMs(-1);
+    setActionError(null);
     try {
       await apiFetch('api/admin/scan', { method: 'POST' });
       await pollScan();
     } catch (err) {
       setScanning(false);
-      pushAlert(err instanceof Error ? err.message : t('scanFailed'), 'danger');
+      setActionError({
+        kind: 'scan',
+        message: err instanceof Error ? err.message : t('scanFailed'),
+      });
     }
   };
 
@@ -98,12 +109,16 @@ export function AdminPage() {
     if (generating) return;
     setGenerating(true);
     setThumbProgress(0);
+    setActionError(null);
     try {
       await apiFetch('api/admin/generate_thumbnails', { method: 'POST' });
       await pollThumb();
     } catch (err) {
       setGenerating(false);
-      pushAlert(err instanceof Error ? err.message : t('thumbFailed'), 'danger');
+      setActionError({
+        kind: 'thumb',
+        message: err instanceof Error ? err.message : t('thumbFailed'),
+      });
     }
   };
 
@@ -129,7 +144,7 @@ export function AdminPage() {
             {scanning
               ? t('scanning')
               : scanMs >= 0
-                ? t('scanResult').replace('{count}', String(scanTitles)).replace('{ms}', String(scanMs))
+                ? t('scanResult', { count: scanTitles, ms: scanMs })
                 : t('scanLibraryDesc')}
           </span>
         </button>
@@ -147,6 +162,15 @@ export function AdminPage() {
           </span>
         </button>
       </div>
+      {actionError ? (
+        <ErrorState
+          message={actionError.message}
+          onRetry={() =>
+            void (actionError.kind === 'scan' ? startScan() : startThumbnails())
+          }
+          retryLabel={t('retry')}
+        />
+      ) : null}
     </AppShell>
   );
 }

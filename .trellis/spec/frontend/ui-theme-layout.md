@@ -81,6 +81,33 @@ Migrated React routes boot comic/flat + light/dark markers on `<html>` from
 
 Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 
+## React design tokens (`frontend/src/styles/tokens.css`)
+
+| Token group | Purpose |
+|-------------|---------|
+| `--mango-accent*` / surfaces / text | Theme skins (flat/comic × light/dark) |
+| `--mango-danger` / `--mango-danger-hover` | Destructive buttons (not accent red) |
+| `--mango-success` | Success alert border |
+| `--mango-on-accent` | Primary button label color |
+| `--mango-ink` | Comic thick borders / offset shadows |
+| `--mango-reader-*` | Immersive reader chrome (fixed dark; **not** theme-switched) |
+
+### Buttons (React shell)
+
+- `.mango-btn--danger` uses danger tokens, not accent.
+- Comic: `.mango-btn` gets thick border + offset shadow (`--mango-ink`).
+- Ghost (reader): border uses `--mango-reader-ghost-border`.
+
+### Language control
+
+- Shared `LanguageSelect` in AppShell, Login, Reader top bar.
+- Key: `localStorage['mango-language']`.
+
+### Scaffold removed
+
+- Do **not** reintroduce `GET /admin/react-preview` / `PlaceholderPage` — foundation
+  playground was deleted after migration.
+
 ## Common mistakes
 
 | Wrong | Correct |
@@ -90,6 +117,9 @@ Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 | Library card height follows title wrap | Fixed 2-line title slot + stretch grid |
 | Change Flat accent when restyling comic | Scope comic only |
 | Continue-reading uses poster rail like start/recent | Hero + compact list (see above) |
+| TagDetail invents progress/modified sort | `BrowseToolbar modes={['natural','title']}` + `showProgress={false}` |
+| Primary/danger both use accent red | Danger uses `--mango-danger*` |
+| Re-add react-preview for “component playground” | Use real pages or a local story; route removed |
 
 ## Smoke checklist
 
@@ -98,3 +128,7 @@ Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 - [ ] toggle ui-style: class mutual exclusion
 - [ ] home continue-reading: hero + list (not poster rail); expand when >3 secondary rows
 - [ ] library cards equal height, sharp corners
+- [ ] comic buttons: thick border + shadow; danger distinct from accent
+- [ ] Login: language select works before session
+- [ ] TagDetail: PosterCard grid, no empty progress bars
+- [ ] Reader chrome: dark immersive; ghost/primary readable

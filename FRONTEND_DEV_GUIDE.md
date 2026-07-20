@@ -62,10 +62,6 @@ make build
 3. Shell loads `{{.BaseURL}}react/assets/main.css` and `main.js`.
 4. React reads boot config and mounts the page for `pageId`.
 
-Placeholder route used by the foundation task:
-
-- `GET /admin/react-preview` → `pageId: "react-preview"`
-
 ## Theme
 
 Comic/flat and light/dark markers are applied on `<html>` before paint in

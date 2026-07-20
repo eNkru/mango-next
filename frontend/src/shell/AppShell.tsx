@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { baseUrl } from '../lib/baseUrl';
 import { readBoot } from '../lib/boot';
-import { useI18n, type Language } from '../lib/i18n';
+import { useI18n } from '../lib/i18n';
 import {
   applyHtmlTheme,
   loadThemeSetting,
@@ -13,6 +13,7 @@ import {
   type UIStyle,
 } from '../lib/theme';
 import { AlertHost } from './AlertHost';
+import { LanguageSelect } from './LanguageSelect';
 
 type AppShellProps = {
   title: string;
@@ -21,7 +22,7 @@ type AppShellProps = {
 };
 
 export function AppShell({ title, subtitle, children }: AppShellProps) {
-  const { language, setLanguage, t } = useI18n();
+  const { language, t } = useI18n();
   const boot = readBoot();
   const [theme, setTheme] = useState<ThemeSetting>(loadThemeSetting);
   const [uiStyle, setUiStyle] = useState<UIStyle>(loadUIStyle);
@@ -92,18 +93,7 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
               <option value="flat">{t('uiStyleFlat')}</option>
             </select>
           </label>
-          <label className="mango-language">
-            <span className="sr-only">{t('language')}</span>
-            <select
-              value={language}
-              onChange={(event) => setLanguage(event.target.value as Language)}
-              aria-label={t('language')}
-            >
-              <option value="zh-cn">简体中文</option>
-              <option value="zh-tw">繁體中文</option>
-              <option value="en">English</option>
-            </select>
-          </label>
+          <LanguageSelect />
           <a className="mango-topbar__logout" href={baseUrl('logout')}>
             {t('logout')}
           </a>

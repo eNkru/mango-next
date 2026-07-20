@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Comic/flat dual shell, topbar, poster geometry, continue-reading layout contracts"}
+{"file": ".trellis/spec/frontend/react-reader.md", "reason": "Reader chrome immersion rules; token-only changes must preserve behavior"}
+{"file": ".trellis/spec/frontend/react-admin.md", "reason": "Admin cards + scan/thumb polling patterns for action-error UI"}
+{"file": ".trellis/tasks/07-20-ui-consistency/prd.md", "reason": "Locked requirements R1–R8 and acceptance criteria"}
+{"file": ".trellis/tasks/07-20-ui-consistency/design.md", "reason": "Component contracts, tokens, adapter, form markup"}
+{"file": ".trellis/tasks/07-20-ui-consistency/implement.md", "reason": "Ordered checklist and validation commands"}

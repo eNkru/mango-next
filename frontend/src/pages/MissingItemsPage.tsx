@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
+import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { ConfirmDialog } from '../shell/ConfirmDialog';
 import { pushAlert } from '../shell/AlertHost';
@@ -23,6 +24,7 @@ type EntriesResponse = {
 };
 
 export function MissingItemsPage() {
+  const { t } = useI18n();
   const [titles, setTitles] = useState<MissingItem[]>([]);
   const [entries, setEntries] = useState<MissingItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,13 +41,13 @@ export function MissingItemsPage() {
       setTitles(titlesRes.titles ?? []);
       setEntries(entriesRes.entries ?? []);
     } catch (err) {
-      const message = err instanceof Error ? err.message : '加载失败';
+      const message = err instanceof Error ? err.message : t('loadFailed');
       setError(message);
       pushAlert(message, 'danger');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -59,10 +61,10 @@ export function MissingItemsPage() {
           ? `api/admin/titles/missing/${encodeURIComponent(id)}`
           : `api/admin/entries/missing/${encodeURIComponent(id)}`;
       await apiFetch(path, { method: 'DELETE' });
-      pushAlert('已删除', 'success');
+      pushAlert(t('deleted'), 'success');
       await load();
     } catch (err) {
-      pushAlert(err instanceof Error ? err.message : '删除失败', 'danger');
+      pushAlert(err instanceof Error ? err.message : t('deleteFailed'), 'danger');
     } finally {
       setBusy(false);
     }
@@ -73,10 +75,10 @@ export function MissingItemsPage() {
     try {
       await apiFetch('api/admin/titles/missing', { method: 'DELETE' });
       await apiFetch('api/admin/entries/missing', { method: 'DELETE' });
-      pushAlert('已删除全部缺失项', 'success');
+      pushAlert(t('deletedAllMissing'), 'success');
       await load();
     } catch (err) {
-      pushAlert(err instanceof Error ? err.message : '批量删除失败', 'danger');
+      pushAlert(err instanceof Error ? err.message : t('bulkDeleteFailed'), 'danger');
     } finally {
       setBusy(false);
       setConfirmBulk(false);
@@ -86,20 +88,16 @@ export function MissingItemsPage() {
   const empty = !loading && !error && titles.length === 0 && entries.length === 0;
 
   return (
-    <AppShell
-      title="缺失条目"
-      subtitle="资料库中记录存在，但磁盘上已找不到对应文件的项目"
-    >
-      {loading ? <LoadingState message="正在加载缺失条目…" /> : null}
-      {error ? <ErrorState message={error} /> : null}
-      {empty ? <EmptyState message="没有找到丢失的条目，所有条目均正常" /> : null}
+    <AppShell title={t('missingTitle')} subtitle={t('missingSubtitle')}>
+      {loading ? <LoadingState message={t('loadingMissing')} /> : null}
+      {error ? (
+        <ErrorState message={error} onRetry={() => void load()} retryLabel={t('retry')} />
+      ) : null}
+      {empty ? <EmptyState message={t('noMissingItems')} /> : null}
 
       {!loading && !error && !empty ? (
         <section className="mango-panel">
-          <p style={{ color: 'var(--mango-text-muted)', lineHeight: 1.6 }}>
-            以下项目存在于资料库元数据中，但现在找不到对应文件。若误删，请恢复文件后重新扫描；
-            否则可删除元数据以释放数据库空间。
-          </p>
+          <p className="mango-muted-copy">{t('missingHelp')}</p>
           <div className="mango-actions">
             <button
               type="button"
@@ -107,28 +105,28 @@ export function MissingItemsPage() {
               disabled={busy}
               onClick={() => setConfirmBulk(true)}
             >
-              删除全部
+              {t('deleteAll')}
             </button>
             <button type="button" className="mango-btn" disabled={busy} onClick={() => void load()}>
-              刷新
+              {t('refresh')}
             </button>
           </div>
 
-          <div style={{ overflowX: 'auto', marginTop: '1rem' }}>
+          <div className="mango-scroll-x mango-mt-1">
             <table className="mango-table">
               <thead>
                 <tr>
-                  <th>类型</th>
-                  <th>相对路径</th>
-                  <th>ID</th>
-                  <th>操作</th>
+                  <th>{t('type')}</th>
+                  <th>{t('relativePath')}</th>
+                  <th>{t('id')}</th>
+                  <th>{t('actions')}</th>
                 </tr>
               </thead>
               <tbody>
                 {titles.map((item) => (
                   <tr key={`title-${item.id}`}>
                     <td>
-                      <span className="mango-badge">标题</span>
+                      <span className="mango-badge">{t('titleKind')}</span>
                     </td>
                     <td>{item.path}</td>
                     <td>
@@ -141,7 +139,7 @@ export function MissingItemsPage() {
                         disabled={busy}
                         onClick={() => void removeOne('title', item.id)}
                       >
-                        删除
+                        {t('delete')}
                       </button>
                     </td>
                   </tr>
@@ -149,7 +147,7 @@ export function MissingItemsPage() {
                 {entries.map((item) => (
                   <tr key={`entry-${item.id}`}>
                     <td>
-                      <span className="mango-badge mango-badge--muted">路径</span>
+                      <span className="mango-badge mango-badge--muted">{t('pathKind')}</span>
                     </td>
                     <td>{item.path}</td>
                     <td>
@@ -162,7 +160,7 @@ export function MissingItemsPage() {
                         disabled={busy}
                         onClick={() => void removeOne('entry', item.id)}
                       >
-                        删除
+                        {t('delete')}
                       </button>
                     </td>
                   </tr>
@@ -175,10 +173,10 @@ export function MissingItemsPage() {
 
       <ConfirmDialog
         open={confirmBulk}
-        title="确认删除全部？"
-        message="与这些项目相关的所有元数据，包括标签和缩略图，都将从数据库中删除。"
-        confirmLabel="是的，删除它们"
-        cancelLabel="取消"
+        title={t('confirmDeleteAll')}
+        message={t('confirmDeleteAllMessage')}
+        confirmLabel={t('confirmDeleteAllYes')}
+        cancelLabel={t('cancel')}
         onCancel={() => setConfirmBulk(false)}
         onConfirm={() => void removeAll()}
       />
