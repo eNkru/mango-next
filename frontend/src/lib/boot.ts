@@ -21,8 +21,8 @@ export type MangoBoot = {
 
 const DEFAULT_BOOT: MangoBoot = {
   baseUrl: '/',
-  pageId: 'react-preview',
-  pageName: 'react-preview',
+  pageId: 'home',
+  pageName: 'home',
   isAdmin: true,
   version: 'dev',
 };

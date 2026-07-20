@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import { baseUrl } from '../lib/baseUrl';
+import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { ConfirmDialog } from '../shell/ConfirmDialog';
 import { pushAlert } from '../shell/AlertHost';
@@ -19,6 +20,7 @@ type UsersResponse = {
 };
 
 export function UserListPage() {
+  const { t } = useI18n();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [currentUsername, setCurrentUsername] = useState('');
   const [loading, setLoading] = useState(true);
@@ -34,13 +36,13 @@ export function UserListPage() {
       setUsers(res.users ?? []);
       setCurrentUsername(res.current_username ?? '');
     } catch (err) {
-      const message = err instanceof Error ? err.message : '加载用户失败';
+      const message = err instanceof Error ? err.message : t('loadUsersFailed');
       setError(message);
       pushAlert(message, 'danger');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -52,11 +54,11 @@ export function UserListPage() {
       await apiFetch(`api/admin/user/delete/${encodeURIComponent(username)}`, {
         method: 'DELETE',
       });
-      pushAlert(`已删除用户 ${username}`, 'success');
+      pushAlert(t('userDeleted', { username }), 'success');
       setPendingDelete(null);
       await load();
     } catch (err) {
-      pushAlert(err instanceof Error ? err.message : '删除失败', 'danger');
+      pushAlert(err instanceof Error ? err.message : t('deleteFailed'), 'danger');
     } finally {
       setBusy(false);
     }
@@ -65,30 +67,32 @@ export function UserListPage() {
   const empty = !loading && !error && users.length === 0;
 
   return (
-    <AppShell title="用户管理" subtitle="创建、编辑和管理可登录用户">
-      {loading ? <LoadingState message="正在加载用户…" /> : null}
-      {error ? <ErrorState message={error} /> : null}
-      {empty ? <EmptyState message="还没有用户" /> : null}
+    <AppShell title={t('userManagement')} subtitle={t('userListSubtitle')}>
+      {loading ? <LoadingState message={t('loadingUsers')} /> : null}
+      {error ? (
+        <ErrorState message={error} onRetry={() => void load()} retryLabel={t('retry')} />
+      ) : null}
+      {empty ? <EmptyState message={t('noUsersYet')} /> : null}
 
       {!loading && !error ? (
         <section className="mango-panel">
-          <div className="mango-actions" style={{ marginTop: 0, marginBottom: '1rem' }}>
+          <div className="mango-actions mango-actions--stack-sm">
             <a className="mango-btn mango-btn--primary" href={baseUrl('admin/user/edit')}>
-              新用户
+              {t('newUser')}
             </a>
             <button type="button" className="mango-btn" disabled={busy} onClick={() => void load()}>
-              刷新
+              {t('refresh')}
             </button>
           </div>
 
           {users.length > 0 ? (
-            <div style={{ overflowX: 'auto' }}>
+            <div className="mango-scroll-x">
               <table className="mango-table">
                 <thead>
                   <tr>
-                    <th>用户名</th>
-                    <th>管理员权限</th>
-                    <th>操作</th>
+                    <th>{t('username')}</th>
+                    <th>{t('adminPermission')}</th>
+                    <th>{t('actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -99,27 +103,25 @@ export function UserListPage() {
                         <td>
                           <strong>{user.username}</strong>
                           {isSelf ? (
-                            <span className="mango-badge" style={{ marginLeft: '0.5rem' }}>
-                              当前
-                            </span>
+                            <span className="mango-badge mango-ml-2">{t('currentUser')}</span>
                           ) : null}
                         </td>
                         <td>
                           {user.admin ? (
-                            <span className="mango-badge">是</span>
+                            <span className="mango-badge">{t('yes')}</span>
                           ) : (
-                            <span className="mango-badge mango-badge--muted">否</span>
+                            <span className="mango-badge mango-badge--muted">{t('no')}</span>
                           )}
                         </td>
                         <td>
-                          <div className="mango-actions" style={{ marginTop: 0 }}>
+                          <div className="mango-actions mango-actions--flush">
                             <a
                               className="mango-btn"
                               href={baseUrl(
                                 `admin/user/edit?username=${encodeURIComponent(user.username)}`,
                               )}
                             >
-                              编辑
+                              {t('edit')}
                             </a>
                             {!isSelf ? (
                               <button
@@ -128,7 +130,7 @@ export function UserListPage() {
                                 disabled={busy}
                                 onClick={() => setPendingDelete(user.username)}
                               >
-                                删除
+                                {t('delete')}
                               </button>
                             ) : null}
                           </div>
@@ -145,14 +147,12 @@ export function UserListPage() {
 
       <ConfirmDialog
         open={pendingDelete !== null}
-        title="确认删除用户？"
+        title={t('confirmDeleteUser')}
         message={
-          pendingDelete
-            ? `将删除用户 ${pendingDelete}。此操作不可撤销。`
-            : ''
+          pendingDelete ? t('deleteUserMessage', { username: pendingDelete }) : ''
         }
-        confirmLabel="删除"
-        cancelLabel="取消"
+        confirmLabel={t('delete')}
+        cancelLabel={t('cancel')}
         onCancel={() => setPendingDelete(null)}
         onConfirm={() => {
           if (pendingDelete) void removeUser(pendingDelete);

@@ -3,7 +3,6 @@ import { LoginPage } from './pages/LoginPage';
 import { HomePage } from './pages/HomePage';
 import { LibraryPage } from './pages/LibraryPage';
 import { MissingItemsPage } from './pages/MissingItemsPage';
-import { PlaceholderPage } from './pages/PlaceholderPage';
 import { TagDetailPage } from './pages/TagDetailPage';
 import { TagsIndexPage } from './pages/TagsIndexPage';
 import { UserEditPage } from './pages/UserEditPage';
@@ -12,14 +11,14 @@ import { TitleDetailPage } from './pages/TitleDetailPage';
 import { AdminPage } from './pages/AdminPage';
 import { ReaderPage } from './pages/reader/ReaderPage';
 import { AppShell } from './shell/AppShell';
+import { useI18n } from './lib/i18n';
 import { ErrorState } from './shell/StatePanels';
 
 export function App() {
   const boot = readBoot();
+  const { t } = useI18n();
 
   switch (boot.pageId) {
-    case 'react-preview':
-      return <PlaceholderPage />;
     case 'login':
       return <LoginPage />;
     case 'home':
@@ -44,8 +43,8 @@ export function App() {
       return <TagDetailPage />;
     default:
       return (
-        <AppShell title="未知页面" subtitle={boot.pageId}>
-          <ErrorState message={`No React page registered for pageId=${boot.pageId}`} />
+        <AppShell title={t('unknownPage')} subtitle={boot.pageId}>
+          <ErrorState message={t('unknownPageMessage', { pageId: boot.pageId })} />
         </AppShell>
       );
   }

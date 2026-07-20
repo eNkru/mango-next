@@ -23,9 +23,17 @@ GET  /api/admin/thumbnail_progress
 - Scan/thumb: start then poll ~1s while `running`; show last titles/ms or %.
 - Theme/UI style: AppShell globals; keys and class rules in `ui-theme-layout.md`.
 - Keep `admin.tmpl` / `admin.js` until explicit retirement.
+- **No full-page LoadingState** (admin is an action panel, not a data list).
+- Scan / generate_thumbnails **start** failures: set `actionError` and render
+  `ErrorState` with `onRetry` re-running that action (prefer ErrorState over a
+  duplicate danger alert for the same failure). Mid-run poll errors may still
+  use `pushAlert`.
 
 ## 4. Wrong vs Correct
 
 Wrong: wrap admin in immersive reader chrome or link half-migrated admin routes.
 
-Correct: `AppShell` + already-React destinations only.
+Wrong: force a whole-page LoadingState on first paint just to “match other pages”.
+
+Correct: `AppShell` + already-React destinations only; action failures use
+`ErrorState` + `onRetry` under the card grid.

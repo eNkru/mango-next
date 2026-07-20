@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Theme regression smoke checklist (comic/flat × light/dark)"}
+{"file": ".trellis/spec/frontend/react-reader.md", "reason": "Reader chrome visual non-regression after token extraction"}
+{"file": ".trellis/spec/frontend/react-admin.md", "reason": "Admin scan/thumb status expectations vs ErrorState addition"}
+{"file": ".trellis/tasks/07-20-ui-consistency/prd.md", "reason": "Acceptance criteria checklist"}
+{"file": ".trellis/tasks/07-20-ui-consistency/design.md", "reason": "API contracts to verify (modes, showProgress, onRetry)"}
+{"file": ".trellis/tasks/07-20-ui-consistency/implement.md", "reason": "Validation commands and grep gates"}

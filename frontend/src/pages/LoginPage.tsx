@@ -1,7 +1,9 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import { readBoot } from '../lib/boot';
+import { useI18n } from '../lib/i18n';
 import { resolvePostLoginHref, safeRedirectPath } from '../lib/safeRedirect';
+import { LanguageSelect } from '../shell/LanguageSelect';
 
 type LoginResponse = {
   success?: boolean;
@@ -11,6 +13,7 @@ type LoginResponse = {
 };
 
 export function LoginPage() {
+  const { t } = useI18n();
   const boot = useMemo(() => readBoot(), []);
   const callback = useMemo(() => {
     if (boot.callback) return safeRedirectPath(boot.callback);
@@ -35,7 +38,7 @@ export function LoginPage() {
       });
       window.location.assign(resolvePostLoginHref(boot.baseUrl, callback));
     } catch {
-      setError('登录失败，请检查用户名和密码');
+      setError(t('loginFailed'));
       setBusy(false);
     }
   };
@@ -44,8 +47,8 @@ export function LoginPage() {
     <div className="mango-login">
       <div className="mango-login__card">
         <header className="mango-login__header">
-          <h1>欢迎回来</h1>
-          <p>登录到 Mango</p>
+          <h1>{t('loginWelcome')}</h1>
+          <p>{t('loginSubtitle')}</p>
         </header>
         <form className="mango-login__form" onSubmit={(e) => void onSubmit(e)}>
           {error ? (
@@ -53,10 +56,9 @@ export function LoginPage() {
               {error}
             </div>
           ) : null}
-          <div className="mango-field">
-            <label htmlFor="username">用户名</label>
+          <label className="mango-field">
+            <span>{t('username')}</span>
             <input
-              id="username"
               className="mango-input"
               name="username"
               type="text"
@@ -65,14 +67,13 @@ export function LoginPage() {
               onChange={(e) => setUsername(e.target.value)}
               required
               disabled={busy}
-              placeholder="请输入用户名"
+              placeholder={t('usernamePlaceholder')}
             />
-          </div>
-          <div className="mango-field">
-            <label htmlFor="password">密码</label>
+          </label>
+          <label className="mango-field">
+            <span>{t('password')}</span>
             <div className="mango-login__password-row">
               <input
-                id="password"
                 className="mango-input"
                 name="password"
                 type={showPassword ? 'text' : 'password'}
@@ -81,29 +82,30 @@ export function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={busy}
-                placeholder="请输入密码"
+                placeholder={t('passwordPlaceholder')}
               />
               <button
                 type="button"
                 className="mango-login__toggle"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? '隐藏密码' : '显示密码'}
+                aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                 disabled={busy}
               >
-                {showPassword ? '隐藏' : '显示'}
+                {showPassword ? t('hidePassword') : t('showPassword')}
               </button>
             </div>
-          </div>
+          </label>
           <button
             className="mango-btn mango-btn--primary mango-login__submit"
             type="submit"
             disabled={busy || !username || !password}
           >
-            {busy ? '登录中…' : '登录'}
+            {busy ? t('loggingIn') : t('login')}
           </button>
         </form>
         <footer className="mango-login__footer">
-          <p>Mango · 漫画服务器</p>
+          <LanguageSelect />
+          <p>{t('loginFooter')}</p>
         </footer>
       </div>
     </div>

@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 21
-- **Last Active**: 2026-07-20
+- **Total Sessions**: 22
+- **Last Active**: 2026-07-21
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~775 | Active |
+| `journal-1.md` | ~808 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 22 | 2026-07-21 | UI consistency audit and fix | `c18bb42` | `feat/ui-consistency` |
 | 21 | 2026-07-20 | 主页继续阅读布局优化 | `4502f11` | `main` |
 | 20 | 2026-07-20 | Close React Vite frontend migration parent | `0df3d30` | `feature/remove-plugin-apis` |
 | 19 | 2026-07-20 | Remove plugin/subscription APIs | `04c4f37` | `feature/remove-plugin-apis` |

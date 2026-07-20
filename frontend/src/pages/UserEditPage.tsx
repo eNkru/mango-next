@@ -2,10 +2,13 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import { baseUrl } from '../lib/baseUrl';
 import { readBoot } from '../lib/boot';
+import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
+import { ErrorState, LoadingState } from '../shell/StatePanels';
 
 export function UserEditPage() {
+  const { t } = useI18n();
   const boot = useMemo(() => readBoot(), []);
   const originalUsername = useMemo(() => {
     if (boot.username) return boot.username;
@@ -20,11 +23,15 @@ export function UserEditPage() {
   const [showPassword, setShowPassword] = useState(isNew);
   const [busy, setBusy] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(isNew);
+  const [loadNonce, setLoadNonce] = useState(0);
 
   useEffect(() => {
     if (isNew) return;
     let cancelled = false;
+    setLoaded(false);
+    setLoadError(null);
     void (async () => {
       try {
         const res = await apiFetch<{
@@ -38,8 +45,8 @@ export function UserEditPage() {
         }
       } catch (err) {
         if (cancelled) return;
-        const message = err instanceof Error ? err.message : '加载用户失败';
-        setFormError(message);
+        const message = err instanceof Error ? err.message : t('loadUserFailed');
+        setLoadError(message);
         pushAlert(message, 'danger');
       } finally {
         if (!cancelled) setLoaded(true);
@@ -48,7 +55,7 @@ export function UserEditPage() {
     return () => {
       cancelled = true;
     };
-  }, [isNew, originalUsername]);
+  }, [isNew, originalUsername, t, loadNonce]);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -64,7 +71,7 @@ export function UserEditPage() {
             admin,
           }),
         });
-        pushAlert('用户已创建', 'success');
+        pushAlert(t('userCreated'), 'success');
       } else {
         await apiFetch(`api/admin/users/${encodeURIComponent(originalUsername)}`, {
           method: 'PUT',
@@ -74,11 +81,11 @@ export function UserEditPage() {
             admin,
           }),
         });
-        pushAlert('用户已更新', 'success');
+        pushAlert(t('userUpdated'), 'success');
       }
       window.location.href = baseUrl('admin/user');
     } catch (err) {
-      const message = err instanceof Error ? err.message : '保存失败';
+      const message = err instanceof Error ? err.message : t('saveFailed');
       setFormError(message);
       pushAlert(message, 'danger');
       setBusy(false);
@@ -87,30 +94,35 @@ export function UserEditPage() {
 
   return (
     <AppShell
-      title={isNew ? '新用户' : '编辑用户'}
-      subtitle={isNew ? '创建可登录账户' : `编辑 ${originalUsername}`}
+      title={isNew ? t('newUser') : t('editUser')}
+      subtitle={isNew ? t('createAccount') : t('editUserSubtitle', { username: originalUsername })}
     >
       <section className="mango-panel">
-        {!loaded ? <p>加载中…</p> : null}
-        {loaded ? (
+        {!loaded ? <LoadingState message={t('loading')} /> : null}
+        {loaded && loadError ? (
+          <ErrorState
+            message={loadError}
+            onRetry={() => setLoadNonce((n) => n + 1)}
+            retryLabel={t('retry')}
+          />
+        ) : null}
+        {loaded && !loadError ? (
           <form className="mango-form" onSubmit={(e) => void onSubmit(e)}>
-            <div className="mango-field">
-              <label htmlFor="username">用户名</label>
+            <label className="mango-field">
+              <span>{t('username')}</span>
               <input
-                id="username"
                 className="mango-input"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 autoComplete="username"
               />
-            </div>
+            </label>
 
             {isNew || showPassword ? (
-              <div className="mango-field">
-                <label htmlFor="password">{isNew ? '密码' : '新密码'}</label>
+              <label className="mango-field">
+                <span>{isNew ? t('password') : t('newPassword')}</span>
                 <input
-                  id="password"
                   className="mango-input"
                   type="password"
                   value={password}
@@ -118,43 +130,32 @@ export function UserEditPage() {
                   required={isNew}
                   autoComplete="new-password"
                 />
-              </div>
+              </label>
             ) : (
-              <div className="mango-actions" style={{ marginTop: 0 }}>
-                <button
-                  type="button"
-                  className="mango-btn"
-                  onClick={() => setShowPassword(true)}
-                >
-                  更改密码
+              <div className="mango-actions mango-actions--flush">
+                <button type="button" className="mango-btn" onClick={() => setShowPassword(true)}>
+                  {t('changePassword')}
                 </button>
               </div>
             )}
 
-            <div className="mango-field mango-field--inline">
-              <label htmlFor="admin">
-                <input
-                  id="admin"
-                  type="checkbox"
-                  checked={admin}
-                  onChange={(e) => setAdmin(e.target.checked)}
-                />{' '}
-                管理员权限
-              </label>
-            </div>
+            <label className="mango-field mango-field--inline">
+              <input
+                type="checkbox"
+                checked={admin}
+                onChange={(e) => setAdmin(e.target.checked)}
+              />
+              <span>{t('adminPermission')}</span>
+            </label>
 
-            {formError ? (
-              <p className="mango-state mango-state--error" role="alert">
-                {formError}
-              </p>
-            ) : null}
+            {formError ? <ErrorState message={formError} /> : null}
 
             <div className="mango-actions">
               <button type="submit" className="mango-btn mango-btn--primary" disabled={busy}>
-                {busy ? '保存中…' : '保存'}
+                {busy ? t('saving') : t('save')}
               </button>
               <a className="mango-btn" href={baseUrl('admin/user')}>
-                返回列表
+                {t('backToList')}
               </a>
             </div>
           </form>

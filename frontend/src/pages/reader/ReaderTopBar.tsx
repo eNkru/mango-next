@@ -1,6 +1,6 @@
-import type { Language } from '../../lib/i18n';
 import { useI18n } from '../../lib/i18n';
 import { baseUrl } from '../../lib/baseUrl';
+import { LanguageSelect } from '../../shell/LanguageSelect';
 
 type Props = {
   visible: boolean;
@@ -25,7 +25,7 @@ export function ReaderTopBar({
   onPointerEnter,
   onPointerLeave,
 }: Props) {
-  const { language, setLanguage, t } = useI18n();
+  const { t } = useI18n();
   const pct = pages > 0 ? ((page / pages) * 100).toFixed(1) : '0.0';
 
   return (
@@ -49,18 +49,7 @@ export function ReaderTopBar({
         </span>
       </div>
       <div className="mango-reader-topbar__right">
-        <label className="mango-language">
-          <span className="sr-only">{t('language')}</span>
-          <select
-            value={language}
-            onChange={(event) => setLanguage(event.target.value as Language)}
-            aria-label={t('language')}
-          >
-            <option value="zh-cn">简体中文</option>
-            <option value="zh-tw">繁體中文</option>
-            <option value="en">English</option>
-          </select>
-        </label>
+        <LanguageSelect />
         <a className="mango-btn mango-btn--primary" href={exitUrl || baseUrl()}>
           {t('exitReader')}
         </a>

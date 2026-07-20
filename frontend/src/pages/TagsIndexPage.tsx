@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import { baseUrl } from '../lib/baseUrl';
+import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
 import { EmptyState, ErrorState, LoadingState } from '../shell/StatePanels';
@@ -16,6 +17,7 @@ type TagsIndexResponse = {
 };
 
 export function TagsIndexPage() {
+  const { t } = useI18n();
   const [tags, setTags] = useState<TagInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,13 +30,13 @@ export function TagsIndexPage() {
       const res = await apiFetch<TagsIndexResponse>('api/tags/index');
       setTags(res.tags ?? []);
     } catch (err) {
-      const message = err instanceof Error ? err.message : '加载标签失败';
+      const message = err instanceof Error ? err.message : t('loadTagsFailed');
       setError(message);
       pushAlert(message, 'danger');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -43,33 +45,34 @@ export function TagsIndexPage() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return tags;
-    return tags.filter((t) => t.tag.toLowerCase().includes(q));
+    return tags.filter((item) => item.tag.toLowerCase().includes(q));
   }, [query, tags]);
 
   return (
-    <AppShell title="标签" subtitle={`${tags.length} 个标签`}>
-      {loading ? <LoadingState message="正在加载标签…" /> : null}
-      {error ? <ErrorState message={error} /> : null}
+    <AppShell title={t('tags')} subtitle={t('tagsCount', { count: tags.length })}>
+      {loading ? <LoadingState message={t('loading')} /> : null}
+      {error ? (
+        <ErrorState message={error} onRetry={() => void load()} retryLabel={t('retry')} />
+      ) : null}
 
       {!loading && !error ? (
         <section className="mango-panel">
-          <div className="mango-actions" style={{ marginTop: 0, marginBottom: '1rem' }}>
+          <div className="mango-actions mango-actions--stack-sm">
             <input
-              className="mango-input"
-              style={{ maxWidth: '18rem' }}
+              className="mango-input mango-max-w-search"
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="筛选标签…"
-              aria-label="筛选标签"
+              placeholder={t('filterTags')}
+              aria-label={t('filterTags')}
             />
             <button type="button" className="mango-btn" onClick={() => void load()}>
-              刷新
+              {t('refresh')}
             </button>
           </div>
 
           {filtered.length === 0 ? (
-            <EmptyState message={query ? '未找到匹配标签' : '还没有标签'} />
+            <EmptyState message={query ? t('noMatchingTags') : t('noTagsYet')} />
           ) : (
             <div className="mango-tag-cloud">
               {filtered.map((item) => (
