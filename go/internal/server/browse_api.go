@@ -21,7 +21,7 @@ type browseTitle struct {
 	Progress    float64  `json:"progress"`
 	ModifiedAt  int64    `json:"modified_at"`
 	Hidden      bool     `json:"hidden"`
-	Tags        []string `json:"tags,omitempty"`
+	Tags        []string `json:"tags"`
 }
 
 type browseEntry struct {
@@ -255,7 +255,7 @@ func progressPercent(page, pages int) float64 {
 }
 
 func (s *Server) browseParents(parentID string) []browseTitle {
-	var reverse []browseTitle
+	reverse := make([]browseTitle, 0)
 	for parentID != "" {
 		item, ok := s.browseTitle(parentID, "")
 		if !ok {
