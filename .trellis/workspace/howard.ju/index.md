@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 26
+- **Total Sessions**: 27
 - **Last Active**: 2026-07-21
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~940 | Active |
+| `journal-1.md` | ~973 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 27 | 2026-07-21 | Continue-stack focus polish | `69dad29` | `polish/continue-stack-focus` |
 | 26 | 2026-07-21 | Continue-reading stack deck + home rails | `4503d8d` | `feat/continue-read-carousel` |
 | 25 | 2026-07-21 | Vite dev proxy + wordmark style | `f678645` | `main` |
 | 24 | 2026-07-21 | Unify comic UI font stack | `48d0660` | `main` |

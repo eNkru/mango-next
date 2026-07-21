@@ -938,3 +938,36 @@ Shipped circular stacked continue-reading deck, poster-rail arrows without scrol
 ### Next Steps
 
 - None - task complete
+
+
+## Session 27: Continue-stack focus polish
+
+**Date**: 2026-07-21
+**Task**: Continue-stack focus polish
+**Branch**: `polish/continue-stack-focus`
+
+### Summary
+
+Solid 3px accent border on active continue card; viewport-scaled stack peeks; PR #56.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `69dad29` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
