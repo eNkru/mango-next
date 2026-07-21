@@ -1564,3 +1564,109 @@ html.comic-theme-dark .mango-admin-card {
   align-items: center;
   gap: 0.5rem;
 }
+
+/* ---------- Title detail UI polish ---------- */
+
+.mango-title-cover--hover {
+  overflow: hidden;
+}
+
+.mango-title-cover--hover img {
+  transition: transform 0.2s ease;
+}
+
+.mango-title-cover--hover img:hover {
+  transform: scale(1.03);
+}
+
+.mango-reading-summary {
+  margin: 0.25rem 0 0.15rem;
+  color: var(--mango-text-secondary);
+  font-size: 0.92rem;
+}
+
+.mango-file-name--dim {
+  margin: 0.3rem 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--mango-text-muted);
+}
+
+.mango-entry-count {
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--mango-text-muted);
+}
+
+.mango-entry-summary {
+  margin: 0.75rem 0 0;
+  color: var(--mango-text-muted);
+  font-size: 0.85rem;
+}
+
+.mango-jump-select {
+  width: auto;
+  min-width: 10rem;
+  max-width: 16rem;
+  align-self: end;
+}
+
+.mango-browse-section--divided {
+  padding-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--mango-border);
+}
+
+html.comic-theme .mango-browse-section--divided,
+html.comic-theme-dark .mango-browse-section--divided {
+  border-bottom-width: 3px;
+  border-bottom-color: #000;
+}
+
+.mango-entry-group {
+  margin-bottom: 0.25rem;
+}
+
+.mango-entry-group__header {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--mango-border);
+  border-radius: var(--mango-radius);
+  background: var(--mango-bg-surface);
+  color: var(--mango-text-primary);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+}
+
+.mango-entry-group__header:hover {
+  border-color: var(--mango-accent);
+  color: var(--mango-accent);
+}
+
+.mango-entry-group__count {
+  margin-left: 0.4rem;
+  color: var(--mango-text-muted);
+  font-weight: 600;
+}
+
+html.comic-theme .mango-entry-group__header,
+html.comic-theme-dark .mango-entry-group__header {
+  border-width: 2px;
+  border-color: #000;
+  border-radius: 0;
+  box-shadow: 3px 3px 0 #000;
+}
+
+@media (max-width: 560px) {
+  .mango-jump-select {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+}
