@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/nwaples/rardecode"
+	"github.com/nwaples/rardecode/v2"
 )
 
 type rarArchive struct {
@@ -23,7 +23,8 @@ func (r *rarArchive) Entries() ([]Entry, error) {
 	}
 	defer f.Close()
 
-	rr, err := rardecode.NewReader(f, "")
+	// v2 bounds dictionary size (mitigates DoS via huge RAR dictionaries).
+	rr, err := rardecode.NewReader(f)
 	if err != nil {
 		return nil, fmt.Errorf("init rar reader %s: %w", r.path, err)
 	}
@@ -54,7 +55,7 @@ func (r *rarArchive) ReadEntry(entry Entry) ([]byte, error) {
 	}
 	defer f.Close()
 
-	rr, err := rardecode.NewReader(f, "")
+	rr, err := rardecode.NewReader(f)
 	if err != nil {
 		return nil, fmt.Errorf("init rar reader %s: %w", r.path, err)
 	}
