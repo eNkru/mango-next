@@ -50,7 +50,7 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
             width={28}
             height={28}
           />
-          <span>Mango</span>
+          <span className="mango-topbar__wordmark">Mango</span>
         </a>
         <nav aria-label={t('home')}>
           <ul className="mango-topbar__nav">

@@ -45,7 +45,7 @@ export function ReaderTopBar({
             width={24}
             height={24}
           />
-          Mango
+          <span className="mango-topbar__wordmark">Mango</span>
         </a>
         <button type="button" className="mango-btn mango-btn--ghost" onClick={onOpenControls}>
           <Icon icon={icons.readerControls} size={16} />
