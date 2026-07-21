@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Font tokens and dual theme layout contracts"}
+{"file": ".trellis/spec/frontend/react-reader.md", "reason": "Confirm reader stays outside comic font change"}
+{"file": ".trellis/tasks/07-21-comic-font-consistency/prd.md", "reason": "Requirements and acceptance criteria"}
+{"file": ".trellis/tasks/07-21-comic-font-consistency/design.md", "reason": "Font stack, @font-face, CSS application"}
+{"file": ".trellis/tasks/07-21-comic-font-consistency/implement.md", "reason": "Ordered checklist and validation"}

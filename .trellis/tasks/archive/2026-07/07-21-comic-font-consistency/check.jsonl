@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Verify comic/flat font contracts"}
+{"file": ".trellis/spec/frontend/react-reader.md", "reason": "Verify reader font not forced to comic"}
+{"file": ".trellis/tasks/07-21-comic-font-consistency/prd.md", "reason": "Acceptance criteria"}
+{"file": ".trellis/tasks/07-21-comic-font-consistency/design.md", "reason": "Design contracts for stack and loading"}
