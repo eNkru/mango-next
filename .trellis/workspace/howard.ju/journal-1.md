@@ -872,3 +872,69 @@ Self-hosted Fredoka (400/700 WOFF2) for comic theme; full comic body uses --mang
 ### Next Steps
 
 - None - task complete
+
+
+## Session 25: Vite dev proxy + wordmark style
+
+**Date**: 2026-07-21
+**Task**: Vite dev proxy + wordmark style
+**Branch**: `main`
+
+### Summary
+
+Added Vite dev-only /api+/img proxy and npm run server; styled Mango wordmark (uppercase, theme-aware hard offset shadow); rebuilt embed assets; PR #53 merged.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f678645` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 26: Continue-reading stack deck + home rails
+
+**Date**: 2026-07-21
+**Task**: Continue-reading stack deck + home rails
+**Branch**: `feat/continue-read-carousel`
+
+### Summary
+
+Shipped circular stacked continue-reading deck, poster-rail arrows without scrollbars, Vite URL pageId fallback for multi-page HMR; PR #54; archived 07-21-continue-read-carousel.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4503d8d` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

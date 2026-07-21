@@ -1,6 +1,7 @@
 import {
   ArrowDown,
   ArrowLeft,
+  ArrowRight,
   ArrowUp,
   BookOpen,
   CheckCircle,
@@ -53,6 +54,7 @@ export const icons = {
   selectAll: ListChecks,
   refresh: RefreshCw,
   back: ArrowLeft,
+  forward: ArrowRight,
   close: X,
   users: Users,
   scan: FolderSearch,
