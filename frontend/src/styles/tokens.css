@@ -10,9 +10,20 @@
   --mango-text-muted: #737373;
   --mango-topbar-height: 68px;
   --mango-radius: 6px;
+  /* Flat / default UI */
   --mango-font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  --mango-font-comic: "Fredoka One", "Comic Sans MS", cursive, sans-serif;
-  --mango-font-sound: "Bangers", Impact, "Arial Black", sans-serif;
+  /* Comic UI: self-hosted Fredoka (Latin) + system CJK fallbacks (no bundled CJK) */
+  --mango-font-comic:
+    "Fredoka",
+    "Noto Sans CJK SC",
+    "Noto Sans CJK TC",
+    "Noto Sans SC",
+    "Noto Sans TC",
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    "Segoe UI",
+    sans-serif;
 
   /* Semantic */
   --mango-on-accent: #ffffff;
@@ -69,7 +80,6 @@ html.comic-theme-dark {
   --mango-danger-hover: #e53935;
 }
 
-/* Local comic fonts are already served from /webfonts by Go. Use absolute
-   runtime paths via BaseURL-relative CSS is hard without injection; the shell
-   relies on system fallbacks unless mango.css also loads the faces. Keep family
-   names so existing theme intent remains if faces are present globally. */
+/* Comic Latin face: @font-face in fonts.css (Vite-bundled WOFF2 under
+   frontend/src/assets/fonts/fredoka/). CJK glyphs use the system names in
+   --mango-font-comic; do not vendor full Noto CJK. */

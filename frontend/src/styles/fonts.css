@@ -1,0 +1,16 @@
+/* Self-hosted Fredoka (SIL OFL 1.1). Latin only; CJK via system stack in tokens. */
+@font-face {
+  font-family: "Fredoka";
+  src: url("../assets/fonts/fredoka/Fredoka-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fredoka";
+  src: url("../assets/fonts/fredoka/Fredoka-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

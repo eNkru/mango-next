@@ -90,7 +90,37 @@ Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 | `--mango-success` | Success alert border |
 | `--mango-on-accent` | Primary button label color |
 | `--mango-ink` | Comic thick borders / offset shadows |
+| `--mango-font-body` | Flat / default UI sans stack |
+| `--mango-font-comic` | Comic UI stack (Fredoka + system CJK) |
 | `--mango-reader-*` | Immersive reader chrome (fixed dark; **not** theme-switched) |
+
+### Fonts (React shell)
+
+| Style | Token | Loading |
+|-------|-------|---------|
+| Flat | `--mango-font-body` (`Segoe UI` / Helvetica / Arial) | System only; unchanged by comic work |
+| Comic | `--mango-font-comic` | Body under `html.comic-theme` / `html.comic-theme-dark` |
+
+Comic stack (Latin first, then system CJK — **no** full Noto CJK binaries in repo):
+
+```css
+"Fredoka",
+"Noto Sans CJK SC", "Noto Sans CJK TC",
+"Noto Sans SC", "Noto Sans TC",
+"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+"Segoe UI", sans-serif
+```
+
+- **Fredoka**: self-hosted WOFF2 400 + 700 via `@font-face` in
+  `frontend/src/styles/fonts.css` → `frontend/src/assets/fonts/fredoka/`
+  (Vite packs into `go/web/public/react/assets/`). SIL OFL; see `OFL.txt`.
+- Only faces **400** and **700** are shipped. `font-weight: 800` (e.g. brand)
+  synthesizes from 700 — acceptable; do not add extra faces unless needed.
+- **Do not** rely on runtime Google Fonts CDN for comic UI.
+- **Do not** use heading-only comic overrides (brand / page-header / login);
+  comic body inherits the same token for all AppShell chrome.
+- **Reader**: `.mango-reader` keeps `font-family: var(--mango-font-body)`;
+  never force comic display on immersive chrome.
 
 ### Buttons (React shell)
 
@@ -127,6 +157,9 @@ Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 | TagDetail invents progress/modified sort | `BrowseToolbar modes={['natural','title']}` + `showProgress={false}` |
 | Primary/danger both use accent red | Danger uses `--mango-danger*` |
 | Re-add react-preview for “component playground” | Use real pages or a local story; route removed |
+| Comic only on brand / h1 (heading split) | `html.comic-theme body` → `--mango-font-comic` for all UI |
+| Reader inherits comic body font | `.mango-reader { font-family: var(--mango-font-body) }` |
+| Vendor full Noto CJK / runtime GF CDN for comic | Fredoka WOFF2 self-host + system CJK stack only |
 
 ## Smoke checklist
 
@@ -141,3 +174,6 @@ Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 - [ ] Reader chrome: dark immersive; ghost/primary readable
 - [ ] Topbar: mark + nav icons + logout; comic sharp corners still apply
 - [ ] Icon buttons: spacing/contrast OK under flat and comic light/dark
+- [ ] comic body/nav/buttons share Fredoka + CJK stack; flat body unchanged
+- [ ] Reader chrome still `--mango-font-body` (not comic display)
+- [ ] build emits Fredoka `*.woff2` under `go/web/public/react/assets/`

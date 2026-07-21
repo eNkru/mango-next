@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 23
+- **Total Sessions**: 24
 - **Last Active**: 2026-07-21
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~841 | Active |
+| `journal-1.md` | ~874 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 24 | 2026-07-21 | Unify comic UI font stack | `48d0660` | `main` |
 | 23 | 2026-07-21 | Restore icons UI/UX after React rewrite | `1597345` | `feat/restore-icons-ui-ux` |
 | 22 | 2026-07-21 | UI consistency audit and fix | `c18bb42` | `feat/ui-consistency` |
 | 21 | 2026-07-20 | 主页继续阅读布局优化 | `4502f11` | `main` |

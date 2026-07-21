@@ -839,3 +839,36 @@ Brainstormed and implemented system-wide icon restoration with lucide-react: Ico
 ### Next Steps
 
 - None - task complete
+
+
+## Session 24: Unify comic UI font stack
+
+**Date**: 2026-07-21
+**Task**: Unify comic UI font stack
+**Branch**: `main`
+
+### Summary
+
+Self-hosted Fredoka (400/700 WOFF2) for comic theme; full comic body uses --mango-font-comic with system CJK fallbacks; removed heading-only split and --mango-font-sound; Reader stays on body font; updated ui-theme-layout font contract.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `48d0660` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

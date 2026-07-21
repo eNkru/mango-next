@@ -19,7 +19,7 @@ body {
 
 html.comic-theme body,
 html.comic-theme-dark body {
-  font-family: var(--mango-font-body);
+  font-family: var(--mango-font-comic);
 }
 
 .mango-topbar {
@@ -63,11 +63,6 @@ html.comic-theme-dark .mango-topbar {
 .mango-icon {
   display: block;
   flex-shrink: 0;
-}
-
-html.comic-theme .mango-topbar__brand,
-html.comic-theme-dark .mango-topbar__brand {
-  font-family: var(--mango-font-comic);
 }
 
 .mango-topbar__nav {
@@ -142,11 +137,6 @@ html.comic-theme-dark .mango-topbar__brand {
 .mango-page-header h1 {
   margin: 0 0 0.35rem;
   font-size: 1.6rem;
-}
-
-html.comic-theme .mango-page-header h1,
-html.comic-theme-dark .mango-page-header h1 {
-  font-family: var(--mango-font-comic);
 }
 
 .mango-page-header p {
@@ -597,11 +587,6 @@ html.comic-theme-dark .mango-login__card {
 .mango-login__header h1 {
   margin: 0 0 0.35rem;
   font-size: 1.55rem;
-}
-
-html.comic-theme .mango-login__header h1,
-html.comic-theme-dark .mango-login__header h1 {
-  font-family: var(--mango-font-comic);
 }
 
 .mango-login__header p {
@@ -1111,12 +1096,13 @@ html.comic-theme-dark .mango-continue-row > img {
   }
 }
 
-/* Immersive reader (no AppShell) */
+/* Immersive reader (no AppShell). Keep body/system stack — never comic display. */
 .mango-reader {
   position: relative;
   min-height: 100vh;
   background: var(--mango-reader-bg);
   color: var(--mango-reader-fg);
+  font-family: var(--mango-font-body);
 }
 
 .mango-reader--gate {
