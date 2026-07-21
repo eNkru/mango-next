@@ -43,7 +43,8 @@ make run               # rebuild React assets, then go run
 Developer commands:
 
 ```bash
-npm run dev            # Vite dev server (optional; still needs Go for APIs)
+npm run dev            # Vite HMR; proxies /api and /img → http://127.0.0.1:9000
+# other terminal: cd go && go run ./cmd/mango/   # API/static (default :9000)
 npm run typecheck
 npm run build
 npm run check          # fails if go/web/public/react/assets/main.{js,css} missing
@@ -51,6 +52,8 @@ make check             # frontend check + go vet
 make test
 make build
 ```
+
+`vite.config.ts` `server.proxy` is **dev-only** and does not affect `npm run build` / embed.
 
 ## Migrated route contract
 

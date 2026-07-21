@@ -13,6 +13,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'frontend/src'),
     },
   },
+  // Dev-only: npm run dev + Go on :9000. Build/embed path is unchanged.
+  server: {
+    proxy: {
+      '/api': { target: 'http://127.0.0.1:9000', changeOrigin: true },
+      '/img': { target: 'http://127.0.0.1:9000', changeOrigin: true },
+    },
+  },
   build: {
     outDir: path.resolve(__dirname, 'go/web/public/react'),
     emptyOutDir: true,
