@@ -3,6 +3,8 @@ import { baseUrl } from '../../lib/baseUrl';
 import { readBoot } from '../../lib/boot';
 import { useI18n } from '../../lib/i18n';
 import { AlertHost } from '../../shell/AlertHost';
+import { Icon } from '../../shell/Icon';
+import { icons } from '../../shell/icons';
 import { ErrorState, LoadingState } from '../../shell/StatePanels';
 import { isLongPageTitle } from './readerMath';
 import { ReaderControls } from './ReaderControls';
@@ -161,6 +163,7 @@ export function ReaderPage() {
         <ErrorState message={state.status === 'error' ? state.message : t('readerError')} />
         <p>
           <a className="mango-btn" href={baseUrl('library')}>
+            <Icon icon={icons.library} size={16} />
             {t('library')}
           </a>
         </p>
@@ -218,10 +221,12 @@ export function ReaderPage() {
               className="mango-btn mango-btn--primary"
               onClick={() => void completeAndGo(data.next_entry_url)}
             >
+              <Icon icon={icons.play} size={16} />
               {t('nextEntry')}
             </button>
           ) : (
             <button type="button" className="mango-btn mango-btn--primary" onClick={() => void completeAndGo(exitUrl)}>
+              <Icon icon={icons.exit} size={16} />
               {t('exitReader')}
             </button>
           )}

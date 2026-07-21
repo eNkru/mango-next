@@ -806,3 +806,36 @@ Unified React shell: PosterCard/BrowseToolbar contracts, full-page i18n, ErrorSt
 ### Next Steps
 
 - None - task complete
+
+
+## Session 23: Restore icons UI/UX after React rewrite
+
+**Date**: 2026-07-21
+**Task**: Restore icons UI/UX after React rewrite
+**Branch**: `feat/restore-icons-ui-ux`
+
+### Summary
+
+Brainstormed and implemented system-wide icon restoration with lucide-react: Icon wrapper, semantic map, brand mark, density-mixed icons across shell/browse/pages/reader. Specs updated. PR #51 opened.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1597345` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

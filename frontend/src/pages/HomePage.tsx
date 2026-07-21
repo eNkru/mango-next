@@ -6,6 +6,8 @@ import { useI18n } from '../lib/i18n';
 import { PosterCard, ProgressBar } from '../browse/BrowseComponents';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { ErrorState, LoadingState } from '../shell/StatePanels';
 
 type HomeResponse = {
@@ -92,6 +94,7 @@ function ContinueSection({ items }: { items: BrowseEntry[] }) {
             <ProgressBar value={primary.progress} />
             <div className="mango-actions">
               <a className="mango-btn mango-btn--primary" href={readerUrl(primary)}>
+                <Icon icon={icons.continue} size={16} />
                 {t('continue')}
               </a>
             </div>

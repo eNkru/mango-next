@@ -1,3 +1,6 @@
+import { Icon } from './Icon';
+import { icons } from './icons';
+
 type ConfirmDialogProps = {
   open: boolean;
   title: string;
@@ -32,9 +35,11 @@ export function ConfirmDialog({
         <p>{message}</p>
         <div className="mango-modal__actions">
           <button type="button" className="mango-btn" onClick={onCancel}>
+            <Icon icon={icons.close} size={16} />
             {cancelLabel}
           </button>
           <button type="button" className="mango-btn mango-btn--danger" onClick={onConfirm}>
+            <Icon icon={icons.delete} size={16} />
             {confirmLabel}
           </button>
         </div>

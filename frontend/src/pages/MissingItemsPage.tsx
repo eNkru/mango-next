@@ -4,6 +4,8 @@ import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { ConfirmDialog } from '../shell/ConfirmDialog';
 import { pushAlert } from '../shell/AlertHost';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { EmptyState, ErrorState, LoadingState } from '../shell/StatePanels';
 
 type MissingItem = {
@@ -105,9 +107,11 @@ export function MissingItemsPage() {
               disabled={busy}
               onClick={() => setConfirmBulk(true)}
             >
+              <Icon icon={icons.delete} size={16} />
               {t('deleteAll')}
             </button>
             <button type="button" className="mango-btn" disabled={busy} onClick={() => void load()}>
+              <Icon icon={icons.refresh} size={16} />
               {t('refresh')}
             </button>
           </div>
@@ -139,6 +143,7 @@ export function MissingItemsPage() {
                         disabled={busy}
                         onClick={() => void removeOne('title', item.id)}
                       >
+                        <Icon icon={icons.delete} size={16} />
                         {t('delete')}
                       </button>
                     </td>
@@ -160,6 +165,7 @@ export function MissingItemsPage() {
                         disabled={busy}
                         onClick={() => void removeOne('entry', item.id)}
                       >
+                        <Icon icon={icons.delete} size={16} />
                         {t('delete')}
                       </button>
                     </td>

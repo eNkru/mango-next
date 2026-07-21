@@ -1,5 +1,7 @@
 import { useI18n } from '../../lib/i18n';
 import { baseUrl } from '../../lib/baseUrl';
+import { Icon } from '../../shell/Icon';
+import { icons } from '../../shell/icons';
 import { LanguageSelect } from '../../shell/LanguageSelect';
 
 type Props = {
@@ -36,9 +38,17 @@ export function ReaderTopBar({
     >
       <div className="mango-reader-topbar__left">
         <a className="mango-reader-topbar__brand" href={baseUrl()}>
+          <img
+            className="mango-topbar__mark"
+            src={baseUrl('img/icons/mango-mark.svg')}
+            alt=""
+            width={24}
+            height={24}
+          />
           Mango
         </a>
         <button type="button" className="mango-btn mango-btn--ghost" onClick={onOpenControls}>
+          <Icon icon={icons.readerControls} size={16} />
           {t('readerControls')}
         </button>
       </div>
@@ -51,6 +61,7 @@ export function ReaderTopBar({
       <div className="mango-reader-topbar__right">
         <LanguageSelect />
         <a className="mango-btn mango-btn--primary" href={exitUrl || baseUrl()}>
+          <Icon icon={icons.exit} size={16} />
           {t('exitReader')}
         </a>
       </div>

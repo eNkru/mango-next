@@ -4,6 +4,8 @@ import { baseUrl } from '../lib/baseUrl';
 import { useI18n } from '../lib/i18n';
 import { pushAlert } from '../shell/AlertHost';
 import { AppShell } from '../shell/AppShell';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { ErrorState } from '../shell/StatePanels';
 
 type ScanProgress = {
@@ -126,11 +128,17 @@ export function AdminPage() {
     <AppShell title={t('admin')} subtitle={t('adminSubtitle')}>
       <div className="mango-admin-grid">
         <a className="mango-admin-card" href={baseUrl('admin/user')}>
-          <strong>{t('userManagement')}</strong>
+          <strong className="mango-admin-card__title">
+            <Icon icon={icons.users} size={18} />
+            {t('userManagement')}
+          </strong>
           <span>{t('userManagementDesc')}</span>
         </a>
         <a className="mango-admin-card" href={baseUrl('admin/missing')}>
-          <strong>{t('missingEntries')}</strong>
+          <strong className="mango-admin-card__title">
+            <Icon icon={icons.missing} size={18} />
+            {t('missingEntries')}
+          </strong>
           <span>{t('missingEntriesDesc')}</span>
         </a>
         <button
@@ -139,7 +147,10 @@ export function AdminPage() {
           disabled={scanning}
           onClick={() => void startScan()}
         >
-          <strong>{t('scanLibrary')}</strong>
+          <strong className="mango-admin-card__title">
+            <Icon icon={icons.scan} size={18} />
+            {t('scanLibrary')}
+          </strong>
           <span>
             {scanning
               ? t('scanning')
@@ -154,7 +165,10 @@ export function AdminPage() {
           disabled={generating}
           onClick={() => void startThumbnails()}
         >
-          <strong>{t('generateThumbnails')}</strong>
+          <strong className="mango-admin-card__title">
+            <Icon icon={icons.refresh} size={18} />
+            {t('generateThumbnails')}
+          </strong>
           <span>
             {generating
               ? `${(thumbProgress * 100).toFixed(1)}%`

@@ -5,6 +5,8 @@ import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { ConfirmDialog } from '../shell/ConfirmDialog';
 import { pushAlert } from '../shell/AlertHost';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { EmptyState, ErrorState, LoadingState } from '../shell/StatePanels';
 
 type UserRow = {
@@ -78,9 +80,11 @@ export function UserListPage() {
         <section className="mango-panel">
           <div className="mango-actions mango-actions--stack-sm">
             <a className="mango-btn mango-btn--primary" href={baseUrl('admin/user/edit')}>
+              <Icon icon={icons.add} size={16} />
               {t('newUser')}
             </a>
             <button type="button" className="mango-btn" disabled={busy} onClick={() => void load()}>
+              <Icon icon={icons.refresh} size={16} />
               {t('refresh')}
             </button>
           </div>
@@ -121,6 +125,7 @@ export function UserListPage() {
                                 `admin/user/edit?username=${encodeURIComponent(user.username)}`,
                               )}
                             >
+                              <Icon icon={icons.edit} size={16} />
                               {t('edit')}
                             </a>
                             {!isSelf ? (
@@ -130,6 +135,7 @@ export function UserListPage() {
                                 disabled={busy}
                                 onClick={() => setPendingDelete(user.username)}
                               >
+                                <Icon icon={icons.delete} size={16} />
                                 {t('delete')}
                               </button>
                             ) : null}

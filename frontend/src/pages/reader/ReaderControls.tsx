@@ -1,5 +1,7 @@
 import type { FormEvent } from 'react';
 import { useI18n } from '../../lib/i18n';
+import { Icon } from '../../shell/Icon';
+import { icons } from '../../shell/icons';
 import type { ReaderEntry, ReaderFitType, ReaderMode, ReaderPrefs } from './types';
 
 type Props = {
@@ -62,8 +64,13 @@ export function ReaderControls({
             <h2>{entryName}</h2>
             <p className="mango-file-name">{entryId}</p>
           </div>
-          <button type="button" className="mango-btn" onClick={onClose} aria-label={t('cancel')}>
-            ×
+          <button
+            type="button"
+            className="mango-btn mango-btn--icon"
+            onClick={onClose}
+            aria-label={t('cancel')}
+          >
+            <Icon icon={icons.close} size={16} />
           </button>
         </header>
 
@@ -184,20 +191,24 @@ export function ReaderControls({
         <div className="mango-actions mango-reader-controls__actions">
           {previousEntryUrl ? (
             <a className="mango-btn" href={previousEntryUrl}>
+              <Icon icon={icons.back} size={16} />
               {t('previousEntry')}
             </a>
           ) : null}
           {nextEntryUrl ? (
             <button type="button" className="mango-btn mango-btn--primary" onClick={onNextEntry}>
+              <Icon icon={icons.play} size={16} />
               {t('nextEntry')}
             </button>
           ) : (
             <button type="button" className="mango-btn mango-btn--primary" onClick={onExit}>
+              <Icon icon={icons.exit} size={16} />
               {t('exitReader')}
             </button>
           )}
           {exitUrl ? (
             <button type="button" className="mango-btn" onClick={onExit}>
+              <Icon icon={icons.exit} size={16} />
               {t('exitReader')}
             </button>
           ) : null}

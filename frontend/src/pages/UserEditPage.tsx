@@ -5,6 +5,8 @@ import { readBoot } from '../lib/boot';
 import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { ErrorState, LoadingState } from '../shell/StatePanels';
 
 export function UserEditPage() {
@@ -134,6 +136,7 @@ export function UserEditPage() {
             ) : (
               <div className="mango-actions mango-actions--flush">
                 <button type="button" className="mango-btn" onClick={() => setShowPassword(true)}>
+                  <Icon icon={icons.edit} size={16} />
                   {t('changePassword')}
                 </button>
               </div>
@@ -152,9 +155,11 @@ export function UserEditPage() {
 
             <div className="mango-actions">
               <button type="submit" className="mango-btn mango-btn--primary" disabled={busy}>
+                <Icon icon={icons.save} size={16} />
                 {busy ? t('saving') : t('save')}
               </button>
               <a className="mango-btn" href={baseUrl('admin/user')}>
+                <Icon icon={icons.back} size={16} />
                 {t('backToList')}
               </a>
             </div>

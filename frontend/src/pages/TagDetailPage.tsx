@@ -12,6 +12,8 @@ import {
 import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { EmptyState, ErrorState, LoadingState } from '../shell/StatePanels';
 
 type TagApiTitle = {
@@ -146,10 +148,12 @@ export function TagDetailPage() {
         extra={
           <>
             <a className="mango-btn" href={baseUrl('tags')}>
+              <Icon icon={icons.back} size={16} />
               {t('allTags')}
             </a>
             {isAdmin ? (
               <button type="button" className="mango-btn" onClick={toggleShowHidden}>
+                <Icon icon={showHidden ? icons.hide : icons.show} size={16} />
                 {showHidden ? t('hideHidden') : t('showHidden')}
               </button>
             ) : null}
@@ -180,6 +184,7 @@ export function TagDetailPage() {
                     disabled={busyId === item.id}
                     onClick={() => void toggleHidden(item)}
                   >
+                    <Icon icon={item.hidden ? icons.show : icons.hide} size={16} />
                     {item.hidden ? t('show') : t('hide')}
                   </button>
                 ) : undefined

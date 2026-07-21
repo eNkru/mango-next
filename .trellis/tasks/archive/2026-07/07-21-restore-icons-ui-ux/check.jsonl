@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Verify Icon/button contracts match shared component guidelines"}
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Verify topbar/button theme consistency"}
+{"file": ".trellis/spec/frontend/react-reader.md", "reason": "Verify reader chrome icon changes stay immersive"}
+{"file": ".trellis/spec/frontend/react-admin.md", "reason": "Verify admin icon usage matches admin patterns"}
+{"file": ".trellis/tasks/07-21-restore-icons-ui-ux/prd.md", "reason": "Acceptance criteria for full-scope check"}
+{"file": ".trellis/tasks/07-21-restore-icons-ui-ux/design.md", "reason": "Design contracts for icon density and a11y"}
