@@ -35,12 +35,46 @@ ErrorState({
 // frontend/src/shell/LanguageSelect.tsx
 LanguageSelect({ className?: string }) // persists mango-language via useI18n
 
+// frontend/src/shell/Icon.tsx
+Icon({
+  icon: LucideIcon,   // prefer icons.* from shell/icons.ts
+  size?: number,      // default 18; nav/compact often 16
+  className?: string,
+  decorative?: boolean, // default true → aria-hidden
+  label?: string,       // if set → role=img + aria-label
+})
+
+// frontend/src/shell/icons.ts
+icons.home | library | tags | admin | logout | search | sortAsc | sortDesc
+  | hide | show | edit | delete | add | download | play | continue
+  | markRead | markUnread | selectAll | refresh | back | close | users | scan
+  | missing | readerControls | exit | save
+
 // frontend/src/lib/i18n.tsx
 t(key: MessageKey, vars?: Record<string, string | number>)
 // templates use {name} placeholders, e.g. t('tagTitle', { tag })
 ```
 
 ## Contracts
+
+### Icon system
+
+- Dependency: `lucide-react` with **named imports only** (tree-shake). Never
+  `import * as Lucide from 'lucide-react'`.
+- Pages/shell use `Icon` + `icons` semantic map; avoid raw lucide components in
+  product TSX unless adding a new semantic entry.
+- **Density mix**:
+  | Surface | Mode |
+  |---------| | ---- |
+  | Topbar nav, primary/secondary actions | icon + visible label |
+  | Compact tools (password toggle, dialog close, tag remove, sort direction) | icon-only + `aria-label` on the **control** |
+  | Brand | `mango-mark.svg` via `baseUrl('img/icons/mango-mark.svg')` + “Mango” text |
+- Decorative icons next to text: leave default (`aria-hidden`).
+- Icon-only: put accessible name on button/link; keep `Icon` decorative.
+- Color via `currentColor` (inherits button/link theme).
+- Button CSS: `.mango-btn` is `inline-flex` + `gap: 0.4rem`; `.mango-btn--icon`
+  for square icon-only (min 2.25rem hit target).
+- Do **not** reintroduce Font Awesome webfonts / UIkit.
 
 ### PosterCard / TagDetail adapter
 
@@ -57,6 +91,8 @@ t(key: MessageKey, vars?: Record<string, string | number>)
 - TagDetail: `modes={['natural','title']}` only (no real modified/progress fields).
 - Library / TitleDetail: omit `modes` (full four).
 - If current `mode` ∉ allowed list, toolbar displays the first allowed mode.
+- Search field shows a decorative search icon; sort direction is icon-only
+  (`.mango-btn--icon` + aria-label for ascending/descending).
 
 ### Error / loading
 
@@ -113,15 +149,22 @@ Canonical markup:
 - Show full sort modes on TagDetail (progress/modified are always 0)
 - Hard-code Chinese strings in page TSX instead of `t()`
 - Keep `/admin/react-preview` Placeholder playground in production routes
+- Icon-only button without aria-label / title
+- Import entire lucide-react barrel in a page
 
 #### Correct
 - Adapter + `PosterCard` + `modes={['natural','title']}` + `showProgress={false}`
 - All user-visible page copy via `useI18n().t`
 - Delete dead foundation preview page and route
+- `<Icon icon={icons.edit} />` + label on main actions; icon-only + aria-label
+  on compact tools
+- AppShell brand: mark image (`alt=""`) + visible “Mango”
 
 ## Tests / checks
 
 - `npm run typecheck` / `npm run build`
 - Grep: no `PlaceholderPage` / `react-preview` in product sources
 - Grep: `style={{` only on dynamic width/margin cases
-- Manual: four theme combos + Login language switch + TagDetail grid
+- Grep: no Font Awesome / `fa-` webfont usage in product sources
+- Manual: four theme combos + Login language switch + TagDetail grid + topbar
+  icons + Login password toggle

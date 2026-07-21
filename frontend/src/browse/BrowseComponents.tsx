@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import type { BrowseTitle, SortMode } from '../lib/browse';
 import { baseUrl } from '../lib/baseUrl';
 import { useI18n } from '../lib/i18n';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 
 const ALL_MODES: SortMode[] = ['natural', 'title', 'modified', 'progress'];
 
@@ -80,14 +82,18 @@ export function BrowseToolbar({
 
   return (
     <div className="mango-browse-toolbar">
-      <input
-        className="mango-input"
-        type="search"
-        value={query}
-        onChange={(e) => onQuery(e.target.value)}
-        placeholder={t('search')}
-        aria-label={t('search')}
-      />
+      <label className="mango-browse-toolbar__search">
+        <Icon icon={icons.search} size={16} />
+        <span className="sr-only">{t('search')}</span>
+        <input
+          className="mango-input"
+          type="search"
+          value={query}
+          onChange={(e) => onQuery(e.target.value)}
+          placeholder={t('search')}
+          aria-label={t('search')}
+        />
+      </label>
       <label>
         <span>{t('sort')}</span>
         <select
@@ -102,17 +108,15 @@ export function BrowseToolbar({
           ))}
         </select>
       </label>
-      <label>
-        <span className="sr-only">{t('sort')}</span>
-        <select
-          className="mango-input"
-          value={ascending ? 'asc' : 'desc'}
-          onChange={(e) => onAscending(e.target.value === 'asc')}
-        >
-          <option value="asc">{t('ascending')}</option>
-          <option value="desc">{t('descending')}</option>
-        </select>
-      </label>
+      <button
+        type="button"
+        className="mango-btn mango-btn--icon"
+        onClick={() => onAscending(!ascending)}
+        aria-label={ascending ? t('ascending') : t('descending')}
+        title={ascending ? t('ascending') : t('descending')}
+      >
+        <Icon icon={ascending ? icons.sortAsc : icons.sortDesc} size={16} />
+      </button>
       {extra}
     </div>
   );

@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Shared shell/browse component contracts; must extend with Icon rules"}
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Topbar/button tokens and dual theme layout constraints"}
+{"file": ".trellis/spec/frontend/react-reader.md", "reason": "Reader chrome patterns when adding reader icons"}
+{"file": ".trellis/spec/frontend/react-admin.md", "reason": "Admin card action patterns when adding admin icons"}
+{"file": ".trellis/tasks/07-21-restore-icons-ui-ux/prd.md", "reason": "Requirements, density rules, acceptance criteria"}
+{"file": ".trellis/tasks/07-21-restore-icons-ui-ux/design.md", "reason": "Icon API, semantic map, CSS and brand decisions"}
+{"file": ".trellis/tasks/07-21-restore-icons-ui-ux/implement.md", "reason": "Ordered checklist and validation commands"}

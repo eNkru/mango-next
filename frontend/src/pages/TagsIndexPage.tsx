@@ -4,6 +4,8 @@ import { baseUrl } from '../lib/baseUrl';
 import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { EmptyState, ErrorState, LoadingState } from '../shell/StatePanels';
 
 type TagInfo = {
@@ -67,6 +69,7 @@ export function TagsIndexPage() {
               aria-label={t('filterTags')}
             />
             <button type="button" className="mango-btn" onClick={() => void load()}>
+              <Icon icon={icons.refresh} size={16} />
               {t('refresh')}
             </button>
           </div>

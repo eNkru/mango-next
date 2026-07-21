@@ -97,6 +97,13 @@ Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 - `.mango-btn--danger` uses danger tokens, not accent.
 - Comic: `.mango-btn` gets thick border + offset shadow (`--mango-ink`).
 - Ghost (reader): border uses `--mango-reader-ghost-border`.
+- Icons: `.mango-btn` uses `inline-flex` + gap; `.mango-btn--icon` for compact
+  icon-only controls. Icons use `currentColor` so comic/flat contrast inherits.
+
+### Brand mark
+
+- Topbar / reader brand: `baseUrl('img/icons/mango-mark.svg')` + “Mango” text
+  (`.mango-topbar__mark` ~24–28px). Mark is decorative when text is present.
 
 ### Language control
 
@@ -132,3 +139,5 @@ Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
 - [ ] Login: language select works before session
 - [ ] TagDetail: PosterCard grid, no empty progress bars
 - [ ] Reader chrome: dark immersive; ghost/primary readable
+- [ ] Topbar: mark + nav icons + logout; comic sharp corners still apply
+- [ ] Icon buttons: spacing/contrast OK under flat and comic light/dark

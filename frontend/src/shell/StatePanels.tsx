@@ -1,3 +1,6 @@
+import { Icon } from './Icon';
+import { icons } from './icons';
+
 type LoadingProps = {
   message?: string;
 };
@@ -26,6 +29,7 @@ export function ErrorState({ message = '…', onRetry, retryLabel = 'Retry' }: E
       <div>{message}</div>
       {onRetry ? (
         <button type="button" className="mango-btn" onClick={onRetry}>
+          <Icon icon={icons.refresh} size={16} />
           {retryLabel}
         </button>
       ) : null}

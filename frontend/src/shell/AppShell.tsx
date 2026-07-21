@@ -13,6 +13,8 @@ import {
   type UIStyle,
 } from '../lib/theme';
 import { AlertHost } from './AlertHost';
+import { Icon } from './Icon';
+import { icons } from './icons';
 import { LanguageSelect } from './LanguageSelect';
 
 type AppShellProps = {
@@ -41,22 +43,41 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
     <>
       <header className="mango-topbar" role="banner">
         <a className="mango-topbar__brand" href={baseUrl()}>
+          <img
+            className="mango-topbar__mark"
+            src={baseUrl('img/icons/mango-mark.svg')}
+            alt=""
+            width={28}
+            height={28}
+          />
           <span>Mango</span>
         </a>
         <nav aria-label={t('home')}>
           <ul className="mango-topbar__nav">
             <li>
-              <a href={baseUrl()}>{t('home')}</a>
+              <a href={baseUrl()}>
+                <Icon icon={icons.home} size={16} />
+                {t('home')}
+              </a>
             </li>
             <li>
-              <a href={baseUrl('library')}>{t('library')}</a>
+              <a href={baseUrl('library')}>
+                <Icon icon={icons.library} size={16} />
+                {t('library')}
+              </a>
             </li>
             <li>
-              <a href={baseUrl('tags')}>{t('tags')}</a>
+              <a href={baseUrl('tags')}>
+                <Icon icon={icons.tags} size={16} />
+                {t('tags')}
+              </a>
             </li>
             {boot.isAdmin ? (
               <li>
-                <a href={baseUrl('admin')}>{t('admin')}</a>
+                <a href={baseUrl('admin')}>
+                  <Icon icon={icons.admin} size={16} />
+                  {t('admin')}
+                </a>
               </li>
             ) : null}
           </ul>
@@ -94,8 +115,9 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
             </select>
           </label>
           <LanguageSelect />
-          <a className="mango-topbar__logout" href={baseUrl('logout')}>
-            {t('logout')}
+          <a className="mango-topbar__logout" href={baseUrl('logout')} aria-label={t('logout')}>
+            <Icon icon={icons.logout} size={16} />
+            <span className="mango-topbar__logout-label">{t('logout')}</span>
           </a>
         </div>
       </header>

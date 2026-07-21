@@ -3,6 +3,8 @@ import { apiFetch } from '../lib/api';
 import { readBoot } from '../lib/boot';
 import { useI18n } from '../lib/i18n';
 import { resolvePostLoginHref, safeRedirectPath } from '../lib/safeRedirect';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { LanguageSelect } from '../shell/LanguageSelect';
 
 type LoginResponse = {
@@ -91,7 +93,7 @@ export function LoginPage() {
                 aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                 disabled={busy}
               >
-                {showPassword ? t('hidePassword') : t('showPassword')}
+                <Icon icon={showPassword ? icons.hide : icons.show} size={18} />
               </button>
             </div>
           </label>

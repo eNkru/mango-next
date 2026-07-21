@@ -52,6 +52,19 @@ html.comic-theme-dark .mango-topbar {
   font-weight: 800;
 }
 
+.mango-topbar__mark {
+  width: 28px;
+  height: 28px;
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.mango-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
 html.comic-theme .mango-topbar__brand,
 html.comic-theme-dark .mango-topbar__brand {
   font-family: var(--mango-font-comic);
@@ -66,9 +79,13 @@ html.comic-theme-dark .mango-topbar__brand {
 }
 
 .mango-topbar__nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   color: var(--mango-text-secondary);
   text-decoration: none;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .mango-topbar__nav a:hover {
@@ -93,6 +110,9 @@ html.comic-theme-dark .mango-topbar__brand {
 }
 
 .mango-topbar__logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   color: var(--mango-text-secondary);
   font-weight: 600;
   text-decoration: none;
@@ -150,6 +170,10 @@ html.comic-theme-dark .mango-panel {
 
 .mango-btn {
   appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   border: 1px solid var(--mango-border);
   border-radius: var(--mango-radius);
   background: var(--mango-bg-base);
@@ -158,6 +182,13 @@ html.comic-theme-dark .mango-panel {
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+}
+
+.mango-btn--icon {
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0.4rem;
+  gap: 0;
 }
 
 .mango-btn:hover {
@@ -608,11 +639,16 @@ html.comic-theme-dark .mango-login__error {
 
 .mango-login__toggle {
   appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
   border: 1px solid var(--mango-border);
   border-radius: var(--mango-radius);
   background: var(--mango-bg-base);
   color: var(--mango-text-secondary);
-  padding: 0.55rem 0.7rem;
+  padding: 0.4rem;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
@@ -822,7 +858,8 @@ html.comic-theme-dark .mango-login__error {
   margin-bottom: 1rem;
 }
 
-.mango-browse-toolbar > input {
+.mango-browse-toolbar > input,
+.mango-browse-toolbar__search {
   flex: 1 1 14rem;
   max-width: 24rem;
 }
@@ -833,6 +870,29 @@ html.comic-theme-dark .mango-login__error {
   color: var(--mango-text-muted);
   font-size: 0.78rem;
   font-weight: 700;
+}
+
+.mango-browse-toolbar__search {
+  position: relative;
+  display: block;
+}
+
+.mango-browse-toolbar__search .mango-icon {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--mango-text-muted);
+  pointer-events: none;
+}
+
+.mango-browse-toolbar__search .mango-input {
+  width: 100%;
+  padding-left: 2.15rem;
+}
+
+.mango-browse-toolbar .mango-btn--icon {
+  align-self: end;
 }
 
 .mango-breadcrumb {
@@ -907,6 +967,16 @@ html.comic-theme-dark .mango-login__error {
   cursor: pointer;
   font-size: 1rem;
   line-height: 1;
+}
+
+.mango-tag-pill .mango-btn--icon {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0.15rem;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--mango-accent);
 }
 
 .mango-inline-form {
@@ -1004,7 +1074,7 @@ html.comic-theme-dark .mango-continue-row > img {
     margin-left: auto;
   }
 
-  .mango-topbar__logout {
+  .mango-topbar__logout-label {
     display: none;
   }
 
@@ -1108,9 +1178,17 @@ html.comic-theme-dark .mango-continue-row > img {
 }
 
 .mango-reader-topbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   color: inherit;
   font-weight: 700;
   text-decoration: none;
+}
+
+.mango-reader-topbar__brand .mango-topbar__mark {
+  width: 24px;
+  height: 24px;
 }
 
 .mango-reader-topbar__title {
@@ -1273,6 +1351,12 @@ html.comic-theme-dark .mango-continue-row > img {
   border-radius: 0;
   cursor: pointer;
   font: inherit;
+}
+
+.mango-admin-card__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .mango-admin-card strong {

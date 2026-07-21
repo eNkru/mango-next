@@ -10,6 +10,8 @@ import { useI18n } from '../lib/i18n';
 import { BrowseToolbar, PosterCard } from '../browse/BrowseComponents';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
+import { Icon } from '../shell/Icon';
+import { icons } from '../shell/icons';
 import { EmptyState, ErrorState, LoadingState } from '../shell/StatePanels';
 
 type LibraryResponse = { titles: BrowseTitle[]; is_admin: boolean; show_hidden: boolean };
@@ -99,6 +101,7 @@ export function LibraryPage() {
         extra={
           isAdmin ? (
             <button className="mango-btn" type="button" onClick={() => void load(!showHidden)}>
+              <Icon icon={showHidden ? icons.hide : icons.show} size={16} />
               {showHidden ? t('hideHidden') : t('showHidden')}
             </button>
           ) : null
@@ -123,6 +126,7 @@ export function LibraryPage() {
                     disabled={busy === item.id}
                     onClick={() => void toggleHidden(item)}
                   >
+                    <Icon icon={item.hidden ? icons.show : icons.hide} size={16} />
                     {item.hidden ? t('show') : t('hide')}
                   </button>
                 ) : undefined
