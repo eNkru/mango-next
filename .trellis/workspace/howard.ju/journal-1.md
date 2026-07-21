@@ -872,3 +872,36 @@ Self-hosted Fredoka (400/700 WOFF2) for comic theme; full comic body uses --mang
 ### Next Steps
 
 - None - task complete
+
+
+## Session 25: Vite dev proxy + wordmark style
+
+**Date**: 2026-07-21
+**Task**: Vite dev proxy + wordmark style
+**Branch**: `main`
+
+### Summary
+
+Added Vite dev-only /api+/img proxy and npm run server; styled Mango wordmark (uppercase, theme-aware hard offset shadow); rebuilt embed assets; PR #53 merged.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f678645` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
