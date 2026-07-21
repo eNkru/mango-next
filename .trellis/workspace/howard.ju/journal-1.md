@@ -905,3 +905,36 @@ Added Vite dev-only /api+/img proxy and npm run server; styled Mango wordmark (u
 ### Next Steps
 
 - None - task complete
+
+
+## Session 26: Continue-reading stack deck + home rails
+
+**Date**: 2026-07-21
+**Task**: Continue-reading stack deck + home rails
+**Branch**: `feat/continue-read-carousel`
+
+### Summary
+
+Shipped circular stacked continue-reading deck, poster-rail arrows without scrollbars, Vite URL pageId fallback for multi-page HMR; PR #54; archived 07-21-continue-read-carousel.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4503d8d` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

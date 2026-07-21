@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 25
+- **Total Sessions**: 26
 - **Last Active**: 2026-07-21
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~907 | Active |
+| `journal-1.md` | ~940 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 26 | 2026-07-21 | Continue-reading stack deck + home rails | `4503d8d` | `feat/continue-read-carousel` |
 | 25 | 2026-07-21 | Vite dev proxy + wordmark style | `f678645` | `main` |
 | 24 | 2026-07-21 | Unify comic UI font stack | `48d0660` | `main` |
 | 23 | 2026-07-21 | Restore icons UI/UX after React rewrite | `1597345` | `feat/restore-icons-ui-ux` |
