@@ -47,7 +47,7 @@ Icon({
 // frontend/src/shell/icons.ts
 icons.home | library | tags | admin | logout | search | sortAsc | sortDesc
   | hide | show | edit | delete | add | download | play | continue
-  | markRead | markUnread | selectAll | refresh | back | close | users | scan
+  | markRead | markUnread | selectAll | refresh | back | forward | close | users | scan
   | missing | readerControls | exit | save
 
 // frontend/src/lib/i18n.tsx

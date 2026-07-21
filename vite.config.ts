@@ -14,6 +14,7 @@ export default defineConfig({
     },
   },
   // Dev-only: npm run dev + Go on :9000. Build/embed path is unchanged.
+  // Vite already SPA-fallbacks unknown paths to index.html; pageId from URL in boot.ts.
   server: {
     proxy: {
       '/api': { target: 'http://127.0.0.1:9000', changeOrigin: true },

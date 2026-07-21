@@ -44,7 +44,7 @@ Developer commands:
 
 ```bash
 npm run dev            # Vite HMR; proxies /api and /img → http://127.0.0.1:9000
-# other terminal: cd go && go run ./cmd/mango/   # API/static (default :9000)
+# other terminal: npm run server   # Go API (default :9000)
 npm run typecheck
 npm run build
 npm run check          # fails if go/web/public/react/assets/main.{js,css} missing
@@ -54,6 +54,27 @@ make build
 ```
 
 `vite.config.ts` `server.proxy` is **dev-only** and does not affect `npm run build` / embed.
+
+### Vite multi-page dev (no Go HTML shell)
+
+When `#mango-boot` is missing, React infers `pageId` from the URL path
+(`frontend/src/lib/boot.ts` → `bootFromPathname`). Production always has Go
+inject `mango-boot`, so this path is unused after build/embed.
+
+Examples (Vite port, typically :5173):
+
+| URL | pageId |
+|-----|--------|
+| `/` | home |
+| `/library` | library |
+| `/book/:id` | title-detail |
+| `/tags`, `/tags/:tag` | tags-index / tag-detail |
+| `/reader/:tid/:eid[/:page]` | reader |
+| `/admin`, `/admin/user`, … | admin / user-list / … |
+| `/login` | login |
+
+Still run Go for APIs (`npm run server`). Auth cookies are issued for Go’s port;
+if login fails under pure Vite, use `make run` or open API-backed flows on :9000.
 
 ## Migrated route contract
 
