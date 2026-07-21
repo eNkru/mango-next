@@ -5,6 +5,8 @@ import {
   ArrowUp,
   BookOpen,
   CheckCircle,
+  ChevronDown,
+  ChevronUp,
   Circle,
   Download,
   Eye,
@@ -62,6 +64,8 @@ export const icons = {
   readerControls: SlidersHorizontal,
   exit: X,
   save: Save,
+  chevronDown: ChevronDown,
+  chevronUp: ChevronUp,
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof icons;
