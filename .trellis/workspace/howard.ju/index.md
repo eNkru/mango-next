@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 31
+- **Total Sessions**: 32
 - **Last Active**: 2026-07-22
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1109 | Active |
+| `journal-1.md` | ~1143 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 32 | 2026-07-22 | Global UI prefs Zustand stores | `07fc350`, `d43323e` | `feat/global-ui-context` |
 | 31 | 2026-07-22 | Client SPA router | `4b894b1`, `ac3640a` | `feat/client-spa-router` |
 | 30 | 2026-07-22 | Decompose storage package | `de73081`, `0ee11a3` | `feat/decompose-storage` |
 | 29 | 2026-07-22 | Structured logging with slog | `776d3bb`, `114d279` | `feat/structured-logging` |

@@ -24,7 +24,8 @@
     "07-22-structured-logging",
     "07-22-decompose-storage",
     "07-22-client-spa-router",
-    "07-22-global-ui-context"
+    "07-22-global-ui-context",
+    "07-22-zustand-i18n-boot"
   ],
   "parent": null,
   "relatedFiles": [],
