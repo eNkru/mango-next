@@ -2,25 +2,61 @@
 
 ## Goal
 
-Consolidate fragmented `localStorage` usage and UI preferences (theme, language, reader settings) into a single React Context/Store to eliminate state synchronization drift across tabs and components.
+Consolidate client UI preferences (theme, UI style, reader prefs) into **Zustand** stores synced with existing `localStorage` keys (including multi-tab via `storage` events), so AppShell and reader share one source of truth under SPA navigation.
 
 ## Target Area
 
-- `frontend/src/context/` or `frontend/src/pages/reader/useReaderPrefs.ts`
+- `frontend/src/lib/theme.ts` (keep pure apply helpers; store owns state)
+- `frontend/src/pages/reader/useReaderPrefs.ts` → thin wrapper over reader store
+- `frontend/src/shell/AppShell.tsx` theme/style controls
+- New: `frontend/src/lib/themeStore.ts`, `frontend/src/lib/readerPrefsStore.ts` (names flexible)
+- `package.json` — add `zustand`
+
+## Confirmed facts (from repo)
+
+- Theme keys: `theme`, `ui-style` via `theme.ts`; AppShell local state today.
+- Reader keys: `mango.reader.*` via `useReaderPrefs`.
+- Language / Boot: stay Context; follow-up `07-22-zustand-i18n-boot`.
+- No existing third-party state lib.
 
 ## Requirements
 
-1. Create a `UserPrefsContext` (or store) that manages theme settings, language/i18n, and reading preferences.
-2. Synchronize store state updates with `localStorage` automatically.
-3. Provide easy-to-use hooks (e.g. `useUserPrefs()`) for components to consume settings without manual listener setup.
+1. Add Zustand **theme store** (theme + uiStyle) and **reader prefs store**.
+2. Persist with the **same** localStorage keys (no user migration break).
+3. AppShell reads/writes theme + ui-style via theme store.
+4. `useReaderPrefs` (or equivalent) reads/writes via reader store.
+5. Theme/style changes call `applyHtmlTheme`.
+6. Multi-tab: listen to `window` `storage` and rehydrate the affected store.
+7. Do **not** migrate I18n or Boot.
 
 ## Acceptance Criteria
 
-- [ ] All reader and application preference hooks consume unified state from `UserPrefsContext`.
-- [ ] Theme/language/reader layout changes update instantly across all mounted components.
+- [x] Theme / UI style controls use the theme Zustand store.
+- [x] Reader prefs load/save same `mango.reader.*` keys through the reader store.
+- [x] Changing prefs in one tab updates other open tabs of the same origin.
+- [x] Existing localStorage keys preserved.
+- [x] I18nProvider and BootProvider remain as-is.
+- [x] `npm run typecheck` and `npm run build` pass.
+
+## Out of scope
+
+- Migrating I18n/Boot → `07-22-zustand-i18n-boot`.
+- Server-side preference APIs.
+- Changing i18n message catalogs.
+
+## Decisions
+
+- **Library:** Zustand.
+- **Scope:** theme + ui-style + reader prefs only.
+- **I18n / Boot:** Context; follow-up task exists.
+- **Multi-tab:** yes — `storage` event rehydrate.
+- **Shape:** **split stores** — `themeStore` + `readerPrefsStore` (not one mega prefs store).
+
+## Open questions
+
+- None blocking planning.
 
 ## Notes
 
-- Keep `prd.md` focused on requirements, constraints, and acceptance criteria.
-- Lightweight tasks can remain PRD-only.
-- For complex tasks, add `design.md` for technical design and `implement.md` for execution planning before `task.py start`.
+- Parent: `07-22-project-review`.
+- Complex: `design.md` + `implement.md` required before `task.py start`.
