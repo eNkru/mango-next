@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react
 import { apiFetch } from '../lib/api';
 import { baseUrl } from '../lib/baseUrl';
 import { filterBrowseItems, sortBrowseItems, type BrowseEntry, type BrowseTitle, type SortMode } from '../lib/browse';
-import { readBoot } from '../lib/boot';
+import { AppLink, useAppNavigate } from '../lib/AppLink';
 import { useI18n } from '../lib/i18n';
 import { BrowseToolbar, PosterCard, ProgressBar } from '../browse/BrowseComponents';
 import { AppShell } from '../shell/AppShell';
@@ -15,8 +15,10 @@ type DetailResponse = { is_admin: boolean; title: BrowseTitle; parents: BrowseTi
 type EditTarget = { kind: 'title'; item: BrowseTitle } | { kind: 'entry'; item: BrowseEntry };
 type EntryGroup = { key: string; label: string; items: BrowseEntry[] };
 
-export function TitleDetailPage() {
-  const { t } = useI18n(); const tid = readBoot().titleId ?? '';
+export function TitleDetailPage({ titleId }: { titleId: string }) {
+  const { t } = useI18n();
+  const navigate = useAppNavigate();
+  const tid = titleId;
   const [data, setData] = useState<DetailResponse | null>(null); const [error, setError] = useState<string | null>(null); const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState(''); const [mode, setMode] = useState<SortMode>('natural'); const [ascending, setAscending] = useState(true); const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false); const [editTarget, setEditTarget] = useState<EditTarget | null>(null); const [tag, setTag] = useState('');
@@ -52,13 +54,13 @@ export function TitleDetailPage() {
   const renderEntryCard = (entry: BrowseEntry, isAdmin: boolean) => (
     <article className="mango-entry-card" key={entry.id}>
       {isAdmin ? <input type="checkbox" checked={selected.has(entry.id)} onChange={() => toggleSelection(entry.id)} aria-label={`${t('selected')} ${entry.name}`} /> : null}
-      <a className="mango-entry-card__cover" href={baseUrl(`reader/${encodeURIComponent(entry.title_id)}/${encodeURIComponent(entry.id)}`)}>{entry.cover_url ? <img src={entry.cover_url} alt="" loading="lazy" /> : <div className="mango-card__placeholder" />}</a>
+      <AppLink className="mango-entry-card__cover" to={`reader/${encodeURIComponent(entry.title_id)}/${encodeURIComponent(entry.id)}`}>{entry.cover_url ? <img src={entry.cover_url} alt="" loading="lazy" /> : <div className="mango-card__placeholder" />}</AppLink>
       <div className="mango-entry-card__body">
         <h3>{entry.name}</h3>
         <p>{entry.pages} {t('page')}</p>
         <ProgressBar value={entry.progress} />
         <div className="mango-actions">
-          <a className="mango-btn mango-btn--primary" href={baseUrl(`reader/${encodeURIComponent(entry.title_id)}/${encodeURIComponent(entry.id)}${entry.page > 0 ? '' : '/1'}`)}><Icon icon={entry.page > 0 ? icons.continue : icons.play} size={16} />{entry.page > 0 ? t('continue') : t('begin')}</a>
+          <AppLink className="mango-btn mango-btn--primary" to={`reader/${encodeURIComponent(entry.title_id)}/${encodeURIComponent(entry.id)}${entry.page > 0 ? '' : '/1'}`}><Icon icon={entry.page > 0 ? icons.continue : icons.play} size={16} />{entry.page > 0 ? t('continue') : t('begin')}</AppLink>
           <a className="mango-btn" href={baseUrl(`api/download/${encodeURIComponent(entry.title_id)}/${encodeURIComponent(entry.id)}`)}><Icon icon={icons.download} size={16} />{t('download')}</a>
           <button className="mango-btn" type="button" onClick={() => void updateProgress(entry, entry.progress < 100)}><Icon icon={entry.progress >= 100 ? icons.markUnread : icons.markRead} size={16} />{entry.progress >= 100 ? t('markUnread') : t('markRead')}</button>
           {isAdmin ? <button className="mango-btn" type="button" onClick={() => setEditTarget({ kind: 'entry', item: entry })}><Icon icon={icons.edit} size={16} />{t('edit')}</button> : null}
@@ -70,7 +72,7 @@ export function TitleDetailPage() {
   return <AppShell title={data?.title.name ?? t('titleDetail')} subtitle={data ? `${data.title.entry_count} ${t('entries')}` : undefined}>
     {loading ? <LoadingState message={t('loading')} /> : null}{error ? <ErrorState message={error} onRetry={() => void load()} retryLabel={t('retry')} /> : null}
     {data ? <>
-      <nav className="mango-breadcrumb" aria-label="Breadcrumb"><a href={baseUrl('library')}>{t('library')}</a>{data.parents.map((parent) => <span key={parent.id}>/ <a href={baseUrl(`book/${encodeURIComponent(parent.id)}`)}>{parent.name}</a></span>)}<span>/ {data.title.name}</span></nav>
+      <nav className="mango-breadcrumb" aria-label="Breadcrumb"><AppLink to="library">{t('library')}</AppLink>{data.parents.map((parent) => <span key={parent.id}>/ <AppLink to={`book/${encodeURIComponent(parent.id)}`}>{parent.name}</AppLink></span>)}<span>/ {data.title.name}</span></nav>
       <section className="mango-title-overview">
         <div className="mango-title-cover mango-title-cover--hover">{data.title.cover_url ? <img src={data.title.cover_url} alt="" /> : <div className="mango-card__placeholder" />}</div>
         <div>
@@ -78,7 +80,7 @@ export function TitleDetailPage() {
           <p className="mango-reading-summary">{t('readProgress', { read: readCount, total: totalCount })}</p>
           <ProgressBar value={data.title.progress} />
           <p className="mango-file-name mango-file-name--dim">{data.title.file_name}</p>
-          <div className="mango-tag-list">{(data.tags ?? []).map((item) => <span className="mango-tag-pill" key={item}><a href={baseUrl(`tags/${encodeURIComponent(item)}`)}>{item}</a>{data.is_admin ? <button type="button" className="mango-btn mango-btn--icon" title={t('remove')} aria-label={t('remove')} onClick={() => void mutate(`api/admin/tags/${encodeURIComponent(tid)}/${encodeURIComponent(item)}`, { method: 'DELETE' })}><Icon icon={icons.close} size={14} /></button> : null}</span>)}</div>
+          <div className="mango-tag-list">{(data.tags ?? []).map((item) => <span className="mango-tag-pill" key={item}><AppLink to={`tags/${encodeURIComponent(item)}`}>{item}</AppLink>{data.is_admin ? <button type="button" className="mango-btn mango-btn--icon" title={t('remove')} aria-label={t('remove')} onClick={() => void mutate(`api/admin/tags/${encodeURIComponent(tid)}/${encodeURIComponent(item)}`, { method: 'DELETE' })}><Icon icon={icons.close} size={14} /></button> : null}</span>)}</div>
           {data.is_admin ? <><form className="mango-inline-form" onSubmit={(event) => void addTag(event)}><input className="mango-input" value={tag} onChange={(event) => setTag(event.target.value)} placeholder={t('addTag')} /><button className="mango-btn" type="submit" disabled={busy}><Icon icon={icons.add} size={16} />{t('addTag')}</button></form><div className="mango-actions"><button className="mango-btn" type="button" onClick={() => setEditTarget({ kind: 'title', item: data.title })}><Icon icon={icons.edit} size={16} />{t('edit')}</button><button className="mango-btn mango-btn--danger" type="button" onClick={() => void mutate(`api/admin/hidden/${encodeURIComponent(tid)}/${data.title.hidden ? 0 : 1}`, { method: 'PUT' })}><Icon icon={data.title.hidden ? icons.show : icons.hide} size={16} />{data.title.hidden ? t('show') : t('hide')}</button></div></> : null}
         </div>
       </section>
@@ -89,7 +91,7 @@ export function TitleDetailPage() {
           {selected.size ? <div className="mango-selection-bar"><strong>{selected.size} {t('selected')}</strong><button className="mango-btn" type="button" disabled={busy} onClick={() => void bulkProgress('read')}><Icon icon={icons.markRead} size={16} />{t('markRead')}</button><button className="mango-btn" type="button" disabled={busy} onClick={() => void bulkProgress('unread')}><Icon icon={icons.markUnread} size={16} />{t('markUnread')}</button><button className="mango-btn" type="button" onClick={() => setSelected(new Set())}><Icon icon={icons.close} size={16} />{t('clearSelection')}</button></div> : null}
         </div>
         <BrowseToolbar query={query} onQuery={setQuery} mode={mode} onMode={setMode} ascending={ascending} onAscending={setAscending} extra={<>
-           {entries.length > 0 ? <select className="mango-input mango-jump-select" value="" onChange={(e) => { const id = e.target.value; if (id) window.location.href = baseUrl(`reader/${encodeURIComponent(entries[0].title_id)}/${encodeURIComponent(id)}/1`); }} aria-label={t('quickJumpTo')}><option value="">{t('quickJumpTo')}</option>{entries.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}</select> : null}
+           {entries.length > 0 ? <select className="mango-input mango-jump-select" value="" onChange={(e) => { const id = e.target.value; if (id) navigate(`reader/${encodeURIComponent(entries[0].title_id)}/${encodeURIComponent(id)}/1`); }} aria-label={t('quickJumpTo')}><option value="">{t('quickJumpTo')}</option>{entries.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}</select> : null}
           {data.is_admin && entries.length ? <button className="mango-btn" type="button" onClick={() => setSelected(new Set(entries.map((item) => item.id)))}><Icon icon={icons.selectAll} size={16} />{t('selectAll')}</button> : null}
         </>} />
         {!entries.length ? <EmptyState message={t('noResults')} /> : groups.map((group) => {

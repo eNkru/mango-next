@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
-import { baseUrl } from '../lib/baseUrl';
+import { AppLink } from '../lib/AppLink';
 import { useI18n } from '../lib/i18n';
 import { pushAlert } from '../shell/AlertHost';
 import { AppShell } from '../shell/AppShell';
@@ -127,20 +127,20 @@ export function AdminPage() {
   return (
     <AppShell title={t('admin')} subtitle={t('adminSubtitle')}>
       <div className="mango-admin-grid">
-        <a className="mango-admin-card" href={baseUrl('admin/user')}>
+        <AppLink className="mango-admin-card" to="admin/user">
           <strong className="mango-admin-card__title">
             <Icon icon={icons.users} size={18} />
             {t('userManagement')}
           </strong>
           <span>{t('userManagementDesc')}</span>
-        </a>
-        <a className="mango-admin-card" href={baseUrl('admin/missing')}>
+        </AppLink>
+        <AppLink className="mango-admin-card" to="admin/missing">
           <strong className="mango-admin-card__title">
             <Icon icon={icons.missing} size={18} />
             {t('missingEntries')}
           </strong>
           <span>{t('missingEntriesDesc')}</span>
-        </a>
+        </AppLink>
         <button
           type="button"
           className="mango-admin-card mango-admin-card--action"
