@@ -175,9 +175,9 @@ func (s *Storage) GetContinueReading(username string) ([]ContinueReadingItem, er
 			return nil, err
 		}
 		items = append(items, ContinueReadingItem{
-			EntryID:  entryID.String,
-			TitleID:  titleID.String,
-			Page:     page,
+			EntryID: entryID.String,
+			TitleID: titleID.String,
+			Page:    page,
 		})
 	}
 	return items, rows.Err()

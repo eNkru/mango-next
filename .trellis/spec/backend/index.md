@@ -40,7 +40,7 @@ go/
 │   └── public/           # Static assets (JS/CSS/fonts/images)
 ├── internal/
 │   ├── config/           # YAML+env config loading
-│   ├── storage/          # SQLite + migrations + CRUD (users/tags/thumbnails/progress)
+│   ├── storage/          # SQLite + domain files (user/title/tag/identity/missing/…)
 │   │   └── migration/    # Versioned migrations (latest: 15)
 │   ├── archive/          # zip/cbz/rar/cbr/7z reader (Reader interface)
 │   ├── thumbnail/        # Image size + thumbnail generation (200w/300h)
