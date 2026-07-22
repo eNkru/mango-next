@@ -1,6 +1,9 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback } from 'react';
+import { create } from 'zustand';
 
 export type Language = 'zh-cn' | 'zh-tw' | 'en';
+
+export const LANGUAGE_STORAGE_KEY = 'mango-language';
 
 const messages = {
   'zh-cn': {
@@ -224,20 +227,9 @@ const messages = {
 } as const;
 
 export type MessageKey = keyof typeof messages['zh-cn'];
-type I18nValue = {
-  language: Language;
-  setLanguage: (language: Language) => void;
-  t: (key: MessageKey, vars?: Record<string, string | number>) => string;
-};
-
-const I18nContext = createContext<I18nValue>({
-  language: 'zh-cn',
-  setLanguage: () => undefined,
-  t: (key) => messages['zh-cn'][key],
-});
 
 function storedLanguage(): Language {
-  const value = localStorage.getItem('mango-language');
+  const value = localStorage.getItem(LANGUAGE_STORAGE_KEY);
   return value === 'zh-tw' || value === 'en' ? value : 'zh-cn';
 }
 
@@ -248,27 +240,45 @@ function formatMessage(template: string, vars?: Record<string, string | number>)
   );
 }
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(storedLanguage);
-  const value = useMemo<I18nValue>(() => ({
-    language,
-    setLanguage: (next) => {
-      localStorage.setItem('mango-language', next);
-      setLanguageState(next);
-    },
-    t: (key, vars) =>
-      formatMessage(messages[language][key] ?? messages['zh-cn'][key], vars),
-  }), [language]);
+function applyDocumentLanguage(language: Language) {
+  document.documentElement.lang =
+    language === 'en' ? 'en' : language === 'zh-tw' ? 'zh-Hant' : 'zh-Hans';
+}
 
-  useEffect(() => {
-    document.documentElement.lang =
-      language === 'en' ? 'en' : language === 'zh-tw' ? 'zh-Hant' : 'zh-Hans';
-    document.title = `Mango - ${messages[language].library}`;
-  }, [language]);
+type I18nState = {
+  language: Language;
+  setLanguage: (language: Language) => void;
+  rehydrateFromStorage: () => void;
+};
 
-  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
+export const useI18nStore = create<I18nState>((set) => ({
+  language: storedLanguage(),
+
+  setLanguage: (next) => {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, next);
+    applyDocumentLanguage(next);
+    set({ language: next });
+  },
+
+  rehydrateFromStorage: () => {
+    const language = storedLanguage();
+    applyDocumentLanguage(language);
+    set({ language });
+  },
+}));
+
+// Apply html lang on first module load (matches previous provider mount effect).
+if (typeof document !== 'undefined') {
+  applyDocumentLanguage(useI18nStore.getState().language);
 }
 
 export function useI18n() {
-  return useContext(I18nContext);
+  const language = useI18nStore((s) => s.language);
+  const setLanguage = useI18nStore((s) => s.setLanguage);
+  const t = useCallback(
+    (key: MessageKey, vars?: Record<string, string | number>) =>
+      formatMessage(messages[language][key] ?? messages['zh-cn'][key], vars),
+    [language],
+  );
+  return { language, setLanguage, t };
 }
