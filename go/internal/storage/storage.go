@@ -61,6 +61,17 @@ func Open(path, libraryPath string) (*Storage, error) {
 	// SQLite with a single writer: cap connections to avoid "database is locked".
 	db.SetMaxOpenConns(1)
 
+	// SQLite pragmas for performance and concurrency.
+	if _, err := db.Exec("PRAGMA journal_mode = WAL;"); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("enable WAL mode: %w", err)
+	}
+
+	if _, err := db.Exec("PRAGMA busy_timeout = 5000;"); err != nil {
+		db.Close()
+		return nil, fmt.Errorf("set busy timeout: %w", err)
+	}
+
 	// Enable foreign keys.
 	if _, err := db.Exec("PRAGMA foreign_keys = 1"); err != nil {
 		db.Close()
