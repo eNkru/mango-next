@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"log"
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -58,7 +58,7 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	token, err := s.Deps.Storage.VerifyUser(username, password)
 	if err != nil || token == "" {
 		if err != nil {
-			log.Printf("Login error: %v", err)
+			slog.Error("Login error", "err", err)
 		}
 		recordLoginFailure(r)
 		http.Redirect(w, r, loginPath, http.StatusFound)
@@ -101,7 +101,7 @@ func (s *Server) buildLibraryPageData(isAdmin bool, showHidden bool) LibraryPage
 
 	hiddenIDs, err := s.Deps.Storage.GetHiddenTitleIDs()
 	if err != nil {
-		log.Printf("library GetHiddenTitleIDs: %v", err)
+		slog.Error("library GetHiddenTitleIDs", "err", err)
 		hiddenIDs = nil
 	}
 	hiddenSet := make(map[string]bool, len(hiddenIDs))
@@ -175,7 +175,7 @@ func (s *Server) buildTagPageData(tag string, isAdmin bool, showHidden bool) (Ta
 
 	hiddenIDs, err := s.Deps.Storage.GetHiddenTitleIDs()
 	if err != nil {
-		log.Printf("tag GetHiddenTitleIDs: %v", err)
+		slog.Error("tag GetHiddenTitleIDs", "err", err)
 		hiddenIDs = nil
 	}
 	hiddenSet := make(map[string]bool, len(hiddenIDs))

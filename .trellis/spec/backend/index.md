@@ -105,6 +105,7 @@ Default config paths (`~/mango/library`, `~/mango.db`, etc.) expand to `/root/ma
 | [Library Background Jobs](./library-background-jobs.md) | Cache identity, thumbnail locking, progress, and startup ordering | Active |
 | [React Browse API](./react-browse-api.md) | Browse DTOs, legacy coexistence, metadata mutations | Active |
 | [React Reader API](./react-reader-api.md) | Reader bootstrap, 1-based page images, shell boot | Active |
+| [Structured Logging](./structured-logging.md) | slog levels, Text handler, stdlib bridge, server call sites | Active |
 
 ---
 

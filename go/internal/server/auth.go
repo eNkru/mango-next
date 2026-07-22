@@ -6,7 +6,7 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -63,7 +63,7 @@ func AuthMiddleware(next http.Handler, st *storage.Storage) http.Handler {
 			}
 			exists, err := st.UsernameExists(cfg.DefaultUsername)
 			if err != nil || !exists {
-				log.Printf("Default username %q does not exist", cfg.DefaultUsername)
+				slog.Error("default username does not exist", "username", cfg.DefaultUsername)
 				requireAuth(w, r)
 				return
 			}
@@ -79,7 +79,7 @@ func AuthMiddleware(next http.Handler, st *storage.Storage) http.Handler {
 		if cfg.AuthProxyHeaderName != "" {
 			proxyUsername := r.Header.Get(cfg.AuthProxyHeaderName)
 			if proxyUsername == "" || !userExists(st, proxyUsername) {
-				log.Printf("Header %q unset or is not a valid username", cfg.AuthProxyHeaderName)
+				slog.Warn("auth proxy header unset or invalid username", "header", cfg.AuthProxyHeaderName)
 				requireAuth(w, r)
 				return
 			}

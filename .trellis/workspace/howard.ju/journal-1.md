@@ -971,3 +971,71 @@ Solid 3px accent border on active continue card; viewport-scaled stack peeks; PR
 ### Next Steps
 
 - None - task complete
+
+
+## Session 28: Poster rail skeleton + SQLite WAL
+
+**Date**: 2026-07-22
+**Task**: Poster rail skeleton + SQLite WAL
+**Branch**: `main`
+
+### Summary
+
+Home PosterRail 加载骨架（shimmer + CLS）已落地并接 HomePage；SQLite Open 启用 WAL 与 busy_timeout=5000；spec 更新 component-guidelines；分支 feat/poster-rail-skeleton-sqlite-wal 已合并 PR #59。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b422da8` | (see git log) |
+| `cbc7b64` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
+
+
+## Session 29: Structured logging with slog
+
+**Date**: 2026-07-22
+**Task**: Structured logging with slog
+**Branch**: `feat/structured-logging`
+
+### Summary
+
+server 包 log.Print* 迁至 slog；ApplyLogLevel 真级别过滤 + Text handler + stdlib 桥接；access log 结构化字段；spec structured-logging.md；分支 feat/structured-logging 已推送。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `776d3bb` | (see git log) |
+| `114d279` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
