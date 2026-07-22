@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 33
+- **Total Sessions**: 34
 - **Last Active**: 2026-07-22
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1177 | Active |
+| `journal-1.md` | ~1210 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 34 | 2026-07-22 | Close project-review task | `deabb4d` | `main` |
 | 33 | 2026-07-22 | Zustand i18n and boot migration | `2db16eb`, `bf01390` | `feat/zustand-i18n-boot` |
 | 32 | 2026-07-22 | Global UI prefs Zustand stores | `07fc350`, `d43323e` | `feat/global-ui-context` |
 | 31 | 2026-07-22 | Client SPA router | `4b894b1`, `ac3640a` | `feat/client-spa-router` |
