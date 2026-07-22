@@ -3,41 +3,55 @@ package config
 import (
 	"io"
 	"log"
+	"log/slog"
 	"os"
 	"strings"
 )
 
-// ApplyLogLevel configures the standard library logger based on log_level.
+// ApplyLogLevel configures the process-wide slog default logger and bridges
+// the standard library logger into slog so unmigrated packages still respect
+// log_level filtering.
+//
 // Levels: debug, info, warn/warning, error (case-insensitive). Unknown values
-// default to info. Debug enables standard log flags with file:line; error
-// suppresses routine output by discarding the default writer (callers that need
-// error visibility should still use log.Printf for errors at info+).
+// default to info. Debug enables source location on the text handler.
 func ApplyLogLevel(level string) {
-	lv := strings.ToLower(strings.TrimSpace(level))
-	switch lv {
+	lv := parseLogLevel(level)
+	h := slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
+		Level:     lv,
+		AddSource: lv <= slog.LevelDebug,
+	})
+	slog.SetDefault(slog.New(h))
+
+	// Residual log.Print* from packages not yet on slog.
+	log.SetOutput(slogBridge{})
+	log.SetFlags(0)
+	log.SetPrefix("")
+}
+
+func parseLogLevel(level string) slog.Level {
+	switch strings.ToLower(strings.TrimSpace(level)) {
 	case "debug":
-		log.SetOutput(os.Stderr)
-		log.SetFlags(log.LstdFlags | log.Lshortfile)
-	case "warn", "warning", "error":
-		// Keep stderr but prefix so operators can filter; stdlib cannot fully
-		// suppress by severity without a custom Logger per call site.
-		log.SetOutput(os.Stderr)
-		log.SetFlags(log.LstdFlags)
-		if lv == "error" {
-			// Best-effort: still log, but mark level for operators grepping output.
-			log.SetPrefix("[error] ")
-		} else {
-			log.SetPrefix("[warn] ")
-		}
+		return slog.LevelDebug
+	case "warn", "warning":
+		return slog.LevelWarn
+	case "error":
+		return slog.LevelError
 	case "info", "":
-		log.SetOutput(os.Stderr)
-		log.SetFlags(log.LstdFlags)
-		log.SetPrefix("")
+		return slog.LevelInfo
 	default:
-		log.SetOutput(os.Stderr)
-		log.SetFlags(log.LstdFlags)
-		log.SetPrefix("")
+		return slog.LevelInfo
 	}
+}
+
+// slogBridge forwards stdlib log output into slog at Info level.
+type slogBridge struct{}
+
+func (slogBridge) Write(p []byte) (int, error) {
+	msg := strings.TrimSpace(string(p))
+	if msg != "" {
+		slog.Info(msg)
+	}
+	return len(p), nil
 }
 
 // LogLevelWriter returns the writer currently used by the standard logger.

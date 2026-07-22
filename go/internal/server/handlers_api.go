@@ -3,7 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -39,7 +39,7 @@ func (s *Server) apiLogin(w http.ResponseWriter, r *http.Request) {
 	token, err := s.Deps.Storage.VerifyUser(body.Username, body.Password)
 	if err != nil || token == "" {
 		if err != nil {
-			log.Printf("API login error: %v", err)
+			slog.Error("API login error", "err", err)
 		}
 		recordLoginFailure(r)
 		w.WriteHeader(http.StatusForbidden)
@@ -226,7 +226,7 @@ func (s *Server) apiPage(w http.ResponseWriter, r *http.Request) {
 
 	img, err := entry.ReadPage(page)
 	if err != nil {
-		log.Printf("Read page error: %v", err)
+		slog.Error("Read page error", "err", err)
 		sendJSONError(w, "Failed to read page", http.StatusInternalServerError)
 		return
 	}
@@ -239,7 +239,7 @@ func (s *Server) apiCover(w http.ResponseWriter, r *http.Request) {
 
 	img, err := s.Deps.Storage.GetThumbnail(eid)
 	if err != nil {
-		log.Printf("Get thumbnail error: %v", err)
+		slog.Error("Get thumbnail error", "err", err)
 		http.Error(w, "Not found", http.StatusNotFound)
 		return
 	}
@@ -269,7 +269,7 @@ func (s *Server) apiSaveProgress(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := s.Deps.Storage.SaveProgress(username, tid, entryID, page); err != nil {
-		log.Printf("Save progress error: %v", err)
+		slog.Error("Save progress error", "err", err)
 		sendJSONError(w, "Failed to save progress", http.StatusInternalServerError)
 		return
 	}
@@ -303,13 +303,13 @@ func (s *Server) apiBulkProgress(w http.ResponseWriter, r *http.Request) {
 	switch action {
 	case "read":
 		if err := s.Deps.Storage.BulkMarkRead(username, tid, body.IDs); err != nil {
-			log.Printf("Bulk mark read error: %v", err)
+			slog.Error("Bulk mark read error", "err", err)
 			sendJSONError(w, "Failed", http.StatusInternalServerError)
 			return
 		}
 	case "unread":
 		if err := s.Deps.Storage.BulkMarkUnread(username, tid, body.IDs); err != nil {
-			log.Printf("Bulk mark unread error: %v", err)
+			slog.Error("Bulk mark unread error", "err", err)
 			sendJSONError(w, "Failed", http.StatusInternalServerError)
 			return
 		}
@@ -333,7 +333,7 @@ func (s *Server) apiDimensions(w http.ResponseWriter, r *http.Request) {
 
 	out, err := s.entryDimensions(entry)
 	if err != nil {
-		log.Printf("Read page dimensions error: %v", err)
+		slog.Error("Read page dimensions error", "err", err)
 		sendJSONError(w, "Failed to read dimensions", http.StatusInternalServerError)
 		return
 	}
@@ -370,7 +370,7 @@ func (s *Server) apiReader(w http.ResponseWriter, r *http.Request) {
 
 	dims, err := s.entryDimensions(entry)
 	if err != nil {
-		log.Printf("Reader bootstrap dimensions error: %v", err)
+		slog.Error("Reader bootstrap dimensions error", "err", err)
 		sendJSONError(w, "Failed to read dimensions", http.StatusInternalServerError)
 		return
 	}
@@ -471,7 +471,7 @@ func (s *Server) entryDimensions(entry library.Entry) ([]map[string]any, error) 
 		out[i] = map[string]any{"width": d.Width, "height": d.Height}
 	}
 	if err := s.Deps.Storage.SaveEntryDimensions(entry.ID(), sig, stored); err != nil {
-		log.Printf("Save entry dimensions error: %v", err)
+		slog.Error("Save entry dimensions error", "err", err)
 	}
 	return out, nil
 }
@@ -499,7 +499,7 @@ func (s *Server) apiContinueReading(w http.ResponseWriter, r *http.Request) {
 	username := GetUsername(r)
 	items, err := s.Deps.Storage.GetContinueReading(username)
 	if err != nil {
-		log.Printf("Continue reading error: %v", err)
+		slog.Error("Continue reading error", "err", err)
 		sendJSON(w, map[string]any{"success": true, "data": []any{}})
 		return
 	}
@@ -526,7 +526,7 @@ func (s *Server) apiStartReading(w http.ResponseWriter, r *http.Request) {
 	username := GetUsername(r)
 	items, err := s.Deps.Storage.GetStartReading(username)
 	if err != nil {
-		log.Printf("Start reading error: %v", err)
+		slog.Error("Start reading error", "err", err)
 		sendJSON(w, map[string]any{"success": true, "data": []any{}})
 		return
 	}
@@ -546,7 +546,7 @@ func (s *Server) apiStartReading(w http.ResponseWriter, r *http.Request) {
 func (s *Server) apiRecentlyAdded(w http.ResponseWriter, r *http.Request) {
 	items, err := s.Deps.Storage.GetRecentlyAdded("")
 	if err != nil {
-		log.Printf("Recently added error: %v", err)
+		slog.Error("Recently added error", "err", err)
 		sendJSON(w, map[string]any{"success": true, "data": []any{}})
 		return
 	}
@@ -674,7 +674,7 @@ func (s *Server) apiAdminScan(w http.ResponseWriter, r *http.Request) {
 			titles = result.TitleCount
 		}
 		if err != nil {
-			log.Printf("Scan error: %v", err)
+			slog.Error("Scan error", "err", err)
 		}
 		lib.FinishScanJob(titles, ms, err)
 	}()
@@ -711,7 +711,7 @@ func (s *Server) apiAdminThumbnailProgress(w http.ResponseWriter, r *http.Reques
 func (s *Server) apiAdminGenerateThumbnails(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		if err := s.Deps.Library.GenerateThumbnails(); err != nil {
-			log.Printf("Thumbnail generation error: %v", err)
+			slog.Error("Thumbnail generation error", "err", err)
 		}
 	}()
 	sendJSON(w, map[string]any{"success": true})
@@ -899,7 +899,7 @@ func (s *Server) apiAdminSetSortTitle(w http.ResponseWriter, r *http.Request) {
 // Failures return HTTP 200 + {"success":false,"error":...} like Crystal send_json rescue.
 func (s *Server) apiAdminUpload(w http.ResponseWriter, r *http.Request) {
 	fail := func(msg string) {
-		log.Printf("apiAdminUpload: %s", msg)
+		slog.Error("api admin upload", "msg", msg)
 		sendJSON(w, map[string]any{"success": false, "error": msg})
 	}
 

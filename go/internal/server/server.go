@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -46,9 +46,9 @@ func NewServer(deps *Dependencies) *Server {
 func (s *Server) Start(ctx context.Context) error {
 	cfg := s.Deps.Config
 	addr := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
-	log.Printf("Starting server on %s", addr)
+	slog.Info("starting server", "addr", addr)
 	if cfg.AuthProxyHeaderName != "" {
-		log.Printf("WARNING: auth_proxy_header_name is set to %q. Do not expose this process directly; put it behind a reverse proxy that strips or overwrites that header for every request.", cfg.AuthProxyHeaderName)
+		slog.Warn("auth_proxy_header_name is set; do not expose this process directly; put it behind a reverse proxy that strips or overwrites that header for every request", "header", cfg.AuthProxyHeaderName)
 	}
 
 	srv := &http.Server{
@@ -65,7 +65,7 @@ func (s *Server) Start(ctx context.Context) error {
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		if err := srv.Shutdown(shutdownCtx); err != nil {
-			log.Printf("HTTP server shutdown: %v", err)
+			slog.Error("http server shutdown", "err", err)
 		}
 	}()
 
@@ -229,7 +229,7 @@ func (s *Server) servePublic(r chi.Router) {
 func (s *Server) renderPage(w http.ResponseWriter, name string, data any) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := s.Deps.Templates.Render(w, name, data); err != nil {
-		log.Printf("Template render error %s: %v", name, err)
+		slog.Error("template render error", "template", name, "err", err)
 		http.Error(w, "Template error", http.StatusInternalServerError)
 	}
 }

@@ -1,8 +1,12 @@
 package config
 
 import (
+	"bytes"
+	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -87,6 +91,50 @@ func TestApplyLogLevelDoesNotPanic(t *testing.T) {
 		ApplyLogLevel(lv)
 	}
 	ApplyLogLevel("info")
+}
+
+func TestApplyLogLevelFiltersByLevel(t *testing.T) {
+	var buf bytes.Buffer
+	h := slog.NewTextHandler(&buf, &slog.HandlerOptions{Level: slog.LevelError})
+	slog.SetDefault(slog.New(h))
+	// Mirror bridge used by ApplyLogLevel for residual stdlib log.
+	log.SetOutput(slogBridge{})
+	log.SetFlags(0)
+
+	slog.Info("should-not-appear")
+	slog.Error("should-appear")
+	log.Print("bridge-info-should-not-appear")
+
+	out := buf.String()
+	if strings.Contains(out, "should-not-appear") {
+		t.Fatalf("info leaked at error level: %q", out)
+	}
+	if !strings.Contains(out, "should-appear") {
+		t.Fatalf("error missing at error level: %q", out)
+	}
+	if strings.Contains(out, "bridge-info-should-not-appear") {
+		t.Fatalf("bridged info leaked at error level: %q", out)
+	}
+
+	// Restore process defaults for other tests in this package.
+	ApplyLogLevel("info")
+}
+
+func TestParseLogLevel(t *testing.T) {
+	cases := map[string]slog.Level{
+		"debug":   slog.LevelDebug,
+		"INFO":    slog.LevelInfo,
+		"":        slog.LevelInfo,
+		"bogus":   slog.LevelInfo,
+		"warn":    slog.LevelWarn,
+		"warning": slog.LevelWarn,
+		"error":   slog.LevelError,
+	}
+	for in, want := range cases {
+		if got := parseLogLevel(in); got != want {
+			t.Errorf("parseLogLevel(%q)=%v want %v", in, got, want)
+		}
+	}
 }
 
 func TestDumpsDefaultWhenMissing(t *testing.T) {
