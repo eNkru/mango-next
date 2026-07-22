@@ -1,4 +1,5 @@
 import { useI18n } from '../../lib/i18n';
+import { AppLink } from '../../lib/AppLink';
 import { baseUrl } from '../../lib/baseUrl';
 import { Icon } from '../../shell/Icon';
 import { icons } from '../../shell/icons';
@@ -37,7 +38,7 @@ export function ReaderTopBar({
       onPointerLeave={onPointerLeave}
     >
       <div className="mango-reader-topbar__left">
-        <a className="mango-reader-topbar__brand" href={baseUrl()}>
+        <AppLink className="mango-reader-topbar__brand" to="">
           <img
             className="mango-topbar__mark"
             src={baseUrl('img/icons/mango-mark.svg')}
@@ -46,7 +47,7 @@ export function ReaderTopBar({
             height={24}
           />
           <span className="mango-topbar__wordmark">Mango</span>
-        </a>
+        </AppLink>
         <button type="button" className="mango-btn mango-btn--ghost" onClick={onOpenControls}>
           <Icon icon={icons.readerControls} size={16} />
           {t('readerControls')}
@@ -60,10 +61,10 @@ export function ReaderTopBar({
       </div>
       <div className="mango-reader-topbar__right">
         <LanguageSelect />
-        <a className="mango-btn mango-btn--primary" href={exitUrl || baseUrl()}>
+        <AppLink className="mango-btn mango-btn--primary" to={exitUrl || ''}>
           <Icon icon={icons.exit} size={16} />
           {t('exitReader')}
-        </a>
+        </AppLink>
       </div>
     </header>
   );

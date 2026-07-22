@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { baseUrl } from '../../lib/baseUrl';
-import { readBoot } from '../../lib/boot';
+import { AppLink, useAppNavigate } from '../../lib/AppLink';
 import { useI18n } from '../../lib/i18n';
 import { AlertHost } from '../../shell/AlertHost';
 import { Icon } from '../../shell/Icon';
@@ -18,12 +18,17 @@ import { useReaderProgress } from './useReaderProgress';
 const EDGE_PX = 36;
 const IDLE_MS = 1800;
 
-export function ReaderPage() {
-  const boot = readBoot();
+export function ReaderPage({
+  tid,
+  eid,
+  initialPage = 1,
+}: {
+  tid: string;
+  eid: string;
+  initialPage?: number;
+}) {
   const { t } = useI18n();
-  const tid = boot.tid ?? '';
-  const eid = boot.eid ?? '';
-  const initialPage = boot.page ?? 1;
+  const navigate = useAppNavigate();
 
   const { state } = useReaderBootstrap(tid, eid);
   const { prefs, setPrefs } = useReaderPrefs();
@@ -129,9 +134,24 @@ export function ReaderPage() {
     scheduleHide();
   };
 
+  const toAppPath = (url: string) => {
+    if (!url) return 'library';
+    try {
+      const u = url.startsWith('http') ? new URL(url) : new URL(url, window.location.origin);
+      let path = u.pathname + u.search;
+      const base = baseUrl().replace(/\/$/, '');
+      if (base && base !== '' && path.startsWith(base)) {
+        path = path.slice(base.length) || '/';
+      }
+      return path.replace(/^\//, '');
+    } catch {
+      return url.replace(/^\//, '');
+    }
+  };
+
   const completeAndGo = async (url: string) => {
     await progress.complete();
-    window.location.replace(url);
+    navigate(toAppPath(url), { replace: true });
   };
 
   const onZoneClick = (zoneIsRight: boolean) => {
@@ -162,17 +182,17 @@ export function ReaderPage() {
       <div className="mango-reader mango-reader--gate">
         <ErrorState message={state.status === 'error' ? state.message : t('readerError')} />
         <p>
-          <a className="mango-btn" href={baseUrl('library')}>
+          <AppLink className="mango-btn" to="library">
             <Icon icon={icons.library} size={16} />
             {t('library')}
-          </a>
+          </AppLink>
         </p>
         <AlertHost />
       </div>
     );
   }
 
-  const exitUrl = data.exit_url || baseUrl(`book/${encodeURIComponent(tid)}`);
+  const exitPath = data.exit_url ? toAppPath(data.exit_url) : `book/${encodeURIComponent(tid)}`;
 
   return (
     <div className="mango-reader">
@@ -187,7 +207,7 @@ export function ReaderPage() {
         entryName={data.entry.name}
         page={nav.page}
         pages={pages}
-        exitUrl={exitUrl}
+        exitUrl={exitPath}
         onOpenControls={() => openControls(nav.page)}
         onPointerEnter={() => {
           pointerInBar.current = true;
@@ -219,13 +239,13 @@ export function ReaderPage() {
             <button
               type="button"
               className="mango-btn mango-btn--primary"
-              onClick={() => void completeAndGo(data.next_entry_url)}
+              onClick={() => void completeAndGo(data.next_entry_url || exitPath)}
             >
               <Icon icon={icons.play} size={16} />
               {t('nextEntry')}
             </button>
           ) : (
-            <button type="button" className="mango-btn mango-btn--primary" onClick={() => void completeAndGo(exitUrl)}>
+            <button type="button" className="mango-btn mango-btn--primary" onClick={() => void completeAndGo(exitPath)}>
               <Icon icon={icons.exit} size={16} />
               {t('exitReader')}
             </button>
@@ -242,7 +262,7 @@ export function ReaderPage() {
         prefs={prefs}
         nextEntryUrl={data.next_entry_url}
         previousEntryUrl={data.previous_entry_url}
-        exitUrl={exitUrl}
+        exitUrl={exitPath}
         onClose={closeControls}
         onJumpPage={(p) => {
           nav.setPage(p);
@@ -250,10 +270,15 @@ export function ReaderPage() {
         }}
         onPrefs={setPrefs}
         onJumpEntry={(nextEid) => {
-          window.location.replace(baseUrl(`reader/${encodeURIComponent(tid)}/${encodeURIComponent(nextEid)}`));
+          navigate(`reader/${encodeURIComponent(tid)}/${encodeURIComponent(nextEid)}`, { replace: true });
         }}
-        onNextEntry={() => void completeAndGo(data.next_entry_url || exitUrl)}
-        onExit={() => void completeAndGo(exitUrl)}
+        onPreviousEntry={
+          data.previous_entry_url
+            ? () => void completeAndGo(data.previous_entry_url)
+            : undefined
+        }
+        onNextEntry={() => void completeAndGo(data.next_entry_url || exitPath)}
+        onExit={() => void completeAndGo(exitPath)}
       />
       <AlertHost />
     </div>

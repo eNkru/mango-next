@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 30
+- **Total Sessions**: 31
 - **Last Active**: 2026-07-22
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1075 | Active |
+| `journal-1.md` | ~1109 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 31 | 2026-07-22 | Client SPA router | `4b894b1`, `ac3640a` | `feat/client-spa-router` |
 | 30 | 2026-07-22 | Decompose storage package | `de73081`, `0ee11a3` | `feat/decompose-storage` |
 | 29 | 2026-07-22 | Structured logging with slog | `776d3bb`, `114d279` | `feat/structured-logging` |
 | 28 | 2026-07-22 | Poster rail skeleton + SQLite WAL | `b422da8`, `cbc7b64` | `main` |

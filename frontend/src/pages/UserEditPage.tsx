@@ -1,7 +1,6 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
-import { baseUrl } from '../lib/baseUrl';
-import { readBoot } from '../lib/boot';
+import { AppLink, useAppNavigate } from '../lib/AppLink';
 import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
@@ -9,14 +8,10 @@ import { Icon } from '../shell/Icon';
 import { icons } from '../shell/icons';
 import { ErrorState, LoadingState } from '../shell/StatePanels';
 
-export function UserEditPage() {
+export function UserEditPage({ username: usernameProp }: { username?: string }) {
   const { t } = useI18n();
-  const boot = useMemo(() => readBoot(), []);
-  const originalUsername = useMemo(() => {
-    if (boot.username) return boot.username;
-    const params = new URLSearchParams(window.location.search);
-    return params.get('username') ?? '';
-  }, [boot.username]);
+  const navigate = useAppNavigate();
+  const originalUsername = usernameProp ?? '';
   const isNew = originalUsername === '';
 
   const [username, setUsername] = useState(originalUsername);
@@ -85,7 +80,7 @@ export function UserEditPage() {
         });
         pushAlert(t('userUpdated'), 'success');
       }
-      window.location.href = baseUrl('admin/user');
+      navigate('admin/user');
     } catch (err) {
       const message = err instanceof Error ? err.message : t('saveFailed');
       setFormError(message);
@@ -158,10 +153,10 @@ export function UserEditPage() {
                 <Icon icon={icons.save} size={16} />
                 {busy ? t('saving') : t('save')}
               </button>
-              <a className="mango-btn" href={baseUrl('admin/user')}>
+              <AppLink className="mango-btn" to="admin/user">
                 <Icon icon={icons.back} size={16} />
                 {t('backToList')}
-              </a>
+              </AppLink>
             </div>
           </form>
         ) : null}

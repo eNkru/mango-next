@@ -19,6 +19,7 @@ type Props = {
   onJumpPage: (page: number) => void;
   onPrefs: (patch: Partial<ReaderPrefs>) => void;
   onJumpEntry: (eid: string) => void;
+  onPreviousEntry?: () => void;
   onNextEntry: () => void;
   onExit: () => void;
 };
@@ -38,6 +39,7 @@ export function ReaderControls({
   onJumpPage,
   onPrefs,
   onJumpEntry,
+  onPreviousEntry,
   onNextEntry,
   onExit,
 }: Props) {
@@ -189,11 +191,11 @@ export function ReaderControls({
         ) : null}
 
         <div className="mango-actions mango-reader-controls__actions">
-          {previousEntryUrl ? (
-            <a className="mango-btn" href={previousEntryUrl}>
+          {previousEntryUrl && onPreviousEntry ? (
+            <button type="button" className="mango-btn" onClick={onPreviousEntry}>
               <Icon icon={icons.back} size={16} />
               {t('previousEntry')}
-            </a>
+            </button>
           ) : null}
           {nextEntryUrl ? (
             <button type="button" className="mango-btn mango-btn--primary" onClick={onNextEntry}>

@@ -1073,3 +1073,37 @@ server 包 log.Print* 迁至 slog；ApplyLogLevel 真级别过滤 + Text handler
 ### Next Steps
 
 - None - task complete
+
+
+## Session 31: Client SPA router
+
+**Date**: 2026-07-22
+**Task**: Client SPA router
+**Branch**: `feat/client-spa-router`
+
+### Summary
+
+集成 react-router-dom；BootProvider 常驻会话；壳层/浏览/管理/阅读器 SPA 导航；logout/download 仍整页；typecheck+build 通过。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4b894b1` | (see git log) |
+| `ac3640a` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

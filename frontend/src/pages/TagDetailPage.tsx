@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BrowseToolbar, PosterCard } from '../browse/BrowseComponents';
 import { apiFetch } from '../lib/api';
-import { baseUrl } from '../lib/baseUrl';
-import { readBoot } from '../lib/boot';
+import { AppLink } from '../lib/AppLink';
+import { useBoot } from '../lib/bootContext';
 import {
   filterBrowseItems,
   sortBrowseItems,
@@ -49,20 +49,13 @@ function toBrowseTitle(card: TagApiTitle): BrowseTitle {
   };
 }
 
-export function TagDetailPage() {
+export function TagDetailPage({ tag, showHidden: initialShowHidden = false }: { tag: string; showHidden?: boolean }) {
   const { t } = useI18n();
-  const boot = useMemo(() => readBoot(), []);
-  const tag = useMemo(() => {
-    if (boot.tag) return boot.tag;
-    const parts = window.location.pathname.split('/').filter(Boolean);
-    const idx = parts.lastIndexOf('tags');
-    if (idx >= 0 && parts[idx + 1]) return decodeURIComponent(parts[idx + 1]);
-    return '';
-  }, [boot.tag]);
+  const boot = useBoot();
 
   const [titles, setTitles] = useState<BrowseTitle[]>([]);
   const [isAdmin, setIsAdmin] = useState(Boolean(boot.isAdmin));
-  const [showHidden, setShowHidden] = useState(Boolean(boot.showHidden));
+  const [showHidden, setShowHidden] = useState(Boolean(initialShowHidden));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
@@ -99,8 +92,9 @@ export function TagDetailPage() {
   );
 
   useEffect(() => {
-    void load(Boolean(boot.showHidden));
-  }, [boot.showHidden, load]);
+    setShowHidden(Boolean(initialShowHidden));
+    void load(Boolean(initialShowHidden));
+  }, [initialShowHidden, load, tag]);
 
   const filtered = useMemo(
     () => sortBrowseItems(filterBrowseItems(titles, query), mode, ascending),
@@ -147,10 +141,10 @@ export function TagDetailPage() {
         modes={TAG_SORT_MODES}
         extra={
           <>
-            <a className="mango-btn" href={baseUrl('tags')}>
+            <AppLink className="mango-btn" to="tags">
               <Icon icon={icons.back} size={16} />
               {t('allTags')}
-            </a>
+            </AppLink>
             {isAdmin ? (
               <button type="button" className="mango-btn" onClick={toggleShowHidden}>
                 <Icon icon={showHidden ? icons.hide : icons.show} size={16} />

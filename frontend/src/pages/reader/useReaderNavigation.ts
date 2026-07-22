@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { appPath } from '../../lib/bootContext';
 import { baseUrl } from '../../lib/baseUrl';
 import { clampPage, nextDirectionIsLeft, readerPageImagePath } from './readerMath';
 
@@ -23,6 +25,7 @@ export function useReaderNavigation({
   mode,
   onPageChange,
 }: Options) {
+  const navigate = useNavigate();
   const [page, setPageState] = useState(() => clampPage(initialPage, pages));
   const pageRef = useRef(page);
   pageRef.current = page;
@@ -30,10 +33,12 @@ export function useReaderNavigation({
   const replaceUrl = useCallback(
     (next: number) => {
       const clamped = clampPage(next, pages);
-      const path = baseUrl(`reader/${encodeURIComponent(tid)}/${encodeURIComponent(eid)}/${clamped}`);
-      history.replaceState(null, '', path);
+      navigate(
+        appPath(`reader/${encodeURIComponent(tid)}/${encodeURIComponent(eid)}/${clamped}`),
+        { replace: true },
+      );
     },
-    [tid, eid, pages],
+    [tid, eid, pages, navigate],
   );
 
   const preload = useCallback(

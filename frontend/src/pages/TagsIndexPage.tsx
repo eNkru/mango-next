@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { apiFetch } from '../lib/api';
-import { baseUrl } from '../lib/baseUrl';
+import { AppLink } from '../lib/AppLink';
 import { useI18n } from '../lib/i18n';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
@@ -79,13 +79,13 @@ export function TagsIndexPage() {
           ) : (
             <div className="mango-tag-cloud">
               {filtered.map((item) => (
-                <a
+                <AppLink
                   key={item.tag}
                   className="mango-tag-pill"
-                  href={baseUrl(`tags/${encodeURIComponent(item.tag)}`)}
+                  to={`tags/${encodeURIComponent(item.tag)}`}
                 >
                   {item.tag} <small>({item.count})</small>
-                </a>
+                </AppLink>
               ))}
             </div>
           )}

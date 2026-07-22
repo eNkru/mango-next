@@ -1,6 +1,6 @@
 import { useCallback, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import type { BrowseEntry } from '../lib/browse';
-import { baseUrl } from '../lib/baseUrl';
+import { AppLink } from '../lib/AppLink';
 import { useI18n } from '../lib/i18n';
 import { ProgressBar } from './BrowseComponents';
 import { Icon } from '../shell/Icon';
@@ -8,8 +8,8 @@ import { icons } from '../shell/icons';
 
 const MAX_STACK_DEPTH = 4;
 
-function readerUrl(item: BrowseEntry) {
-  return baseUrl(`reader/${encodeURIComponent(item.title_id)}/${encodeURIComponent(item.id)}`);
+function readerPath(item: BrowseEntry) {
+  return `reader/${encodeURIComponent(item.title_id)}/${encodeURIComponent(item.id)}`;
 }
 
 function wrapIndex(index: number, total: number) {
@@ -120,10 +120,10 @@ export function ContinueCarousel({ items }: { items: BrowseEntry[] }) {
                       </p>
                       <ProgressBar value={item.progress} />
                       <div className="mango-actions">
-                        <a className="mango-btn mango-btn--primary" href={readerUrl(item)}>
+                        <AppLink className="mango-btn mango-btn--primary" to={readerPath(item)}>
                           <Icon icon={icons.continue} size={16} />
                           {t('continue')}
-                        </a>
+                        </AppLink>
                       </div>
                     </div>
                   </div>

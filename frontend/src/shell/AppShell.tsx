@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { AppLink } from '../lib/AppLink';
 import { baseUrl } from '../lib/baseUrl';
-import { readBoot } from '../lib/boot';
+import { useBoot } from '../lib/bootContext';
 import { useI18n } from '../lib/i18n';
 import {
   applyHtmlTheme,
@@ -25,7 +26,7 @@ type AppShellProps = {
 
 export function AppShell({ title, subtitle, children }: AppShellProps) {
   const { language, t } = useI18n();
-  const boot = readBoot();
+  const boot = useBoot();
   const [theme, setTheme] = useState<ThemeSetting>(loadThemeSetting);
   const [uiStyle, setUiStyle] = useState<UIStyle>(loadUIStyle);
 
@@ -42,7 +43,7 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
   return (
     <>
       <header className="mango-topbar" role="banner">
-        <a className="mango-topbar__brand" href={baseUrl()}>
+        <AppLink className="mango-topbar__brand" to="">
           <img
             className="mango-topbar__mark"
             src={baseUrl('img/icons/mango-mark.svg')}
@@ -51,33 +52,33 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
             height={28}
           />
           <span className="mango-topbar__wordmark">Mango</span>
-        </a>
+        </AppLink>
         <nav aria-label={t('home')}>
           <ul className="mango-topbar__nav">
             <li>
-              <a href={baseUrl()}>
+              <AppLink to="">
                 <Icon icon={icons.home} size={16} />
                 {t('home')}
-              </a>
+              </AppLink>
             </li>
             <li>
-              <a href={baseUrl('library')}>
+              <AppLink to="library">
                 <Icon icon={icons.library} size={16} />
                 {t('library')}
-              </a>
+              </AppLink>
             </li>
             <li>
-              <a href={baseUrl('tags')}>
+              <AppLink to="tags">
                 <Icon icon={icons.tags} size={16} />
                 {t('tags')}
-              </a>
+              </AppLink>
             </li>
             {boot.isAdmin ? (
               <li>
-                <a href={baseUrl('admin')}>
+                <AppLink to="admin">
                   <Icon icon={icons.admin} size={16} />
                   {t('admin')}
-                </a>
+                </AppLink>
               </li>
             ) : null}
           </ul>

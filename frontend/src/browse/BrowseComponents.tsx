@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { BrowseTitle, SortMode } from '../lib/browse';
-import { baseUrl } from '../lib/baseUrl';
+import { AppLink } from '../lib/AppLink';
 import { useI18n } from '../lib/i18n';
 import { Icon } from '../shell/Icon';
 import { icons } from '../shell/icons';
@@ -41,7 +41,7 @@ export function PosterCard({
   const { t } = useI18n();
   return (
     <article className={`mango-card${item.hidden ? ' mango-card--hidden' : ''}`}>
-      <a className="mango-card__link" href={baseUrl(`book/${encodeURIComponent(item.id)}`)}>
+      <AppLink className="mango-card__link" to={`book/${encodeURIComponent(item.id)}`}>
         <div className="mango-card__media">
           {item.cover_url ? (
             <img src={item.cover_url} alt="" loading="lazy" />
@@ -57,7 +57,7 @@ export function PosterCard({
           {showProgress ? <ProgressBar value={item.progress} /> : null}
           {item.hidden ? <span className="mango-badge mango-badge--muted">{t('hidden')}</span> : null}
         </div>
-      </a>
+      </AppLink>
       {actions ? <div className="mango-card__actions">{actions}</div> : null}
     </article>
   );
