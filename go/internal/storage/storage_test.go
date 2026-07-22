@@ -38,6 +38,20 @@ func TestMigrateFreshDB(t *testing.T) {
 			t.Errorf("table %q missing: %v", tbl, err)
 		}
 	}
+
+	var journalMode string
+	if err := st.DB().QueryRow("PRAGMA journal_mode").Scan(&journalMode); err != nil {
+		t.Errorf("query journal_mode: %v", err)
+	} else if strings.ToLower(journalMode) != "wal" {
+		t.Errorf("journal_mode = %q, want wal", journalMode)
+	}
+
+	var busyTimeout int
+	if err := st.DB().QueryRow("PRAGMA busy_timeout").Scan(&busyTimeout); err != nil {
+		t.Errorf("query busy_timeout: %v", err)
+	} else if busyTimeout != 5000 {
+		t.Errorf("busy_timeout = %d, want 5000", busyTimeout)
+	}
 }
 
 func TestMigrateIsIdempotent(t *testing.T) {

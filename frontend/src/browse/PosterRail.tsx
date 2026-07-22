@@ -1,11 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { BrowseTitle } from '../lib/browse';
 import { useI18n } from '../lib/i18n';
-import { PosterCard } from './BrowseComponents';
+import { PosterCard, PosterCardSkeleton } from './BrowseComponents';
 import { Icon } from '../shell/Icon';
 import { icons } from '../shell/icons';
 
-export function PosterRail({ title, items }: { title: string; items: BrowseTitle[] }) {
+export function PosterRailSkeleton({ title, count = 6 }: { title?: string; count?: number }) {
+  return (
+    <section className="mango-browse-section mango-browse-section--skeleton" aria-busy="true">
+      {title ? <h2>{title}</h2> : null}
+      <div className="mango-poster-rail-shell">
+        <div className="mango-poster-rail">
+          {Array.from({ length: count }).map((_, index) => (
+            <PosterCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function PosterRail({
+  title,
+  items,
+  loading = false,
+  skeletonCount = 6,
+}: {
+  title: string;
+  items: BrowseTitle[];
+  loading?: boolean;
+  skeletonCount?: number;
+}) {
   const { t } = useI18n();
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
@@ -25,6 +50,7 @@ export function PosterRail({ title, items }: { title: string; items: BrowseTitle
   }, []);
 
   useEffect(() => {
+    if (loading) return;
     const track = trackRef.current;
     if (!track) return;
     updateEdges();
@@ -38,7 +64,7 @@ export function PosterRail({ title, items }: { title: string; items: BrowseTitle
       ro?.disconnect();
       window.removeEventListener('resize', updateEdges);
     };
-  }, [updateEdges, items.length]);
+  }, [updateEdges, items.length, loading]);
 
   const scrollByPage = (dir: -1 | 1) => {
     const track = trackRef.current;
@@ -46,6 +72,10 @@ export function PosterRail({ title, items }: { title: string; items: BrowseTitle
     const amount = Math.max(track.clientWidth * 0.85, 180);
     track.scrollBy({ left: dir * amount, behavior: 'smooth' });
   };
+
+  if (loading) {
+    return <PosterRailSkeleton title={title} count={skeletonCount} />;
+  }
 
   return (
     <section className="mango-browse-section">

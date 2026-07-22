@@ -532,6 +532,61 @@ html.comic-theme-dark .mango-card {
   opacity: 0.72;
 }
 
+.mango-card--skeleton {
+  pointer-events: none;
+  user-select: none;
+}
+
+.mango-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--mango-text-muted) 10%, var(--mango-bg-surface)) 0%,
+    color-mix(in srgb, var(--mango-text-muted) 22%, var(--mango-bg-surface)) 50%,
+    color-mix(in srgb, var(--mango-text-muted) 10%, var(--mango-bg-surface)) 100%
+  );
+  background-size: 200% 100%;
+  animation: mango-shimmer 1.6s infinite linear;
+}
+
+@keyframes mango-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.mango-skeleton-line {
+  border-radius: var(--mango-radius);
+  margin-bottom: 0.5rem;
+}
+
+.mango-skeleton-line--title {
+  height: 2.6em;
+  width: 85%;
+  margin-bottom: 0.25rem;
+}
+
+.mango-skeleton-line--meta {
+  height: 0.85rem;
+  width: 45%;
+  margin-bottom: 0;
+}
+
+.mango-skeleton-line--progress {
+  height: 0.35rem;
+  width: 100%;
+  margin: 0.55rem 0 0;
+  border-radius: var(--mango-radius);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mango-skeleton-shimmer {
+    animation: none;
+  }
+}
+
 .mango-card__link {
   display: block;
   color: inherit;

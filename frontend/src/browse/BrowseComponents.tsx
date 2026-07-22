@@ -16,6 +16,19 @@ export function ProgressBar({ value }: { value: number }) {
   );
 }
 
+export function PosterCardSkeleton() {
+  return (
+    <div className="mango-card mango-card--skeleton" aria-hidden="true">
+      <div className="mango-card__media mango-skeleton-shimmer" />
+      <div className="mango-card__body">
+        <div className="mango-skeleton-line mango-skeleton-line--title mango-skeleton-shimmer" />
+        <div className="mango-skeleton-line mango-skeleton-line--meta mango-skeleton-shimmer" />
+        <div className="mango-skeleton-line mango-skeleton-line--progress mango-skeleton-shimmer" />
+      </div>
+    </div>
+  );
+}
+
 export function PosterCard({
   item,
   actions,

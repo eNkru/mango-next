@@ -6,7 +6,7 @@ import { ContinueCarousel } from '../browse/ContinueCarousel';
 import { PosterRail } from '../browse/PosterRail';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
-import { ErrorState, LoadingState } from '../shell/StatePanels';
+import { ErrorState } from '../shell/StatePanels';
 
 type HomeResponse = {
   new_user: boolean;
@@ -36,11 +36,18 @@ export function HomePage() {
     void load();
   }, [load]);
 
+  const loading = !data && !error;
+
   return (
     <AppShell title={t('home')} subtitle={t('homeSubtitle')}>
-      {!data && !error ? <LoadingState message={t('loading')} /> : null}
       {error ? (
         <ErrorState message={error} onRetry={() => void load()} retryLabel={t('retry')} />
+      ) : null}
+      {loading ? (
+        <>
+          <PosterRail title={t('startReading')} items={[]} loading />
+          <PosterRail title={t('recentlyAdded')} items={[]} loading />
+        </>
       ) : null}
       {data?.empty_library ? (
         <section className="mango-empty-hero">
