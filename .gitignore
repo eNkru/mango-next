@@ -6,10 +6,23 @@
 /go/mango
 /node_modules/
 
-.agents/
+# Platform agent dirs (local); re-include tracked git ship/merge skills.
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/git-ship-pr/
+!.agents/skills/git-ship-pr/**
+!.agents/skills/git-merge-cleanup/
+!.agents/skills/git-merge-cleanup/**
 .claude/
 .codex/
-.opencode/
+.opencode/*
+!.opencode/skills/
+.opencode/skills/*
+!.opencode/skills/git-ship-pr/
+!.opencode/skills/git-ship-pr/**
+!.opencode/skills/git-merge-cleanup/
+!.opencode/skills/git-merge-cleanup/**
 AGENTS.md
 
 # Trellis: track tasks/specs/workspace; ignore local runtime noise
