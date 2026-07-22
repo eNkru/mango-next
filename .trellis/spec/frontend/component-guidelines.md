@@ -17,10 +17,25 @@ PosterCard({
   showProgress?: boolean, // default true; TagDetail uses false
 })
 
+PosterCardSkeleton() // shimmer placeholder; same .mango-card geometry as PosterCard
+
 BrowseToolbar({
   query, onQuery, mode, onMode, ascending, onAscending,
   extra?: ReactNode,
   modes?: SortMode[], // default all: natural|title|modified|progress
+})
+
+// frontend/src/browse/PosterRail.tsx
+PosterRail({
+  title: string,
+  items: BrowseTitle[],
+  loading?: boolean,      // default false → render PosterRailSkeleton
+  skeletonCount?: number, // default 6
+})
+
+PosterRailSkeleton({
+  title?: string,
+  count?: number, // default 6
 })
 
 // frontend/src/shell/StatePanels.tsx
@@ -101,6 +116,19 @@ t(key: MessageKey, vars?: Record<string, string | number>)
 - Prefer callers pass translated `message` / labels; shared defaults stay neutral (`…` / `Retry`).
 - Admin is an action panel: **no** full-page LoadingState. Scan/thumb **start** failures
   use `ErrorState` + `onRetry` under the card grid (see `react-admin.md`).
+
+### PosterRail skeleton (CLS)
+
+- Prefer rail-shaped skeleton over full-page `LoadingState` when the loaded UI is poster rails
+  (Home: start-reading / recently-added).
+- `PosterRail` with `loading` renders `PosterRailSkeleton` (same section +
+  `.mango-poster-rail-shell` / `.mango-poster-rail` shells; no arrow buttons while loading).
+- Skeleton cards: `PosterCardSkeleton` reuses `.mango-card` + `.mango-card__media`
+  (`aspect-ratio: 2 / 3`) + body line heights aligned to title min-height / meta / progress.
+- Shimmer uses theme tokens (`--mango-text-muted`, `--mango-bg-surface`); disable animation
+  under `prefers-reduced-motion: reduce`.
+- Do **not** invent a second card geometry for placeholders — mismatch causes CLS when data
+  arrives.
 
 ### LanguageSelect
 
