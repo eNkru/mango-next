@@ -971,3 +971,37 @@ Solid 3px accent border on active continue card; viewport-scaled stack peeks; PR
 ### Next Steps
 
 - None - task complete
+
+
+## Session 28: Poster rail skeleton + SQLite WAL
+
+**Date**: 2026-07-22
+**Task**: Poster rail skeleton + SQLite WAL
+**Branch**: `main`
+
+### Summary
+
+Home PosterRail 加载骨架（shimmer + CLS）已落地并接 HomePage；SQLite Open 启用 WAL 与 busy_timeout=5000；spec 更新 component-guidelines；分支 feat/poster-rail-skeleton-sqlite-wal 已合并 PR #59。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b422da8` | (see git log) |
+| `cbc7b64` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
