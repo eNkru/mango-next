@@ -1,0 +1,33 @@
+{
+  "id": "project-review",
+  "name": "project-review",
+  "title": "Project Review and Suggestions",
+  "description": "",
+  "status": "in_progress",
+  "dev_type": null,
+  "scope": null,
+  "package": null,
+  "priority": "P2",
+  "creator": "howard.ju",
+  "assignee": "howard.ju",
+  "createdAt": "2026-07-22",
+  "completedAt": null,
+  "branch": null,
+  "base_branch": "main",
+  "worktree_path": null,
+  "commit": null,
+  "pr_url": null,
+  "subtasks": [],
+  "children": [
+    "07-22-sqlite-wal-optimization",
+    "07-22-poster-rail-skeleton",
+    "07-22-structured-logging",
+    "07-22-decompose-storage",
+    "07-22-client-spa-router",
+    "07-22-global-ui-context"
+  ],
+  "parent": null,
+  "relatedFiles": [],
+  "notes": "",
+  "meta": {}
+}
