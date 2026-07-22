@@ -1,18 +1,10 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { AppLink } from '../lib/AppLink';
 import { baseUrl } from '../lib/baseUrl';
 import { useBoot } from '../lib/bootContext';
 import { useI18n } from '../lib/i18n';
-import {
-  applyHtmlTheme,
-  loadThemeSetting,
-  loadUIStyle,
-  saveThemeSetting,
-  saveUIStyle,
-  watchSystemTheme,
-  type ThemeSetting,
-  type UIStyle,
-} from '../lib/theme';
+import { useThemeStore } from '../lib/themeStore';
+import type { ThemeSetting, UIStyle } from '../lib/theme';
 import { AlertHost } from './AlertHost';
 import { Icon } from './Icon';
 import { icons } from './icons';
@@ -27,18 +19,14 @@ type AppShellProps = {
 export function AppShell({ title, subtitle, children }: AppShellProps) {
   const { language, t } = useI18n();
   const boot = useBoot();
-  const [theme, setTheme] = useState<ThemeSetting>(loadThemeSetting);
-  const [uiStyle, setUiStyle] = useState<UIStyle>(loadUIStyle);
+  const theme = useThemeStore((s) => s.theme);
+  const uiStyle = useThemeStore((s) => s.uiStyle);
+  const setTheme = useThemeStore((s) => s.setTheme);
+  const setUIStyle = useThemeStore((s) => s.setUIStyle);
 
   useEffect(() => {
     document.title = `Mango - ${title}`;
   }, [language, title]);
-
-  useEffect(() => {
-    applyHtmlTheme(theme, uiStyle);
-  }, [theme, uiStyle]);
-
-  useEffect(() => watchSystemTheme(), []);
 
   return (
     <>
@@ -89,9 +77,7 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
             <select
               value={theme}
               onChange={(event) => {
-                const next = event.target.value as ThemeSetting;
-                setTheme(next);
-                saveThemeSetting(next);
+                setTheme(event.target.value as ThemeSetting);
               }}
               aria-label={t('theme')}
             >
@@ -105,9 +91,7 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
             <select
               value={uiStyle}
               onChange={(event) => {
-                const next = event.target.value as UIStyle;
-                setUiStyle(next);
-                saveUIStyle(next);
+                setUIStyle(event.target.value as UIStyle);
               }}
               aria-label={t('uiStyle')}
             >
