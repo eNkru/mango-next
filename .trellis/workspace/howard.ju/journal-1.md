@@ -1107,3 +1107,37 @@ server 包 log.Print* 迁至 slog；ApplyLogLevel 真级别过滤 + Text handler
 ### Next Steps
 
 - None - task complete
+
+
+## Session 32: Global UI prefs Zustand stores
+
+**Date**: 2026-07-22
+**Task**: Global UI prefs Zustand stores
+**Branch**: `feat/global-ui-context`
+
+### Summary
+
+引入 zustand：themeStore + readerPrefsStore；AppShell/useReaderPrefs 接入；跨 tab storage 同步；I18n/Boot 留 follow-up zustand-i18n-boot。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `07fc350` | (see git log) |
+| `d43323e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
