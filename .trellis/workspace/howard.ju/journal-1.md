@@ -1005,3 +1005,37 @@ Home PosterRail 加载骨架（shimmer + CLS）已落地并接 HomePage；SQLite
 ### Next Steps
 
 - None - task complete
+
+
+## Session 29: Structured logging with slog
+
+**Date**: 2026-07-22
+**Task**: Structured logging with slog
+**Branch**: `feat/structured-logging`
+
+### Summary
+
+server 包 log.Print* 迁至 slog；ApplyLogLevel 真级别过滤 + Text handler + stdlib 桥接；access log 结构化字段；spec structured-logging.md；分支 feat/structured-logging 已推送。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `776d3bb` | (see git log) |
+| `114d279` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

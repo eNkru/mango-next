@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 28
+- **Total Sessions**: 29
 - **Last Active**: 2026-07-22
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1007 | Active |
+| `journal-1.md` | ~1041 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 29 | 2026-07-22 | Structured logging with slog | `776d3bb`, `114d279` | `feat/structured-logging` |
 | 28 | 2026-07-22 | Poster rail skeleton + SQLite WAL | `b422da8`, `cbc7b64` | `main` |
 | 27 | 2026-07-21 | Continue-stack focus polish | `69dad29` | `polish/continue-stack-focus` |
 | 26 | 2026-07-21 | Continue-reading stack deck + home rails | `4503d8d` | `feat/continue-read-carousel` |
