@@ -1039,3 +1039,37 @@ server 包 log.Print* 迁至 slog；ApplyLogLevel 真级别过滤 + Text handler
 ### Next Steps
 
 - None - task complete
+
+
+## Session 30: Decompose storage package
+
+**Date**: 2026-07-22
+**Task**: Decompose storage package
+**Branch**: `feat/decompose-storage`
+
+### Summary
+
+机械拆分 storage.go 为 user/thumbnail/tag/title/identity/missing/library_cache；storage.go ~124 行；API 不变；go test ./... 通过。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `de73081` | (see git log) |
+| `0ee11a3` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
