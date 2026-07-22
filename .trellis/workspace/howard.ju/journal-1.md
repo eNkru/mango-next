@@ -1141,3 +1141,37 @@ server 包 log.Print* 迁至 slog；ApplyLogLevel 真级别过滤 + Text handler
 ### Next Steps
 
 - None - task complete
+
+
+## Session 33: Zustand i18n and boot migration
+
+**Date**: 2026-07-22
+**Task**: Zustand i18n and boot migration
+**Branch**: `feat/zustand-i18n-boot`
+
+### Summary
+
+I18n/Boot 迁 Zustand；main 去掉 Provider；语言跨 tab storage 同步；useI18n/useBoot API 不变。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `2db16eb` | (see git log) |
+| `bf01390` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
