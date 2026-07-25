@@ -18,6 +18,7 @@ frontend/src/pages/reader/
   useReaderNavigation.ts
   useReaderProgress.ts
   useReaderPrefs.ts
+  useFocusTrap.ts
   readerMath.ts
   types.ts
 ```
@@ -42,21 +43,33 @@ Do **not** read legacy unprefixed keys (`mode`, `margin`, …).
 
 ### Navigation / progress
 
-- Single page source of truth in `useReaderNavigation`; URL via
-  `history.replaceState` (`baseUrl('reader/{tid}/{eid}/{page}')`).
+- Single page source of truth in `useReaderNavigation`; URL via react-router
+  `navigate(..., { replace: true })` to `appPath('reader/{tid}/{eid}/{page}')`
+  (1-based page segment).
 - Page images: `baseUrl(readerPageImagePath(tid, eid, page))` with **1-based**
   page index (matches Go `/api/page` and `ReadPage`).
 - Progress throttle (`shouldSaveProgress`): save on first/last page, when
   `|page - lastSaved| >= 5`, or long-page title (avg height/width > 2).
-- Next-entry / exit: `complete()` saves `pages` then `location.replace`.
+- Next-entry / exit: `complete()` saves final page then SPA-navigate (replace).
 
 ### Chrome
 
 - Default full-viewport black reader; top bar hidden.
-- Show on top-edge hit (~36px), control open, or Escape; animate ~160ms; idle
-  hide ~1.8s when pointer leaves bar and controls closed.
+- Show on top-edge hit (~36px) via `pointermove` **or** `pointerdown` (touch),
+  when controls open, or Escape; animate ~160ms; idle hide ~1.8s when pointer
+  leaves bar and controls closed.
+- Tap/click page image opens reading settings (and shows bar).
 - Language selector in top bar; control panel for mode/fit/margin/RTL/preload/
   page jump/entry jump/prev-next/exit.
+- Page jump is a **number input + Go** (not one `<option>` per page); commits
+  with `clampPage`.
+- Controls dialog traps Tab focus and restores focus to the “Reading settings”
+  opener on close.
+- Flip animation classes are suppressed under `prefers-reduced-motion: reduce`
+  (CSS + skip setting `flipSide` in JS).
+- Zone buttons use i18n `pagePrevious` / `pageNext`.
+- Actions: when next entry exists → primary Next + single Exit; otherwise
+  primary Exit only (never two Exit buttons).
 
 ## 4. Validation & Error Matrix
 
@@ -70,8 +83,9 @@ Do **not** read legacy unprefixed keys (`mode`, `margin`, …).
 ## 5. Good/Base/Bad Cases
 
 - Good: deep link `/reader/t/e/5` opens page 5; flip updates URL without reload;
-  prefs survive reload under `mango.reader.*`.
-- Base: continuous mode default; bar hidden until edge hover.
+  prefs survive reload under `mango.reader.*`; jump to page 500 without DOM of
+  500 options.
+- Base: continuous mode default; bar hidden until edge interaction or settings.
 - Bad: wrap reader in `AppShell` (breaks immersive layout and double chrome).
 
 ## 6. Tests Required
@@ -79,7 +93,8 @@ Do **not** read legacy unprefixed keys (`mode`, `margin`, …).
 - Pure unit tests for `readerMath` (clamp, throttle, long-page, RTL direction).
 - Frontend `npm run typecheck` + `npm run build`.
 - Manual smoke: title-detail → reader, mid-page deep link, modes, next/exit,
-  auto-hide bar, language switch, BaseURL if non-root.
+  auto-hide bar, touch top-edge, page jump, focus trap, reduced motion,
+  language switch, BaseURL if non-root.
 
 ## 7. Wrong vs Correct
 

@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/frontend/react-reader.md", "reason": "Reader chrome, prefs, navigation contracts; update after polish"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Shared UI patterns and a11y expectations for dialogs/buttons"}
+{"file": ".trellis/spec/frontend/ui-theme-layout.md", "reason": "Theme/shell tokens; ensure reader CSS changes stay compatible"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Prefer small local focus helper over new deps"}

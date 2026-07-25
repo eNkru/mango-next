@@ -1,5 +1,6 @@
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { baseUrl } from '../../lib/baseUrl';
+import { useI18n } from '../../lib/i18n';
 import { readerPageImagePath } from './readerMath';
 import type { ReaderDimension, ReaderFitType, ReaderMode } from './types';
 
@@ -34,6 +35,7 @@ export function ReaderViewport({
   onZoneClick,
   onVisiblePage,
 }: Props) {
+  const { t } = useI18n();
   const stripRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -116,13 +118,13 @@ export function ReaderViewport({
       <button
         type="button"
         className="mango-reader-zone mango-reader-zone--left"
-        aria-label="prev"
+        aria-label={t('pagePrevious')}
         onClick={() => onZoneClick(false)}
       />
       <button
         type="button"
         className="mango-reader-zone mango-reader-zone--right"
-        aria-label="next"
+        aria-label={t('pageNext')}
         onClick={() => onZoneClick(true)}
       />
     </div>

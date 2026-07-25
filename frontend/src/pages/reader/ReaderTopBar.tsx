@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { useI18n } from '../../lib/i18n';
 import { AppLink } from '../../lib/AppLink';
 import { baseUrl } from '../../lib/baseUrl';
@@ -17,17 +18,20 @@ type Props = {
   onPointerLeave: () => void;
 };
 
-export function ReaderTopBar({
-  visible,
-  title,
-  entryName,
-  page,
-  pages,
-  exitUrl,
-  onOpenControls,
-  onPointerEnter,
-  onPointerLeave,
-}: Props) {
+export const ReaderTopBar = forwardRef<HTMLButtonElement, Props>(function ReaderTopBar(
+  {
+    visible,
+    title,
+    entryName,
+    page,
+    pages,
+    exitUrl,
+    onOpenControls,
+    onPointerEnter,
+    onPointerLeave,
+  },
+  ref,
+) {
   const { t } = useI18n();
   const pct = pages > 0 ? ((page / pages) * 100).toFixed(1) : '0.0';
 
@@ -48,7 +52,12 @@ export function ReaderTopBar({
           />
           <span className="mango-topbar__wordmark">Mango</span>
         </AppLink>
-        <button type="button" className="mango-btn mango-btn--ghost" onClick={onOpenControls}>
+        <button
+          ref={ref}
+          type="button"
+          className="mango-btn mango-btn--ghost"
+          onClick={onOpenControls}
+        >
           <Icon icon={icons.readerControls} size={16} />
           {t('readerControls')}
         </button>
@@ -68,4 +77,4 @@ export function ReaderTopBar({
       </div>
     </header>
   );
-}
+});
