@@ -1441,6 +1441,25 @@ html.comic-theme-dark .mango-continue-stack__card--active {
   animation: mango-reader-flip-right 0.35s ease;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .mango-reader-page--flip-left,
+  .mango-reader-page--flip-right {
+    animation: none;
+  }
+}
+
+.mango-reader-jump__row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.mango-reader-jump__row .mango-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 @keyframes mango-reader-flip-left {
   from {
     transform: translateX(-24px);

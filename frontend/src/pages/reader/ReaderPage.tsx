@@ -18,6 +18,11 @@ import { useReaderProgress } from './useReaderProgress';
 const EDGE_PX = 36;
 const IDLE_MS = 1800;
 
+function prefersReducedMotion(): boolean {
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 export function ReaderPage({
   tid,
   eid,
@@ -38,6 +43,7 @@ export function ReaderPage({
   const [flipSide, setFlipSide] = useState<'left' | 'right' | null>(null);
   const hideTimer = useRef<number | null>(null);
   const pointerInBar = useRef(false);
+  const controlsOpenerRef = useRef<HTMLButtonElement>(null);
 
   const data = state.status === 'ready' ? state.data : null;
   const pages = data?.entry.pages ?? 0;
@@ -100,8 +106,15 @@ export function ReaderPage({
   }, [data, t]);
 
   useEffect(() => {
+    const maybeShowFromEdge = (clientY: number) => {
+      if (clientY <= EDGE_PX) showBar(false);
+    };
     const onMove = (event: PointerEvent) => {
-      if (event.clientY <= EDGE_PX) showBar(false);
+      maybeShowFromEdge(event.clientY);
+    };
+    // Touch / coarse pointers: top-edge hit without hover.
+    const onDown = (event: PointerEvent) => {
+      maybeShowFromEdge(event.clientY);
     };
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -115,9 +128,11 @@ export function ReaderPage({
       }
     };
     window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerdown', onDown, { passive: true });
     window.addEventListener('keydown', onKey);
     return () => {
       window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerdown', onDown);
       window.removeEventListener('keydown', onKey);
       clearHideTimer();
     };
@@ -161,7 +176,7 @@ export function ReaderPage({
       openControls(before);
       return;
     }
-    if (prefs.enableFlipAnimation) {
+    if (prefs.enableFlipAnimation && !prefersReducedMotion()) {
       // Legacy click zones: left zone → left anim, right zone → right anim.
       setFlipSide(zoneIsRight ? 'right' : 'left');
       window.setTimeout(() => setFlipSide(null), 400);
@@ -199,9 +214,11 @@ export function ReaderPage({
       <div
         className="mango-reader-edge"
         onPointerEnter={() => showBar(false)}
+        onPointerDown={() => showBar(false)}
         aria-hidden
       />
       <ReaderTopBar
+        ref={controlsOpenerRef}
         visible={barVisible || controlsOpen}
         title={data.title.name}
         entryName={data.entry.name}
@@ -279,6 +296,7 @@ export function ReaderPage({
         }
         onNextEntry={() => void completeAndGo(data.next_entry_url || exitPath)}
         onExit={() => void completeAndGo(exitPath)}
+        restoreFocusRef={controlsOpenerRef}
       />
       <AlertHost />
     </div>

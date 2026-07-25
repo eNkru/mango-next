@@ -1,8 +1,10 @@
-import type { FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type RefObject } from 'react';
 import { useI18n } from '../../lib/i18n';
 import { Icon } from '../../shell/Icon';
 import { icons } from '../../shell/icons';
+import { clampPage } from './readerMath';
 import type { ReaderEntry, ReaderFitType, ReaderMode, ReaderPrefs } from './types';
+import { useFocusTrap } from './useFocusTrap';
 
 type Props = {
   open: boolean;
@@ -22,6 +24,8 @@ type Props = {
   onPreviousEntry?: () => void;
   onNextEntry: () => void;
   onExit: () => void;
+  /** Element that opened the dialog; focus returns here on close. */
+  restoreFocusRef?: RefObject<HTMLElement | null>;
 };
 
 export function ReaderControls({
@@ -42,23 +46,39 @@ export function ReaderControls({
   onPreviousEntry,
   onNextEntry,
   onExit,
+  restoreFocusRef,
 }: Props) {
   const { t } = useI18n();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const [draft, setDraft] = useState(String(page));
+
+  useFocusTrap(open, dialogRef, restoreFocusRef);
+
+  useEffect(() => {
+    if (open) setDraft(String(page));
+  }, [open, page]);
+
   if (!open) return null;
 
   const pct = pages > 0 ? ((page / pages) * 100).toFixed(1) : '0.0';
+  const hasNext = Boolean(nextEntryUrl);
+  const hasExit = Boolean(exitUrl) || !hasNext;
 
   const submitJump = (event: FormEvent) => {
     event.preventDefault();
+    const parsed = Number(draft);
+    onJumpPage(clampPage(Number.isFinite(parsed) ? parsed : page, pages));
   };
 
   return (
     <div className="mango-modal-backdrop mango-reader-modal-backdrop" role="presentation" onClick={onClose}>
       <div
+        ref={dialogRef}
         className="mango-modal mango-reader-controls"
         role="dialog"
         aria-modal="true"
         aria-label={t('readerControls')}
+        tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
       >
         <header className="mango-reader-controls__header">
@@ -80,23 +100,24 @@ export function ReaderControls({
           {t('progress')}: {page}/{pages} ({pct}%)
         </p>
 
-        <form className="mango-field" onSubmit={submitJump}>
+        <form className="mango-field mango-reader-jump" onSubmit={submitJump}>
           <label>
             <span>{t('jumpToPage')}</span>
-            <select
-              className="mango-input"
-              value={page}
-              onChange={(event) => onJumpPage(Number(event.target.value))}
-            >
-              {Array.from({ length: pages }, (_, i) => {
-                const p = i + 1;
-                return (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                );
-              })}
-            </select>
+            <span className="mango-reader-jump__row">
+              <input
+                className="mango-input"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={Math.max(1, pages)}
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                aria-label={t('jumpToPage')}
+              />
+              <button type="submit" className="mango-btn mango-btn--primary">
+                {t('jumpGo')}
+              </button>
+            </span>
           </label>
         </form>
 
@@ -197,7 +218,7 @@ export function ReaderControls({
               {t('previousEntry')}
             </button>
           ) : null}
-          {nextEntryUrl ? (
+          {hasNext ? (
             <button type="button" className="mango-btn mango-btn--primary" onClick={onNextEntry}>
               <Icon icon={icons.play} size={16} />
               {t('nextEntry')}
@@ -208,7 +229,7 @@ export function ReaderControls({
               {t('exitReader')}
             </button>
           )}
-          {exitUrl ? (
+          {hasNext && hasExit ? (
             <button type="button" className="mango-btn" onClick={onExit}>
               <Icon icon={icons.exit} size={16} />
               {t('exitReader')}
