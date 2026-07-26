@@ -1,0 +1,2 @@
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Verify shared shell controls follow icon-only and i18n accessibility rules."}
+{"file":".trellis/spec/frontend/ui-theme-layout.md","reason":"Verify theme/style persistence and all visual variants remain compatible."}
