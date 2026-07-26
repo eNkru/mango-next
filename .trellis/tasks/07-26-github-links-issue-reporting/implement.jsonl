@@ -1,0 +1,2 @@
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"Shared AppShell icon, i18n, and compact control accessibility contracts."}
+{"file":".trellis/spec/frontend/ui-theme-layout.md","reason":"AppShell theme storage, token, responsive, and comic/flat chrome contracts."}

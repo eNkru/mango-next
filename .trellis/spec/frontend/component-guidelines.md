@@ -136,6 +136,22 @@ t(key: MessageKey, vars?: Record<string, string | number>)
 - Storage key: `localStorage['mango-language']` (`zh-cn` | `zh-tw` | `en`).
 - Login does **not** use full AppShell; still must offer language switch.
 
+### AppShell compact preference menus
+
+- `AppShell` uses icon-only menu triggers for theme, UI style, and language;
+  retain `LanguageSelect` for Login and Reader.
+- Each trigger has `aria-haspopup="menu"`, `aria-expanded`, and a localized
+  accessible name. Menu choices use `role="menuitemradio"` with
+  `aria-checked` for the current stored value.
+- Open one menu at a time. Focus its checked choice on open; Arrow Up/Down and
+  Home/End move between choices; Escape, outside pointer interaction, or a
+  selection closes the menu and restores focus to the trigger.
+- Call the existing theme, UI-style, and language setters. Do not duplicate or
+  replace their localStorage keys.
+- AppShell external repository and issue-list links are icon-only anchors with
+  localized `aria-label`, `title`, and hover/focus tooltip. They must use
+  `target="_blank" rel="noopener noreferrer"`.
+
 ### Form fields
 
 Canonical markup:
