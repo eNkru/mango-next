@@ -1,0 +1,114 @@
+{
+  "_ConfirmDialog-bqN_0Dp4.js": {
+    "file": "assets/ConfirmDialog-bqN_0Dp4.js",
+    "name": "ConfirmDialog",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-k7QHyBcl.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "src/pages/TitleDetailPage.tsx",
+      "src/pages/TagDetailPage.tsx",
+      "src/pages/TagsIndexPage.tsx",
+      "src/pages/AdminPage.tsx",
+      "src/pages/UserListPage.tsx",
+      "src/pages/UserEditPage.tsx",
+      "src/pages/MissingItemsPage.tsx",
+      "src/pages/reader/ReaderPage.tsx"
+    ],
+    "css": [
+      "assets/index-DjoiopAv.css"
+    ],
+    "assets": [
+      "assets/Fredoka-Regular-BeHatrkI.woff2",
+      "assets/Fredoka-Bold-ChT1xxR0.woff2"
+    ]
+  },
+  "src/assets/fonts/fredoka/Fredoka-Bold.woff2": {
+    "file": "assets/Fredoka-Bold-ChT1xxR0.woff2",
+    "src": "src/assets/fonts/fredoka/Fredoka-Bold.woff2"
+  },
+  "src/assets/fonts/fredoka/Fredoka-Regular.woff2": {
+    "file": "assets/Fredoka-Regular-BeHatrkI.woff2",
+    "src": "src/assets/fonts/fredoka/Fredoka-Regular.woff2"
+  },
+  "src/pages/AdminPage.tsx": {
+    "file": "assets/AdminPage-DA_7FRLu.js",
+    "name": "AdminPage",
+    "src": "src/pages/AdminPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "src/pages/MissingItemsPage.tsx": {
+    "file": "assets/MissingItemsPage-BnUP53FP.js",
+    "name": "MissingItemsPage",
+    "src": "src/pages/MissingItemsPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_ConfirmDialog-bqN_0Dp4.js"
+    ]
+  },
+  "src/pages/TagDetailPage.tsx": {
+    "file": "assets/TagDetailPage-VUT0slo0.js",
+    "name": "TagDetailPage",
+    "src": "src/pages/TagDetailPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "src/pages/TagsIndexPage.tsx": {
+    "file": "assets/TagsIndexPage-LTitHAsU.js",
+    "name": "TagsIndexPage",
+    "src": "src/pages/TagsIndexPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "src/pages/TitleDetailPage.tsx": {
+    "file": "assets/TitleDetailPage-CmVihVw5.js",
+    "name": "TitleDetailPage",
+    "src": "src/pages/TitleDetailPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "src/pages/UserEditPage.tsx": {
+    "file": "assets/UserEditPage-D3qoj-8D.js",
+    "name": "UserEditPage",
+    "src": "src/pages/UserEditPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "src/pages/UserListPage.tsx": {
+    "file": "assets/UserListPage-BY1Ptu1j.js",
+    "name": "UserListPage",
+    "src": "src/pages/UserListPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_ConfirmDialog-bqN_0Dp4.js"
+    ]
+  },
+  "src/pages/reader/ReaderPage.tsx": {
+    "file": "assets/ReaderPage-CWocrbgc.js",
+    "name": "ReaderPage",
+    "src": "src/pages/reader/ReaderPage.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  }
+}
