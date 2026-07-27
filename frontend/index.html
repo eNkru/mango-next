@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mango React</title>
+    <script>
+      // FOUC: set <html lang> before paint from the stored language. Mirrors
+      // applyDocumentLanguage in frontend/src/lib/i18n.tsx — keep the mapping in
+      // sync (en→en, zh-tw→zh-Hant, else zh-Hans) so first paint matches JS.
+      (function () {
+        var lang = localStorage.getItem('mango-language');
+        var map = { 'en': 'en', 'zh-tw': 'zh-Hant' };
+        document.documentElement.lang = Object.prototype.hasOwnProperty.call(map, lang) ? map[lang] : 'zh-Hans';
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -291,6 +291,23 @@ html.comic-theme-dark .mango-panel {
   gap: 0;
 }
 
+/* Touch devices: raise icon-button hit area to ≥44px (Apple/Google guidance)
+   without changing desktop density. `pointer: coarse` targets phones + tablets
+   broadly; trackpad/mouse users keep the compact look. */
+@media (pointer: coarse) {
+  .mango-btn--icon {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  /* Tag-remove sits inside a pill with tight padding; keep it a bit smaller but
+     comfortably tappable. */
+  .mango-tag-pill .mango-btn--icon {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+}
+
 .mango-btn:hover {
   border-color: var(--mango-accent);
   color: var(--mango-accent);
@@ -1346,11 +1363,37 @@ html.comic-theme-dark .mango-continue-stack__card--active {
     overflow-x: auto;
   }
 
+  /* Keep the 6-button tool cluster on one row so the topbar stays ≤2 rows.
+     Icons are fixed-size (~36px each), so the cluster fits most phones. */
   .mango-topbar__tools {
+    flex-wrap: nowrap;
+  }
+
+  /* Drop the sticky-topbar blur on coarse pointers / small screens: it is
+     expensive on low-end mobile and can cause scroll jank. Opaque fallback
+     keeps the topbar readable in all themes. */
+  @media (pointer: coarse) {
+    .mango-topbar {
+      backdrop-filter: none;
+      background: var(--mango-bg-surface);
+    }
   }
 
   .mango-shell {
     padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .mango-topbar {
+    padding: 0.45rem 0.75rem;
+    gap: 0.4rem 0.75rem;
+  }
+
+  /* Same blur fallback for narrow viewports even on fine pointers. */
+  .mango-topbar {
+    backdrop-filter: none;
+    background: var(--mango-bg-surface);
   }
 }
 
@@ -1410,6 +1453,7 @@ html.comic-theme-dark .mango-continue-stack__card--active {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1rem;
   min-height: 56px;
   padding: 0.5rem 1rem;
@@ -1471,6 +1515,30 @@ html.comic-theme-dark .mango-continue-stack__card--active {
 .mango-reader-topbar__progress {
   font-size: 0.85rem;
   opacity: 0.8;
+}
+
+/* Visible labels on the reader-controls + exit buttons drop on narrow widths;
+   the icon + aria-label remain so all controls stay reachable. */
+.mango-reader-topbar__label--sm-hide {
+  display: inline;
+}
+
+@media (max-width: 560px) {
+  .mango-reader-topbar {
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .mango-reader-topbar__center {
+    flex: 1 1 100%;
+    order: 3;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .mango-reader-topbar__label--sm-hide {
+    display: none;
+  }
 }
 
 .mango-btn--ghost {

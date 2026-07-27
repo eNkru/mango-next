@@ -313,6 +313,8 @@ func (s *Server) renderReactShell(w http.ResponseWriter, pageID, pageName string
 		BaseURL:  s.Deps.Config.BaseURL,
 		PageName: pageName,
 		BootJSON: template.JS(raw),
+		MainJS:   s.reactAssets.mainJS,
+		MainCSS:  s.reactAssets.mainCSS,
 	})
 }
 

@@ -25,21 +25,26 @@ type Dependencies struct {
 }
 
 type Server struct {
-	Router   *chi.Mux
-	Deps     *Dependencies
-	staticFS http.FileSystem
+	Router      *chi.Mux
+	Deps        *Dependencies
+	staticFS    http.FileSystem
+	reactAssets reactAssets
 }
 
 func NewServer(deps *Dependencies) *Server {
 	s := &Server{
-		Router: chi.NewRouter(),
-		Deps:   deps,
+		Router:   chi.NewRouter(),
+		Deps:     deps,
+		staticFS: http.FS(web.Public()),
 	}
 	s.Router.Use(SecurityHeadersMiddleware)
 	s.Router.Use(CORSMiddleware)
 	s.Router.Use(LoggingMiddleware)
 	s.Router.Use(UploadHandler(deps.Config.UploadPath))
-	s.staticFS = http.FS(web.Public())
+	// Resolve the content-hashed entry JS/CSS from the Vite manifest embedded
+	// at react/manifest.json. Empty strings (missing/malformed manifest) leave
+	// the shell with no asset URLs — surfaces as a build-not-run error at boot.
+	s.reactAssets = loadReactAssets(web.Public())
 	return s
 }
 

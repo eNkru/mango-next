@@ -56,10 +56,13 @@ export const ReaderTopBar = forwardRef<HTMLButtonElement, Props>(function Reader
           ref={ref}
           type="button"
           className="mango-btn mango-btn--ghost"
+          aria-label={t('readerControls')}
           onClick={onOpenControls}
         >
           <Icon icon={icons.readerControls} size={16} />
-          {t('readerControls')}
+          <span className="mango-reader-topbar__label mango-reader-topbar__label--sm-hide">
+            {t('readerControls')}
+          </span>
         </button>
       </div>
       <div className="mango-reader-topbar__center" title={`${title} · ${entryName}`}>
@@ -70,9 +73,15 @@ export const ReaderTopBar = forwardRef<HTMLButtonElement, Props>(function Reader
       </div>
       <div className="mango-reader-topbar__right">
         <LanguageSelect />
-        <AppLink className="mango-btn mango-btn--primary" to={exitUrl || ''}>
+        <AppLink
+          className="mango-btn mango-btn--primary"
+          to={exitUrl || ''}
+          aria-label={t('exitReader')}
+        >
           <Icon icon={icons.exit} size={16} />
-          {t('exitReader')}
+          <span className="mango-reader-topbar__label mango-reader-topbar__label--sm-hide">
+            {t('exitReader')}
+          </span>
         </AppLink>
       </div>
     </header>
