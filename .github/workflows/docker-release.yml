@@ -29,11 +29,15 @@ jobs:
         id: version
         run: echo "tag=${GITHUB_REF_NAME#release/}" >> "$GITHUB_OUTPUT"
 
+      - name: Lowercase repository
+        id: repo
+        run: echo "name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.version.outputs.tag }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ steps.repo.outputs.name }}:${{ steps.version.outputs.tag }}
+            ghcr.io/${{ steps.repo.outputs.name }}:latest
