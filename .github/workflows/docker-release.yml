@@ -1,8 +1,9 @@
-name: Build & publish Docker image on release
+name: Build & publish Docker image on release branch
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - release/v*
 
 jobs:
   build-and-push:
@@ -24,11 +25,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract version from branch name
+        id: version
+        run: echo "tag=${GITHUB_REF_NAME#release/}" >> "$GITHUB_OUTPUT"
+
       - uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:${{ steps.version.outputs.tag }}
             ghcr.io/${{ github.repository }}:latest
