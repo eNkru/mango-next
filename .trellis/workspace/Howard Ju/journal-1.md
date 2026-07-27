@@ -40,3 +40,36 @@ Added GitHub Octocat mark SVG, made logout icon-only, added responsive tooltip a
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Docker release GitHub Action
+
+**Date**: 2026-07-27
+**Task**: Docker release GitHub Action
+**Branch**: `main`
+
+### Summary
+
+Created .github/workflows/docker-release.yml — builds & pushes multi-arch Docker image to GHCR on release published events only. Uses GITHUB_TOKEN (no extra secrets). Tags with semver + latest.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e54e619` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
