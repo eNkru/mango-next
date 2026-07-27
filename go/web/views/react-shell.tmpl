@@ -21,14 +21,22 @@
       }
       if (dark) document.documentElement.style.background = style === 'flat' ? '#141414' : '';
     })();
+    // FOUC: set <html lang> before paint from the stored language. Mirrors
+    // applyDocumentLanguage in frontend/src/lib/i18n.tsx — keep the mapping in
+    // sync (en→en, zh-tw→zh-Hant, else zh-Hans) so first paint matches JS.
+    (function () {
+      var lang = localStorage.getItem('mango-language');
+      var map = { 'en': 'en', 'zh-tw': 'zh-Hant' };
+      document.documentElement.lang = Object.prototype.hasOwnProperty.call(map, lang) ? map[lang] : 'zh-Hans';
+    })();
   </script>
   <link rel="icon" href="{{.BaseURL}}favicon.ico">
-  <link rel="stylesheet" href="{{.BaseURL}}react/assets/main.css">
+  {{if .MainCSS}}<link rel="stylesheet" href="{{.BaseURL}}react/{{.MainCSS}}">{{end}}
 </head>
 <body>
   <script type="application/json" id="mango-boot">{{.BootJSON}}</script>
   <div id="root"></div>
-  <script type="module" src="{{.BaseURL}}react/assets/main.js"></script>
+  {{if .MainJS}}<script type="module" src="{{.BaseURL}}react/{{.MainJS}}"></script>{{end}}
 </body>
 </html>
 {{end}}

@@ -73,3 +73,38 @@ Created .github/workflows/docker-release.yml — builds & pushes multi-arch Dock
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: UI/UX review: ease-of-use, mobile, page-load
+
+**Date**: 2026-07-27
+**Task**: UI/UX review: ease-of-use, mobile, page-load
+**Branch**: `feat/uiux-review`
+
+### Summary
+
+Shell layout/mobile responsiveness, reader top bar, Go handlers, rebuilt assets, spec updates
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `21a46e9` | (see git log) |
+| `0b32a40` | (see git log) |
+| `ab761cb` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
