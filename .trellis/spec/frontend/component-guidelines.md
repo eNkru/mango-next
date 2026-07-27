@@ -86,9 +86,19 @@ t(key: MessageKey, vars?: Record<string, string | number>)
   | Brand | `mango-mark.svg` via `baseUrl('img/icons/mango-mark.svg')` + “Mango” text |
 - Decorative icons next to text: leave default (`aria-hidden`).
 - Icon-only: put accessible name on button/link; keep `Icon` decorative.
+- **Label-hide pattern**: when a visible label is wrapped in
+  `.mango-reader-topbar__label--sm-hide` (or any future `--sm-hide` span) so it
+  drops on narrow widths, the **control** must carry an `aria-label` so the
+  accessible name survives the text hiding. For `AppLink` (the reader exit
+  button), `aria-label` is in `AppLinkProps` and spread via `{...rest}` to the
+  underlying `<a>` — verified. Do not rely on the visible text alone for the
+  accessible name on any control whose text can disappear via CSS.
 - Color via `currentColor` (inherits button/link theme).
 - Button CSS: `.mango-btn` is `inline-flex` + `gap: 0.4rem`; `.mango-btn--icon`
-  for square icon-only (min 2.25rem hit target).
+  for square icon-only. Base hit target is `min-width/height: 2.25rem` (36px);
+  `@media (pointer: coarse)` raises it to `2.75rem` (44px) and
+  `.mango-tag-pill .mango-btn--icon` to `2.5rem`. Use `pointer: coarse` (not a
+  px breakpoint) so mouse/trackpad users keep the compact density.
 - Do **not** reintroduce Font Awesome webfonts / UIkit.
 
 ### PosterCard / TagDetail adapter

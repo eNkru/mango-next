@@ -35,3 +35,7 @@ AGENTS.md
 # Local build artifacts
 mango-local.tar.gz
 *.tar.gz
+
+# Vite build cache (manifest is copied to react/manifest.json for go:embed;
+# .vite/ is a dotfile dir that go:embed skips, so it has no embed value).
+go/web/public/react/.vite/

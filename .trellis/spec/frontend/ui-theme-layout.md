@@ -91,6 +91,131 @@ Migrated React routes boot comic/flat + light/dark markers on `<html>` from
 `go/web/public/css/*`. React tokens live under `frontend/src/styles/`.
 
 Build migrated assets with `npm run build` (Vite → `go/web/public/react/`).
+Asset filenames are **content-hashed** and resolved at runtime from the Vite
+manifest — see "Build / cache-busting contract" below.
+
+## Build / cache-busting contract (cross-layer)
+
+### 1. Scope / Trigger
+Apply when changing `vite.config.ts` output names, the Go HTML shell asset
+URLs, `scripts/check-react-outputs.mjs`, or anything that reads the Vite
+manifest. This is a cross-layer contract: Vite emits → Go embeds → Go resolves
+at boot → template injects. Breaking any link serves stale or 404 assets.
+
+### 2. Signatures
+- **Vite** (`vite.config.ts`): `build.manifest = true`; output names
+  `entryFileNames/chunkFileNames: 'assets/[name]-[hash].js'`,
+  `assetFileNames: 'assets/[name]-[hash][extname]'`. A `copyManifestToOutDir`
+  plugin copies `.vite/manifest.json` → outDir `manifest.json` in `closeBundle`.
+- **Go** (`go/internal/server/web.go`):
+  `func loadReactAssets(publicFS fs.FS) reactAssets` — reads
+  `react/manifest.json` from the embed FS, returns `{mainJS, mainCSS string}`
+  (paths relative to `/react/`, e.g. `assets/index-<hash>.js`).
+- **Go** (`ReactShellData`): fields `MainJS string`, `MainCSS string`.
+- **Template** (`go/web/views/react-shell.tmpl`):
+  `{{if .MainCSS}}<link rel="stylesheet" href="{{.BaseURL}}react/{{.MainCSS}}">{{end}}`
+  and `{{if .MainJS}}<script type="module" src="{{.BaseURL}}react/{{.MainJS}}">{{end}}`.
+- **Check** (`scripts/check-react-outputs.mjs`): verifies `manifest.json`
+  exists and the entry `file` + `css[]` it references are on disk (no fixed
+  filenames).
+
+### 3. Contracts
+- Manifest entry key is `"index.html"`; `file` = entry JS, `css` = array
+  (take `[0]`). Other keys are dynamic chunks (`src/pages/*.tsx`) — not read
+  by Go; the browser fetches them via the hashed URLs Vite writes into the
+  entry JS.
+- **Embed path**: `web/embed.go` does `//go:embed public/*`; `Public()` subs
+  to `public/`. So `go/web/public/react/manifest.json` on disk is
+  `react/manifest.json` in the embed FS. **`go:embed` skips dotfile dirs**
+  (`.vite/`) — that is why the copy plugin moves the manifest to a clean path.
+- **Empty-string fallback**: missing/malformed manifest → `loadReactAssets`
+  returns zero-value `reactAssets` → template `{{if .MainJS}}`/`{{if .MainCSS}}`
+  skip the tags → shell boots with no assets (blank page). Surfaces at boot as
+  a `slog.Error("react manifest missing; run npm run build")`, not a panic.
+
+### 4. Validation & Error Matrix
+| Condition | Behavior |
+|-----------|----------|
+| `npm run build` not run before `go build` | manifest absent → empty MainJS/MainCSS → blank shell; check script fails the build |
+| Manifest present but no `index.html` entry | `slog.Error("react manifest has no index.html entry")`; empty assets |
+| Manifest JSON malformed | `slog.Error("react manifest parse")`; empty assets |
+| Content changed, rebuild run | new `[hash]` → new URL → browser fetches fresh (no stale cache) |
+
+### 5. Good/Base/Bad Cases
+- **Good**: change a page → `npm run build` → new `index-<newhash>.js` → Go
+  serves the new URL → no stale bundle possible.
+- **Base**: rebuild with no content change → same hash → same URL → cache hit
+  (immutable, safe).
+- **Bad**: hardcode `assets/main.js` in the template (old behavior) → after
+  upgrade the URL is identical → browser/CDN serves the **stale** old bundle.
+
+### 6. Tests Required
+- `scripts/check-react-outputs.mjs` after every build: manifest exists + entry
+  JS/CSS files on disk. Run via `npm run build` / `npm run check`.
+- `go vet ./internal/server/` — catches `ReactShellData` field / struct
+  mismatches between `web.go`, `handlers_pages.go`, and the template.
+- Manual: after a rebuild, the served `main.js`/`main.css` URLs carry a content
+  hash and change when content changes.
+
+### 7. Wrong vs Correct
+#### Wrong
+- Hardcode `assets/main.js` / `assets/main.css` in `react-shell.tmpl`.
+- Force fixed Vite output names (`entryFileNames: 'assets/main.js'`).
+- Read the manifest from `.vite/manifest.json` in Go (dotfile dir, not embedded).
+- Assert fixed filenames in `check-react-outputs.mjs`.
+#### Correct
+- Hashed output names + `manifest: true` + copy plugin to clean path.
+- Go reads `react/manifest.json` from the embed FS at boot.
+- Template uses `{{.MainJS}}`/`{{.MainCSS}}` guarded by `{{if}}`.
+- Check script globs via the manifest, not exact filenames.
+
+## Route code-splitting (page-load)
+
+`frontend/src/App.tsx` lazy-loads heavy, route-gated pages with `React.lazy`
+behind a single `<Suspense fallback={<RouteFallback/>}>` (`RouteFallback` =
+`LoadingState` + `t('loading')`). A login/home/library user no longer
+downloads the reader or admin code.
+
+- **Lazy** (named-export adapter required — every page uses `export function X`):
+  `TitleDetailPage`, `TagDetailPage`, `TagsIndexPage`, `AdminPage`,
+  `UserListPage`, `UserEditPage`, `MissingItemsPage`, `ReaderPage`. Adapter:
+  `lazy(() => import('./pages/X').then((m) => ({ default: m.X })))`.
+- **Eager** (keep static — first-paint-critical or the fallback):
+  `HomePage`, `LoginPage`, `LibraryPage`, `AppShell`, `ErrorState`,
+  `LoadingState` (the Suspense fallback — must NOT be lazy), `UnknownPage`.
+- Vite emits each lazy page as its own `assets/<Name>-<hash>.js` chunk; the
+  reader lands in `ReaderPage-<hash>.js` and is **absent from `main.js``.
+- Do **not** re-eager-import a lazy page from another module (defeats the split).
+
+## `<html lang>` before first paint (a11y)
+
+`react-shell.tmpl` and `frontend/index.html` each carry an inline `<head>`
+script that sets `documentElement.lang` from `localStorage['mango-language']`
+**before paint**, mirroring `applyDocumentLanguage` in `frontend/src/lib/i18n.tsx`
+(`en→en`, `zh-tw→zh-Hant`, else `zh-Hans`). The module-load call in `i18n.tsx`
+remains the source of truth after hydration; the inline script only fixes the
+pre-hydration paint. **Keep the two mappings in sync** — both files carry a
+comment pointing at the other. Screen readers get the right language on first
+paint for `en`/`zh-tw` users instead of always `zh-CN`.
+
+## Mobile breakpoints (responsive shell)
+
+- **Reader top bar** (`.mango-reader-topbar`): `flex-wrap: wrap`; at
+  `max-width: 560px` the center title takes `flex: 1 1 100%; order: 3` and the
+  visible labels on the controls/exit buttons hide via
+  `.mango-reader-topbar__label--sm-hide { display: none }`. Both buttons keep an
+  `aria-label` (exit is an `AppLink`, which forwards `aria-label` via `{...rest}`)
+  so the accessible name persists when text drops.
+- **App topbar**: at `max-width: 820px` `.mango-topbar__tools` is `flex-wrap: nowrap`
+  (keep the 6-button cluster on one row → ≤2-row topbar); at `max-width: 560px`
+  topbar padding/gap tighten.
+- **Touch targets**: `@media (pointer: coarse)` raises `.mango-btn--icon` to
+  `min-width/height: 2.75rem` (44px) and `.mango-tag-pill .mango-btn--icon` to
+  `2.5rem`. Use `pointer: coarse` (not a px breakpoint) so mouse/trackpad users
+  keep the compact 2.25rem density.
+- **Sticky-topbar blur**: `@media (pointer: coarse), (max-width: 560px)` drops
+  `backdrop-filter` on `.mango-topbar` with an opaque `--mango-bg-surface`
+  fallback (avoids mobile scroll jank).
 
 ## React design tokens (`frontend/src/styles/tokens.css`)
 
