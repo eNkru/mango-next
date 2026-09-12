@@ -28,35 +28,35 @@ Mirror Flat for both styles:
 - `app-content`: `margin-left: 0`, `padding-top: calc(68px + 16px)`, horizontal `4vw` (mobile: 72px / 16px)
 - Poster media: `aspect-ratio: 2 / 3`; library titles reserve 2-line height for equal cards
 
-## React home: continue-reading (stacked deck)
+## React home: continue-reading (horizontal wide-card rail)
 
-Home continue-reading is **not** a poster rail (unlike start-reading / recently-added).
+Home continue-reading is a horizontal **wide-card rail** (unlike
+start-reading / recently-added poster rails). It is **not** a stacked deck.
 
 | Piece | Classes | Behavior |
 |-------|---------|----------|
-| Shell | `.mango-continue-stack` | Stacked deck under section heading |
-| Stage | `.mango-continue-stack__stage` | Positioning context; pads for offset peeks |
-| Card | `.mango-continue-stack__card` (+ `--active` / `--back`) | Active front large; backs offset + scale behind |
-| Face | `.mango-continue-stack__face` | Active: cover + meta grid |
-| Back | `.mango-continue-stack__back` | Cover-only button; click brings card to front |
-| Meta | `.mango-continue-stack__meta` | Active only: title + page + progress + **Continue** → reader |
-| Arrows | `.mango-continue-stack__arrow` | Prev/next when `length > 1`; desktop ≥768px only |
+| Shell | `.mango-poster-rail-shell` | Positioning context; arrows overlay it |
+| Rail | `.mango-continue-rail` | `display: grid; grid-auto-flow: column` scroll track |
+| Card | `.mango-continue-rail__card` | `grid-template-columns: cover | meta`; whole card is an `AppLink` → reader |
+| Cover | `.mango-continue-rail__cover` | Left thumb; `object-fit: cover`; `.mango-card__placeholder` fallback |
+| Meta | `.mango-continue-rail__meta` | Title (2-line clamp) + `page X / Y` + `.mango-progress` + `.mango-btn--primary` Continue |
+| Arrows | `.mango-poster-rail__arrow` | Prev/next; edge detection via scroll position; desktop ≥768px only |
 
 Rules:
 
-- Initial active index is `0` (API order)
-- Inactive cards sit **behind** active: **previous** stack left, **next** stack right (`--stack-side` ±1, `--stack-depth`)
-- **Circular**: index wraps; shortest path picks left/right so both sides stay populated when `length > 1`
-- Arrows always shown when multi (wrap forever); click back card or arrows → active front; **does not** open reader
-- Reader entry only via **Continue** on the active card
-- No horizontal scroll track / show more
-- Single item: no arrows (`.mango-continue-stack--single`)
-- Mobile: hide arrows; smaller stack shift; same bring-to-front click
-- Cap visible backs (~4 deep per side) for layout sanity
-- Do **not** use `PosterCard` / `.mango-poster-rail` for continue
-- Comic: thick border / hard shadow on stack cards
-- `prefers-reduced-motion: reduce` disables transform transitions
-- Source: `frontend/src/browse/ContinueCarousel.tsx`, styles in `frontend/src/styles/shell.css`
+- Cards are `AppLink` to `continueReaderPath(item)` (`frontend/src/browse/continueReaderPath.ts`):
+  `reader/{title_id}/{id}` when `page <= 0`, else `reader/{title_id}/{id}/{page + 1}`
+  (storage page is 0-based, reader route is 1-based).
+- The Continue span inside the card is a styled button-look element, **not** a
+  separate link (the whole card is the link).
+- Reuses the `PosterRail` scroll/arrow shell pattern: `trackRef` +
+  `updateEdges` (`canPrev`/`canNext`), scroll amount `max(clientWidth * 0.85, 180)`,
+  `ResizeObserver` + scroll + resize listeners.
+- Source data comes from `apiHome` `continue_reading`, which filters out finished
+  entries (`page == -1` or `page >= pages`) — only in-progress entries appear.
+- Comic: thick border / hard shadow on cards; keep `sharp corners`.
+- `prefers-reduced-motion: reduce` disables card transition.
+- Source: `frontend/src/browse/ContinueRail.tsx`, styles in `frontend/src/styles/shell.css`
 
 ## Skin isolation
 
@@ -289,7 +289,7 @@ Comic stack (Latin first, then system CJK — **no** full Noto CJK binaries in r
 | Comic side rail uses aspect-ratio only | Full-height media where row layout requires it |
 | Library card height follows title wrap | Fixed 2-line title slot + stretch grid |
 | Change Flat accent when restyling comic | Scope comic only |
-| Continue-reading uses poster rail like start/recent | Stacked deck (active front + offset backs) |
+| Continue-reading uses poster rail like start/recent | Wide-card rail (`ContinueRail`) reusing the poster rail's arrow shell |
 | TagDetail invents progress/modified sort | `BrowseToolbar modes={['natural','title']}` + `showProgress={false}` |
 | Primary/danger both use accent red | Danger uses `--mango-danger*` |
 | Re-add react-preview for “component playground” | Use real pages or a local story; route removed |
@@ -302,7 +302,7 @@ Comic stack (Latin first, then system CJK — **no** full Noto CJK binaries in r
 - [ ] comic dark/light: top bar, no sidebar, full-width
 - [ ] flat dark/light: unchanged Netflix chrome
 - [ ] toggle ui-style: class mutual exclusion
-- [ ] home continue-reading: stacked deck (not poster rail); back click brings to front; Continue on active only
+- [ ] home continue-reading: wide-card rail; card links deep-link to saved page; finished titles absent
 - [ ] library cards equal height, sharp corners
 - [ ] comic buttons: thick border + shadow; danger distinct from accent
 - [ ] Login: language select works before session

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { apiFetch } from '../lib/api';
 import type { BrowseEntry, BrowseTitle } from '../lib/browse';
 import { useI18n } from '../lib/i18n';
-import { ContinueCarousel } from '../browse/ContinueCarousel';
+import { ContinueRail } from '../browse/ContinueRail';
 import { PosterRail } from '../browse/PosterRail';
 import { AppShell } from '../shell/AppShell';
 import { pushAlert } from '../shell/AlertHost';
@@ -62,7 +62,7 @@ export function HomePage() {
           <p>{t('welcomeBody')}</p>
         </section>
       ) : null}
-      {data?.continue_reading.length ? <ContinueCarousel items={data.continue_reading} /> : null}
+      {data?.continue_reading.length ? <ContinueRail items={data.continue_reading} /> : null}
       {data?.start_reading.length ? (
         <PosterRail title={t('startReading')} items={data.start_reading} />
       ) : null}

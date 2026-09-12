@@ -56,6 +56,9 @@ func (s *Server) apiHome(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		if entry, ok := s.browseEntry(item.TitleID, item.EntryID, username); ok {
+			if entry.Page == -1 || entry.Page >= entry.Pages {
+				continue
+			}
 			continueItems = append(continueItems, entry)
 		}
 	}

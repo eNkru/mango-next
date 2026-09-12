@@ -150,3 +150,116 @@ func TestBrowseLibraryHiddenFiltering(t *testing.T) {
 		t.Fatalf("hidden filtering default=%+v shown=%+v", first.Titles, second.Titles)
 	}
 }
+
+func TestContinueReadingFiltersFinishedEntries(t *testing.T) {
+	dir := t.TempDir()
+	libraryPath := filepath.Join(dir, "library")
+	titlePath := filepath.Join(libraryPath, "Series")
+	if err := os.MkdirAll(titlePath, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	// Create three entries: one in-progress, one fully read (page == pages), one bulk-marked (page == -1).
+	if err := writeTestCBZ(filepath.Join(titlePath, "Chapter 01.cbz"), 10); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeTestCBZ(filepath.Join(titlePath, "Chapter 02.cbz"), 10); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeTestCBZ(filepath.Join(titlePath, "Chapter 03.cbz"), 10); err != nil {
+		t.Fatal(err)
+	}
+	cfg := &config.Config{
+		BaseURL: "/", DBPath: filepath.Join(dir, "mango.db"), Port: 9000,
+		LibraryPath: libraryPath, UploadPath: filepath.Join(dir, "uploads"),
+	}
+	cfg.SetCurrent()
+	st, err := storage.Open(cfg.DBPath, libraryPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { st.Close() })
+	if err := st.NewUser("testuser", "password123", true); err != nil {
+		t.Fatal(err)
+	}
+	token, err := st.VerifyUser("testuser", "password123")
+	if err != nil {
+		t.Fatal(err)
+	}
+	lib := library.NewLibrary(libraryPath, st, "")
+	if _, err := lib.Scan(); err != nil {
+		t.Fatal(err)
+	}
+	lib.RLock()
+	title := lib.TitleHash[lib.TitleIDs[0]]
+	lib.RUnlock()
+	if title == nil || len(title.Entries) != 3 {
+		t.Fatalf("expected 3 entries, got %d", len(title.Entries))
+	}
+
+	// Sort entries by name so we have deterministic order.
+	entries := make([]library.Entry, len(title.Entries))
+	copy(entries, title.Entries)
+	// Use the entries as scanned; they are ordered by filename.
+	eid0 := entries[0].ID() // Chapter 01
+	eid1 := entries[1].ID() // Chapter 02
+	eid2 := entries[2].ID() // Chapter 03
+
+	// Chapter 01: in-progress (page 5 of 10).
+	if err := st.SaveProgress("testuser", title.ID, strPtr(eid0), 5); err != nil {
+		t.Fatal(err)
+	}
+	// Chapter 02: fully read (page == pageCount, 10 of 10).
+	if err := st.SaveProgress("testuser", title.ID, strPtr(eid1), 10); err != nil {
+		t.Fatal(err)
+	}
+	// Chapter 03: bulk-marked read (page == -1).
+	if err := st.BulkMarkRead("testuser", title.ID, []string{eid2}); err != nil {
+		t.Fatal(err)
+	}
+
+	templates, err := NewTemplateManager(web.Views())
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := NewServer(&Dependencies{Config: cfg, Storage: st, Library: lib, Templates: templates})
+	s.RegisterRoutes()
+	cookie := &http.Cookie{Name: "mango-token-9000", Value: token}
+
+	// Verify apiHome filters finished entries.
+	homeRec := browseRequest(t, s, cookie, http.MethodGet, "/api/home", nil)
+	if homeRec.Code != http.StatusOK {
+		t.Fatalf("home status=%d body=%s", homeRec.Code, homeRec.Body.String())
+	}
+	var homePayload struct {
+		ContinueReading []browseEntry `json:"continue_reading"`
+	}
+	if err := json.Unmarshal(homeRec.Body.Bytes(), &homePayload); err != nil {
+		t.Fatal(err)
+	}
+	if len(homePayload.ContinueReading) != 1 {
+		t.Fatalf("expected 1 continue_reading entry (in-progress only), got %d: %+v", len(homePayload.ContinueReading), homePayload.ContinueReading)
+	}
+	if homePayload.ContinueReading[0].ID != eid0 {
+		t.Fatalf("expected in-progress entry %s, got %s", eid0, homePayload.ContinueReading[0].ID)
+	}
+	if homePayload.ContinueReading[0].Page != 5 {
+		t.Fatalf("expected page 5, got %d", homePayload.ContinueReading[0].Page)
+	}
+
+	// Verify standalone endpoint still returns all entries (including finished).
+	libRec := browseRequest(t, s, cookie, http.MethodGet, "/api/library/continue_reading", nil)
+	if libRec.Code != http.StatusOK {
+		t.Fatalf("library continue status=%d body=%s", libRec.Code, libRec.Body.String())
+	}
+	var libPayload struct {
+		Data []struct {
+			EntryID string `json:"entry_id"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(libRec.Body.Bytes(), &libPayload); err != nil {
+		t.Fatal(err)
+	}
+	if len(libPayload.Data) != 3 {
+		t.Fatalf("standalone endpoint should return all 3 entries, got %d", len(libPayload.Data))
+	}
+}

@@ -1,13 +1,13 @@
 {
-  "_ConfirmDialog-bqN_0Dp4.js": {
-    "file": "assets/ConfirmDialog-bqN_0Dp4.js",
+  "_ConfirmDialog-DRfZ6wew.js": {
+    "file": "assets/ConfirmDialog-DRfZ6wew.js",
     "name": "ConfirmDialog",
     "imports": [
       "index.html"
     ]
   },
   "index.html": {
-    "file": "assets/index-k7QHyBcl.js",
+    "file": "assets/index-sG0WWdDv.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -22,7 +22,7 @@
       "src/pages/reader/ReaderPage.tsx"
     ],
     "css": [
-      "assets/index-DjoiopAv.css"
+      "assets/index-Bnre9Dxn.css"
     ],
     "assets": [
       "assets/Fredoka-Regular-BeHatrkI.woff2",
@@ -38,7 +38,7 @@
     "src": "src/assets/fonts/fredoka/Fredoka-Regular.woff2"
   },
   "src/pages/AdminPage.tsx": {
-    "file": "assets/AdminPage-DA_7FRLu.js",
+    "file": "assets/AdminPage-D8A7g0Xl.js",
     "name": "AdminPage",
     "src": "src/pages/AdminPage.tsx",
     "isDynamicEntry": true,
@@ -47,17 +47,17 @@
     ]
   },
   "src/pages/MissingItemsPage.tsx": {
-    "file": "assets/MissingItemsPage-BnUP53FP.js",
+    "file": "assets/MissingItemsPage-9ace54Jx.js",
     "name": "MissingItemsPage",
     "src": "src/pages/MissingItemsPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_ConfirmDialog-bqN_0Dp4.js"
+      "_ConfirmDialog-DRfZ6wew.js"
     ]
   },
   "src/pages/TagDetailPage.tsx": {
-    "file": "assets/TagDetailPage-VUT0slo0.js",
+    "file": "assets/TagDetailPage-s6-lYEWQ.js",
     "name": "TagDetailPage",
     "src": "src/pages/TagDetailPage.tsx",
     "isDynamicEntry": true,
@@ -66,7 +66,7 @@
     ]
   },
   "src/pages/TagsIndexPage.tsx": {
-    "file": "assets/TagsIndexPage-LTitHAsU.js",
+    "file": "assets/TagsIndexPage-VgdiRhBa.js",
     "name": "TagsIndexPage",
     "src": "src/pages/TagsIndexPage.tsx",
     "isDynamicEntry": true,
@@ -75,7 +75,7 @@
     ]
   },
   "src/pages/TitleDetailPage.tsx": {
-    "file": "assets/TitleDetailPage-CmVihVw5.js",
+    "file": "assets/TitleDetailPage-DCUBvnS8.js",
     "name": "TitleDetailPage",
     "src": "src/pages/TitleDetailPage.tsx",
     "isDynamicEntry": true,
@@ -84,7 +84,7 @@
     ]
   },
   "src/pages/UserEditPage.tsx": {
-    "file": "assets/UserEditPage-D3qoj-8D.js",
+    "file": "assets/UserEditPage-qLs7l61M.js",
     "name": "UserEditPage",
     "src": "src/pages/UserEditPage.tsx",
     "isDynamicEntry": true,
@@ -93,17 +93,17 @@
     ]
   },
   "src/pages/UserListPage.tsx": {
-    "file": "assets/UserListPage-BY1Ptu1j.js",
+    "file": "assets/UserListPage-D_focTRq.js",
     "name": "UserListPage",
     "src": "src/pages/UserListPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_ConfirmDialog-bqN_0Dp4.js"
+      "_ConfirmDialog-DRfZ6wew.js"
     ]
   },
   "src/pages/reader/ReaderPage.tsx": {
-    "file": "assets/ReaderPage-CWocrbgc.js",
+    "file": "assets/ReaderPage-FDAMzmc4.js",
     "name": "ReaderPage",
     "src": "src/pages/reader/ReaderPage.tsx",
     "isDynamicEntry": true,

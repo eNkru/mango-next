@@ -108,3 +108,36 @@ Shell layout/mobile responsiveness, reader top bar, Go handlers, rebuilt assets,
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: Continue Reading redesign: wide-card rail + finish filter + page deep-link
+
+**Date**: 2026-09-12
+**Task**: Continue Reading redesign: wide-card rail + finish filter + page deep-link
+**Branch**: `feat/continue-reading-redesign`
+
+### Summary
+
+Shipped feat/continue-reading-redesign: backend filter skips finished titles in apiHome; new ContinueRail wide-card rail replaces ContinueCarousel; continueReaderPath helper deep-links the reader to the saved page. PR #69.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `134bc72` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
