@@ -95,24 +95,3 @@ func compareNumerically(a, b string) int {
 	}
 	return 0
 }
-
-// ---------------------------------------------------------------------------
-// ChapterSorter — weighted alphanumeric comparison
-// ---------------------------------------------------------------------------
-
-// chapterSorter provides a compare method that gives more weight to
-// leading numeric segments for natural chapter ordering.
-type chapterSorter struct {
-	titles []string
-}
-
-func newChapterSorter(titles []string) *chapterSorter {
-	return &chapterSorter{titles: titles}
-}
-
-// compare returns -1, 0, or +1, following the Crystal ChapterSorter logic
-// which weights the comparison so "Chapter 1" < "Chapter 2" < "Chapter 10".
-// For Phase 2 it delegates to compareNumerically.
-func (cs *chapterSorter) compare(a, b string) int {
-	return compareNumerically(a, b)
-}

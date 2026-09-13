@@ -10,17 +10,11 @@ import (
 	_ "image/gif"
 	_ "image/png"
 
+	"github.com/eNkru/mango-next/internal/storage"
 	"golang.org/x/image/draw"
 	// Registers WebP with image.Decode / image.DecodeConfig.
 	_ "golang.org/x/image/webp"
 )
-
-type Image struct {
-	Data     []byte
-	Mime     string
-	Filename string
-	Size     int
-}
 
 func DecodeConfig(data []byte) (width, height int, err error) {
 	cfg, _, err := image.DecodeConfig(bytes.NewReader(data))
@@ -30,7 +24,7 @@ func DecodeConfig(data []byte) (width, height int, err error) {
 	return cfg.Width, cfg.Height, nil
 }
 
-func Generate(data []byte, filename string) (*Image, error) {
+func Generate(data []byte, filename string) (*storage.Image, error) {
 	cfg, _, err := image.DecodeConfig(bytes.NewReader(data))
 	if err != nil {
 		return nil, err
@@ -59,7 +53,7 @@ func Generate(data []byte, filename string) (*Image, error) {
 	}
 	thumbnail := buf.Bytes()
 
-	return &Image{
+	return &storage.Image{
 		Data:     thumbnail,
 		Mime:     "image/jpeg",
 		Filename: filename,

@@ -321,14 +321,7 @@ func (lib *Library) GenerateThumbnails() error {
 			continue
 		}
 
-		stImg := &storage.Image{
-			Data:     thumb.Data,
-			Filename: thumb.Filename,
-			Mime:     thumb.Mime,
-			Size:     thumb.Size,
-		}
-
-		if err := lib.St.SaveThumbnail(e.ID(), stImg); err != nil {
+		if err := lib.St.SaveThumbnail(e.ID(), thumb); err != nil {
 			log.Printf("Failed to save thumbnail for %s: %v", e.Path(), err)
 		}
 

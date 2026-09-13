@@ -840,7 +840,7 @@ func (s *Server) apiAdminUpload(w http.ResponseWriter, r *http.Request) {
 				fail("Entry not found")
 				return
 			}
-			if err := t.SetEntryCoverURL(entryFileName(entry), urlPath); err != nil {
+			if err := t.SetEntryCoverURL(library.EntryFileName(entry), urlPath); err != nil {
 				fail(err.Error())
 				return
 			}
