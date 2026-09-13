@@ -16,10 +16,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func loadTemplates() (*server.TemplateManager, error) {
-	return server.NewTemplateManager(web.Views())
-}
-
 const version = "2.0.0"
 
 const banner = `
@@ -86,7 +82,7 @@ func main() {
 			runner := tasks.NewRunner(lib, cfg.ScanIntervalMinutes, cfg.ThumbnailGenerationIntervalHours)
 			go runner.Start(ctx)
 
-			tm, err := loadTemplates()
+			tm, err := server.NewTemplateManager(web.Views())
 			if err != nil {
 				return fmt.Errorf("load templates: %w", err)
 			}

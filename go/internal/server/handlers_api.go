@@ -65,10 +65,6 @@ func firstEntryID(t *library.Title) string {
 	return ""
 }
 
-func countEntries(t *library.Title) int {
-	return len(t.DeepEntries())
-}
-
 func (s *Server) apiPage(w http.ResponseWriter, r *http.Request) {
 	tid := chi.URLParam(r, "tid")
 	eid := chi.URLParam(r, "eid")
