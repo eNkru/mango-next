@@ -5,10 +5,6 @@ type LoadingProps = {
   message?: string;
 };
 
-type EmptyProps = {
-  message?: string;
-};
-
 type ErrorProps = {
   message?: string;
   onRetry?: () => void;
@@ -19,9 +15,7 @@ export function LoadingState({ message = '…' }: LoadingProps) {
   return <div className="mango-state">{message}</div>;
 }
 
-export function EmptyState({ message = '…' }: EmptyProps) {
-  return <div className="mango-state">{message}</div>;
-}
+export const EmptyState = LoadingState;
 
 export function ErrorState({ message = '…', onRetry, retryLabel = 'Retry' }: ErrorProps) {
   return (

@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { appPath } from './bootContext';
-import { baseUrl } from './baseUrl';
 
 type AppLinkProps = {
   to: string;
@@ -34,11 +33,3 @@ export function useAppNavigate() {
   };
 }
 
-/** Use for download/logout/external — full document navigation. */
-export function hardHref(path: string): string {
-  return baseUrl(path);
-}
-
-export function isModifiedClick(event: MouseEvent): boolean {
-  return event.metaKey || event.altKey || event.ctrlKey || event.shiftKey || event.button !== 0;
-}
