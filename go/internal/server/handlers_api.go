@@ -56,54 +56,6 @@ func (s *Server) apiLogin(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (s *Server) apiLibrary(w http.ResponseWriter, r *http.Request) {
-	username := GetUsername(r)
-	lib := s.Deps.Library
-
-	lib.RLock()
-	titleIDs := make([]string, len(lib.TitleIDs))
-	copy(titleIDs, lib.TitleIDs)
-	lib.RUnlock()
-
-	type titleResp struct {
-		ID          string   `json:"id"`
-		Name        string   `json:"name"`
-		CoverURL    string   `json:"cover_url"`
-		EntryCount  int      `json:"entry_count"`
-		Tags        []string `json:"tags,omitempty"`
-		Hidden      bool     `json:"hidden"`
-		DisplayName string   `json:"display_name"`
-	}
-
-	var resp []titleResp
-	for _, id := range titleIDs {
-		lib.RLock()
-		t, ok := lib.TitleHash[id]
-		lib.RUnlock()
-		if !ok {
-			continue
-		}
-		st, _ := s.Deps.Storage.GetTitleHidden(t.ID)
-		tags, _ := s.Deps.Storage.GetTitleTags(t.ID)
-		_ = username
-		resp = append(resp, titleResp{
-			ID:   t.ID,
-			Name: t.Name,
-			CoverURL: fmt.Sprintf("%sapi/cover/%s/%s",
-				s.Deps.Config.BaseURL, t.ID, firstEntryID(t)),
-			EntryCount:  len(t.Entries),
-			Tags:        tags,
-			Hidden:      st == 1,
-			DisplayName: t.Name,
-		})
-	}
-
-	sendJSON(w, map[string]any{
-		"success": true,
-		"data":    resp,
-	})
-}
-
 func firstEntryID(t *library.Title) string {
 	// Prefer any deep entry (including nested volumes). Nested-only trees have
 	// empty direct Entries; returning a sub-title ID here breaks /api/cover.
@@ -111,95 +63,6 @@ func firstEntryID(t *library.Title) string {
 		return e.ID()
 	}
 	return ""
-}
-
-func countEntries(t *library.Title) int {
-	return len(t.DeepEntries())
-}
-
-func (s *Server) apiBook(w http.ResponseWriter, r *http.Request) {
-	tid := chi.URLParam(r, "tid")
-	lib := s.Deps.Library
-
-	lib.RLock()
-	t, ok := lib.TitleHash[tid]
-	lib.RUnlock()
-
-	if !ok {
-		sendJSONError(w, "Title not found", http.StatusNotFound)
-		return
-	}
-
-	type entryResp struct {
-		ID       string `json:"id"`
-		Name     string `json:"name"`
-		Pages    int    `json:"pages"`
-		CoverURL string `json:"cover_url"`
-		Progress int    `json:"progress"`
-	}
-
-	var entries []entryResp
-	username := GetUsername(r)
-	for _, e := range t.Entries {
-		progress, _ := s.Deps.Storage.LoadProgress(username, t.ID, strPtr(e.ID()))
-		entries = append(entries, entryResp{
-			ID:       e.ID(),
-			Name:     e.Name(),
-			Pages:    e.PageCount(),
-			CoverURL: fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, e.ID()),
-			Progress: progress,
-		})
-	}
-
-	type subTitleResp struct {
-		ID       string      `json:"id"`
-		Name     string      `json:"name"`
-		Entries  []entryResp `json:"entries"`
-		CoverURL string      `json:"cover_url"`
-	}
-
-	var subTitles []subTitleResp
-	lib.RLock()
-	for _, subID := range t.TitleIDs {
-		subT, subOk := lib.TitleHash[subID]
-		if !subOk {
-			continue
-		}
-		var subEntries []entryResp
-		for _, e := range subT.Entries {
-			progress, _ := s.Deps.Storage.LoadProgress(username, subT.ID, strPtr(e.ID()))
-			subEntries = append(subEntries, entryResp{
-				ID:       e.ID(),
-				Name:     e.Name(),
-				Pages:    e.PageCount(),
-				CoverURL: fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, subT.ID, e.ID()),
-				Progress: progress,
-			})
-		}
-		subTitles = append(subTitles, subTitleResp{
-			ID:      subT.ID,
-			Name:    subT.Name,
-			Entries: subEntries,
-		})
-	}
-	lib.RUnlock()
-
-	tags, _ := s.Deps.Storage.GetTitleTags(tid)
-	hidden, _ := s.Deps.Storage.GetTitleHidden(tid)
-
-	sendJSON(w, map[string]any{
-		"success": true,
-		"data": map[string]any{
-			"id":           t.ID,
-			"name":         t.Name,
-			"display_name": t.Name,
-			"cover_url":    fmt.Sprintf("%sapi/cover/%s/%s", s.Deps.Config.BaseURL, t.ID, firstEntryID(t)),
-			"tags":         tags,
-			"hidden":       hidden == 1,
-			"entries":      entries,
-			"titles":       subTitles,
-		},
-	})
 }
 
 func (s *Server) apiPage(w http.ResponseWriter, r *http.Request) {
@@ -977,7 +840,7 @@ func (s *Server) apiAdminUpload(w http.ResponseWriter, r *http.Request) {
 				fail("Entry not found")
 				return
 			}
-			if err := t.SetEntryCoverURL(entryFileName(entry), urlPath); err != nil {
+			if err := t.SetEntryCoverURL(library.EntryFileName(entry), urlPath); err != nil {
 				fail(err.Error())
 				return
 			}

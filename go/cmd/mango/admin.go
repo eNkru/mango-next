@@ -34,10 +34,6 @@ func newAdminUserCmd(configPath *string) *cobra.Command {
 		Short: "User management tool",
 		Long:  "Action to perform. Can be add/delete/update/list",
 		Args:  cobra.MaximumNArgs(2),
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			// PreRun avoids repeated open/close for subcommands.
-			return nil
-		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			action := ""
 			if len(args) > 0 {

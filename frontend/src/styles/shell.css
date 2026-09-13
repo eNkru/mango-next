@@ -428,27 +428,6 @@ html.comic-theme-dark .mango-modal {
   margin-top: 1rem;
 }
 
-.mango-meta {
-  display: grid;
-  gap: 0.35rem;
-  margin: 0;
-}
-
-.mango-meta div {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.mango-meta dt {
-  min-width: 6rem;
-  color: var(--mango-text-muted);
-  font-weight: 600;
-}
-
-.mango-meta dd {
-  margin: 0;
-}
-
 .mango-actions {
   display: flex;
   flex-wrap: wrap;

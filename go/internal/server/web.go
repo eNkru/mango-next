@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"html/template"
+	"io"
 	"io/fs"
 	"log/slog"
 	"path/filepath"
@@ -61,23 +62,7 @@ type TemplateManager struct {
 }
 
 func NewTemplateManager(viewsFS fs.FS) (*TemplateManager, error) {
-	funcMap := template.FuncMap{
-		"slice": func(items []any) []any { return items },
-		"seq": func(n int) []int {
-			s := make([]int, n)
-			for i := range s {
-				s[i] = i
-			}
-			return s
-		},
-		"add":  func(a, b int) int { return a + b },
-		"sub":  func(a, b int) int { return a - b },
-		"html": func(s string) template.HTML { return template.HTML(s) },
-		"url":  func(s string) template.URL { return template.URL(s) },
-		"js":   func(s string) template.JS { return template.JS(s) },
-	}
-
-	tmpl := template.New("").Funcs(funcMap)
+	tmpl := template.New("")
 
 	err := fs.WalkDir(viewsFS, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -102,12 +87,8 @@ func NewTemplateManager(viewsFS fs.FS) (*TemplateManager, error) {
 	return &TemplateManager{templates: tmpl}, nil
 }
 
-func (tm *TemplateManager) Render(w interface{ Write([]byte) (int, error) }, name string, data any) error {
+func (tm *TemplateManager) Render(w io.Writer, name string, data any) error {
 	return tm.templates.ExecuteTemplate(w, name, data)
-}
-
-func (tm *TemplateManager) Lookup(name string) *template.Template {
-	return tm.templates.Lookup(name)
 }
 
 // ReactShellData is the Go HTML shell payload for migrated React routes.

@@ -40,26 +40,3 @@ export function applyHtmlTheme(theme: ThemeSetting = loadThemeSetting(), style: 
   }
 }
 
-export function saveThemeSetting(theme: ThemeSetting): void {
-  localStorage.setItem(THEME_KEY, theme);
-  applyHtmlTheme(theme, loadUIStyle());
-}
-
-export function saveUIStyle(style: UIStyle): void {
-  localStorage.setItem(STYLE_KEY, style);
-  applyHtmlTheme(loadThemeSetting(), style);
-}
-
-/** Re-apply when OS theme changes and user chose "system". */
-export function watchSystemTheme(onChange?: () => void): () => void {
-  const mql = window.matchMedia?.('(prefers-color-scheme: dark)');
-  if (!mql) return () => {};
-  const handler = () => {
-    if (loadThemeSetting() === 'system') {
-      applyHtmlTheme('system', loadUIStyle());
-      onChange?.();
-    }
-  };
-  mql.addEventListener('change', handler);
-  return () => mql.removeEventListener('change', handler);
-}

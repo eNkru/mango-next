@@ -107,13 +107,3 @@ func configCurrentBase() string {
 	}
 	return ""
 }
-
-func (s *Server) isStaticFile(path string) bool {
-	staticDirs := []string{"/img", "/react"}
-	for _, dir := range staticDirs {
-		if strings.HasPrefix(path, dir) {
-			return true
-		}
-	}
-	return path == "/favicon.ico" || path == "/robots.txt" || path == "/manifest.json"
-}

@@ -541,9 +541,8 @@ func NewTitle(absPath, parentID string, st *storage.Storage) *Title {
 	}
 
 	// Sort entries by name (numeric sort)
-	chSorter := newChapterSorter(t.entryNames())
 	sort.Slice(t.Entries, func(i, j int) bool {
-		return chSorter.compare(t.Entries[i].Name(), t.Entries[j].Name()) < 0
+		return compareNumerically(t.Entries[i].Name(), t.Entries[j].Name()) < 0
 	})
 
 	// Recompute mtime as max of self, entries, and nested titles
@@ -563,15 +562,6 @@ func NewTitle(absPath, parentID string, st *storage.Storage) *Title {
 	_ = t.ApplyDisplayNames()
 
 	return t
-}
-
-// entryNames returns the Name() of each direct entry for sorting.
-func (t *Title) entryNames() []string {
-	names := make([]string, len(t.Entries))
-	for i, e := range t.Entries {
-		names[i] = e.Name()
-	}
-	return names
 }
 
 // DeepEntries returns all entries including those in nested sub-titles.

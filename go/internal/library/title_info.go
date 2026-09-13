@@ -94,7 +94,7 @@ func (t *Title) EntryCoverURL(entry Entry) string {
 		return ""
 	}
 	entryURLs, _ := m["entry_cover_url"].(map[string]any)
-	url, _ := entryURLs[entryFileName(entry)].(string)
+	url, _ := entryURLs[EntryFileName(entry)].(string)
 	return url
 }
 
@@ -110,7 +110,7 @@ func (t *Title) ApplyDisplayNames() error {
 	}
 	entryNames, _ := m["entry_display_name"].(map[string]any)
 	for _, entry := range t.Entries {
-		name, _ := entryNames[entryFileName(entry)].(string)
+		name, _ := entryNames[EntryFileName(entry)].(string)
 		if strings.TrimSpace(name) != "" {
 			setEntryName(entry, name)
 		}
@@ -153,7 +153,7 @@ func (t *Title) SetEntryDisplayName(entry Entry, name string) error {
 	if entryNames == nil {
 		entryNames = map[string]any{}
 	}
-	entryNames[entryFileName(entry)] = name
+	entryNames[EntryFileName(entry)] = name
 	m["entry_display_name"] = entryNames
 	if err := SaveTitleInfoMap(t.Dir, m); err != nil {
 		return err
@@ -162,7 +162,7 @@ func (t *Title) SetEntryDisplayName(entry Entry, name string) error {
 	return nil
 }
 
-func entryFileName(entry Entry) string {
+func EntryFileName(entry Entry) string {
 	name := filepath.Base(entry.Path())
 	if _, ok := entry.(*ArchiveEntry); ok {
 		name = strings.TrimSuffix(name, filepath.Ext(name))

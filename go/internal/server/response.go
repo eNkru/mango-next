@@ -19,11 +19,6 @@ func sendJSONError(w http.ResponseWriter, msg string, code int) {
 	})
 }
 
-func sendText(w http.ResponseWriter, text string) {
-	w.Header().Set("Content-Type", "text/plain")
-	w.Write([]byte(text))
-}
-
 func sendAttachment(w http.ResponseWriter, data []byte, filename, mime string) {
 	w.Header().Set("Content-Disposition", `attachment; filename="`+filename+`"`)
 	w.Header().Set("Content-Type", mime)
@@ -33,8 +28,4 @@ func sendAttachment(w http.ResponseWriter, data []byte, filename, mime string) {
 func sendImage(w http.ResponseWriter, data []byte, mime string) {
 	w.Header().Set("Content-Type", mime)
 	w.Write(data)
-}
-
-func redirect(w http.ResponseWriter, r *http.Request, path string) {
-	http.Redirect(w, r, path, http.StatusFound)
 }

@@ -12,7 +12,7 @@ import { ReaderTopBar } from './ReaderTopBar';
 import { ReaderViewport } from './ReaderViewport';
 import { useReaderBootstrap } from './useReaderBootstrap';
 import { useReaderNavigation } from './useReaderNavigation';
-import { useReaderPrefs } from './useReaderPrefs';
+import { useReaderPrefsStore } from '../../lib/readerPrefsStore';
 import { useReaderProgress } from './useReaderProgress';
 
 const EDGE_PX = 36;
@@ -36,7 +36,8 @@ export function ReaderPage({
   const navigate = useAppNavigate();
 
   const { state } = useReaderBootstrap(tid, eid);
-  const { prefs, setPrefs } = useReaderPrefs();
+  const prefs = useReaderPrefsStore((s) => s.prefs);
+  const setPrefs = useReaderPrefsStore((s) => s.setPrefs);
 
   const [barVisible, setBarVisible] = useState(false);
   const [controlsOpen, setControlsOpen] = useState(false);

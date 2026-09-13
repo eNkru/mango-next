@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/eNkru/mango-next/internal/library"
@@ -227,7 +228,7 @@ func (s *Server) makeBrowseEntry(title *library.Title, entry library.Entry, user
 	sortName, _ := s.Deps.Storage.GetEntrySortTitle(entry.ID())
 	return browseEntry{
 		ID: entry.ID(), TitleID: title.ID, Name: entry.Name(),
-		FileName: entryFileName(entry), SortName: stringValue(sortName),
+		FileName: library.EntryFileName(entry), SortName: stringValue(sortName),
 		CoverURL: s.entryCoverURL(title, entry), Pages: entry.PageCount(), Page: page,
 		Progress: progressPercent(page, entry.PageCount()), ModifiedAt: entry.Mtime().Unix(),
 	}
@@ -273,9 +274,7 @@ func (s *Server) browseParents(parentID string) []browseTitle {
 		}
 		parentID = parent.ParentID
 	}
-	for left, right := 0, len(reverse)-1; left < right; left, right = left+1, right-1 {
-		reverse[left], reverse[right] = reverse[right], reverse[left]
-	}
+	slices.Reverse(reverse)
 	return reverse
 }
 
@@ -301,14 +300,6 @@ func (s *Server) assetURL(path string) string {
 		return path
 	}
 	return strings.TrimSuffix(s.Deps.Config.BaseURL, "/") + "/" + strings.TrimPrefix(path, "/")
-}
-
-func entryFileName(entry library.Entry) string {
-	name := filepath.Base(entry.Path())
-	if _, ok := entry.(*library.ArchiveEntry); ok {
-		name = strings.TrimSuffix(name, filepath.Ext(name))
-	}
-	return name
 }
 
 func stringValue(value *string) string {
