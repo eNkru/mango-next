@@ -2,7 +2,6 @@ package storage
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 )
 
@@ -119,25 +118,6 @@ func (s *Storage) BulkMarkUnread(username, titleID string, entryIDs []string) er
 	return nil
 }
 
-func (s *Storage) BulkMarkTitleRead(username, titleID string, pageCount int) error {
-	now := time.Now().Unix()
-	_, err := s.db.Exec(
-		`INSERT INTO progress (username, title_id, entry_id, page, updated_at)
-		 VALUES (?, ?, NULL, ?, ?)
-		 ON CONFLICT(username, title_id, entry_id) DO UPDATE SET page = ?, updated_at = ?`,
-		username, titleID, pageCount, now, pageCount, now,
-	)
-	return err
-}
-
-func (s *Storage) BulkMarkTitleUnread(username, titleID string) error {
-	_, err := s.db.Exec(
-		`DELETE FROM progress WHERE username = ? AND title_id = ?`,
-		username, titleID,
-	)
-	return err
-}
-
 // UserHasProgress reports whether the user has any non-zero reading progress.
 // Used for home NewUser (Crystal: any title load_percentage > 0).
 func (s *Storage) UserHasProgress(username string) (bool, error) {
@@ -227,12 +207,4 @@ func (s *Storage) GetRecentlyAdded(username string) ([]RecentlyAddedItem, error)
 		items = append(items, RecentlyAddedItem{TitleID: id})
 	}
 	return items, rows.Err()
-}
-
-func (s *Storage) MigrateProgressTable() error {
-	_, err := s.db.Exec(createProgressTable)
-	if err != nil {
-		return fmt.Errorf("create progress table: %w", err)
-	}
-	return nil
 }

@@ -157,10 +157,3 @@ func (s *Storage) CountTitles() (int, error) {
 	err := s.db.QueryRow("SELECT COUNT(*) FROM titles").Scan(&count)
 	return count, err
 }
-
-// CountEntries returns the total number of entries in the ids table.
-func (s *Storage) CountEntries() (int, error) {
-	var count int
-	err := s.db.QueryRow("SELECT COUNT(*) FROM ids").Scan(&count)
-	return count, err
-}
