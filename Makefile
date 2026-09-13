@@ -3,7 +3,7 @@ INSTALL_DIR=$(PREFIX)/bin
 GO_DIR := go
 BINARY := mango
 
-.PHONY: all build static run test check clean install uninstall frontend-install frontend-build frontend-check go-build go-static go-test go-check go-run go-all
+.PHONY: all build static run test check clean install uninstall frontend-install frontend-build frontend-check
 
 all:
 	@$(MAKE) check
@@ -19,11 +19,6 @@ frontend-build:
 frontend-check:
 	npm run typecheck
 	npm run check
-
-# Back-compat aliases while docs migrate off the assets:* names.
-assets-install: frontend-install
-assets-build: frontend-build
-assets-check: frontend-check
 
 build: frontend-build
 	cd $(GO_DIR) && go build -o ../$(BINARY) ./cmd/mango/
@@ -48,11 +43,3 @@ install: build
 
 uninstall:
 	rm -f $(INSTALL_DIR)/$(BINARY)
-
-# Aliases kept for existing docs / muscle memory
-go-build: build
-go-static: static
-go-test: test
-go-check: check
-go-run: run
-go-all: all
