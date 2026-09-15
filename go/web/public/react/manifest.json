@@ -1,13 +1,13 @@
 {
-  "_ConfirmDialog-Ri65IBn9.js": {
-    "file": "assets/ConfirmDialog-Ri65IBn9.js",
+  "_ConfirmDialog-DlaD7W95.js": {
+    "file": "assets/ConfirmDialog-DlaD7W95.js",
     "name": "ConfirmDialog",
     "imports": [
       "index.html"
     ]
   },
   "index.html": {
-    "file": "assets/index-D94avZOE.js",
+    "file": "assets/index-B9mAUGiB.js",
     "name": "index",
     "src": "index.html",
     "isEntry": true,
@@ -38,7 +38,7 @@
     "src": "src/assets/fonts/fredoka/Fredoka-Regular.woff2"
   },
   "src/pages/AdminPage.tsx": {
-    "file": "assets/AdminPage-BbbTGT8T.js",
+    "file": "assets/AdminPage-BPN8TbRg.js",
     "name": "AdminPage",
     "src": "src/pages/AdminPage.tsx",
     "isDynamicEntry": true,
@@ -47,17 +47,17 @@
     ]
   },
   "src/pages/MissingItemsPage.tsx": {
-    "file": "assets/MissingItemsPage-BDvrBs8Q.js",
+    "file": "assets/MissingItemsPage-ZrAlvxei.js",
     "name": "MissingItemsPage",
     "src": "src/pages/MissingItemsPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_ConfirmDialog-Ri65IBn9.js"
+      "_ConfirmDialog-DlaD7W95.js"
     ]
   },
   "src/pages/TagDetailPage.tsx": {
-    "file": "assets/TagDetailPage-DYJ3AiDZ.js",
+    "file": "assets/TagDetailPage-DdUhISQB.js",
     "name": "TagDetailPage",
     "src": "src/pages/TagDetailPage.tsx",
     "isDynamicEntry": true,
@@ -66,7 +66,7 @@
     ]
   },
   "src/pages/TagsIndexPage.tsx": {
-    "file": "assets/TagsIndexPage-CkFbUl_y.js",
+    "file": "assets/TagsIndexPage-DRxRUFiX.js",
     "name": "TagsIndexPage",
     "src": "src/pages/TagsIndexPage.tsx",
     "isDynamicEntry": true,
@@ -75,7 +75,7 @@
     ]
   },
   "src/pages/TitleDetailPage.tsx": {
-    "file": "assets/TitleDetailPage-edVBsVsn.js",
+    "file": "assets/TitleDetailPage-DDlMqXlk.js",
     "name": "TitleDetailPage",
     "src": "src/pages/TitleDetailPage.tsx",
     "isDynamicEntry": true,
@@ -84,7 +84,7 @@
     ]
   },
   "src/pages/UserEditPage.tsx": {
-    "file": "assets/UserEditPage-DQdyQ4y3.js",
+    "file": "assets/UserEditPage-CndKIlj9.js",
     "name": "UserEditPage",
     "src": "src/pages/UserEditPage.tsx",
     "isDynamicEntry": true,
@@ -93,17 +93,17 @@
     ]
   },
   "src/pages/UserListPage.tsx": {
-    "file": "assets/UserListPage-DAxHZnlm.js",
+    "file": "assets/UserListPage-BfWAcwL0.js",
     "name": "UserListPage",
     "src": "src/pages/UserListPage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_ConfirmDialog-Ri65IBn9.js"
+      "_ConfirmDialog-DlaD7W95.js"
     ]
   },
   "src/pages/reader/ReaderPage.tsx": {
-    "file": "assets/ReaderPage-Bwxe-jm3.js",
+    "file": "assets/ReaderPage-hilYPYOr.js",
     "name": "ReaderPage",
     "src": "src/pages/reader/ReaderPage.tsx",
     "isDynamicEntry": true,
